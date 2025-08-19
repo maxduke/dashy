@@ -1,0 +1,62 @@
+name: Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 * * * *" # 每小时触发一次
+  workflow_dispatch:
+    inputs:
+      upstream_branch:
+        description: "Upstream Branch"
+        required: true
+        default: "master"
+      target_branch:
+        description: "Target Branch"
+        required: true
+        default: "master"
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync latest commits from upstream repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.target_branch || 'master' }}
+
+      - name: Get upstream repo (if fork)
+        id: upstream
+        run: |
+          echo "Fetching upstream info..."
+          response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }})
+          upstream=$(echo "$response" | jq -r '.parent.full_name // empty')
+          if [ -z "$upstream" ]; then
+            echo "No parent repo detected (not a fork)."
+            echo "upstream_repo=${{ github.repository }}" >> $GITHUB_OUTPUT
+          else
+            echo "Detected upstream: $upstream"
+            echo "upstream_repo=$upstream" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          upstream_sync_repo: ${{ steps.upstream.outputs.upstream_repo }}
+          upstream_sync_branch: ${{ github.event.inputs.upstream_branch || 'master' }}
+          target_sync_branch: ${{ github.event.inputs.target_branch || 'master' }}
+          target_repo_token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          test_mode: false
+
+      - name: Sync check
+        if: failure()
+        run: |
+          echo "::error::同步失败，可能是因为当前 GITHUB_TOKEN 权限不足。"
+          echo "::error::请确认是否需要配置 PAT_TOKEN（带有 repo 权限）。"
+          echo "::error::或者前往仓库首页手动执行 [Sync fork]。"
+          exit 1
