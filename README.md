@@ -11,19 +11,26 @@
 ---
 
 <p align="center">
-<sup>Dashy is kindly sponsored by <a href="https://www.lambdatest.com/?utm_source=dashy&utm_medium=sponsor">LambdaTest</a> - Browser Testing</sup><br>
-  <a href="https://www.lambdatest.com/?utm_source=dashy&utm_medium=sponsor" target="_blank">
-    <img src="https://www.lambdatest.com/blue-logo.png" width="400" alt="LambdaTest" />
+<sup>Dashy is kindly sponsored by <a href="https://ssdnodes.com/dashy">SSD Nodes</a> - Affordable VPS hosting for self-hosters</sup><br>
+  <a href="https://ssdnodes.com/dashy" target="_blank">
+    <img src="https://cdn.as93.net/sponsors/ssd-nodes.svg" width="340" alt="SSD Nodes" />
   </a>
 </p>
-
+<br>
 
 <p align="center">
 <br>
 <sup>Dashy is kindly sponsored by <a href="https://umbrel.com?ref=dashy">Umbrel</a> - the personal home cloud and OS for self-hosting</sup><br>
 <a href="https://umbrel.com?ref=dashy">
-<img width="400" src="https://github.com/Lissy93/dashy/blob/WEBSITE/docs-site-source/static/umbrel-banner.jpg?raw=true" />
+<img width="400" src="https://cdn.as93.net/sponsors/umbrel-banner.jpg" />
 </a>
+</p>
+
+<p align="center">
+<sup>Dashy is kindly sponsored by <a href="https://www.testmu.ai/?utm_source=dashy&utm_medium=sponsor">TestMu AI</a> - The world’s first full-stack Agentic AI Quality Engineering platform</sup><br>
+  <a href="https://www.testmu.ai/?utm_source=dashy&utm_medium=sponsor" target="_blank">
+    <img src="https://cdn.as93.net/sponsors/test-mu-ai.png" width="400" alt="LambdaTest" />
+  </a>
 </p>
 
 
