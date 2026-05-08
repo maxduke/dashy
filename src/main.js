@@ -62,7 +62,7 @@ const mount = () => app.mount('#app');
 const handleAuthFailure = (provider, err) => {
   ErrorHandler(`Failed to authenticate with ${provider}`, err);
   store.commit(Keys.CRITICAL_ERROR_MSG, `Authentication failed (${provider}). See console for details.`);
-  mount();
+  router.replace({ name: 'login' }).catch(() => {}).finally(mount);
 };
 
 router.isReady().then(() => {

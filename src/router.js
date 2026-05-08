@@ -16,6 +16,8 @@ import store from '@/store';
 import i18n from '@/utils/i18n';
 import Keys from '@/utils/StoreMutations';
 import { isAuthEnabled, isLoggedIn, isGuestAccessEnabled } from '@/utils/auth/Auth';
+import { isOidcEnabled } from '@/utils/auth/OidcAuth';
+import { isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
 import { startingView as defaultStartingView, routePaths } from '@/utils/config/defaults';
 import { VIEW_META } from '@/utils/config/ConfigHelpers';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
@@ -29,6 +31,12 @@ const isAuthenticated = () => {
   const guestEnabled = isGuestAccessEnabled();
   return (!authEnabled || userLoggedIn || guestEnabled);
 };
+
+/* Determines if the page URL is an OAuth2 redirect-back from OIDC or Keycloak
+ * Passes through the auth guard, so the callback ?code reaches the handler */
+const isOauthCallback = () =>
+  new URLSearchParams(window.location.search).has('code')
+  && (isOidcEnabled() || isKeycloakEnabled());
 
 /* Resolve landing view from appConfig.startingView at runtime if set */
 const resolveStartingView = () => {
@@ -131,7 +139,7 @@ router.beforeEach(async (to, from, next) => {
     // If in edit mode and navigating to a DIFFERENT page, confirm + cancel edit.
     const pageChanged = from.params?.page !== to.params?.page;
     if (store.state.editMode && pageChanged) {
-       
+
       const ok = confirm(i18n.global.t('interactive-editor.menu.leave-while-editing-confirm'));
       if (!ok) {
         progress.end();
@@ -142,8 +150,9 @@ router.beforeEach(async (to, from, next) => {
       await store.dispatch(Keys.INITIALIZE_CONFIG, store.state.currentConfigInfo.confId);
       store.commit(Keys.SET_EDIT_MODE, false);
     }
-    if (to.name !== 'login' && !isAuthenticated()) next({ name: 'login' });
-    else next();
+    if (to.name !== 'login' && !isAuthenticated() && !isOauthCallback()) {
+      next({ name: 'login' });
+    } else next();
   } catch (e) {
     ErrorHandler('Navigation guard failed', e);
     next();
