@@ -240,8 +240,7 @@
       "copy-clipboard-btn": "Kopiera till urklipp",
       "copy-clipboard-tooltip": "Kopiera alla appkonfigurationer till systemets urklipp i YAML-format",
       "download-file-btn": "Ladda ned som fil",
-      "download-file-tooltip": "Ladda ner alla appkonfigurationer till din enhet som en YAML-fil",
-      "view-title": "Visa konfiguration"
+      "download-file-tooltip": "Ladda ner alla appkonfigurationer till din enhet som en YAML-fil"
     }
   },
   "widgets": {

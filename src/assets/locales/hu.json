@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "App Info",
-    "support-dashy": "Dashy támogatása",
-    "support-dashy-description": "Ha szeretnél részt venni a projektben, nézd meg a",
     "support-dashy-link": "közreműködők oldalát",
     "report-bug": "Hiba bejelentése",
     "report-bug-description": "Ha úgy gondolod, hogy hibát találtál, kérlek",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "Másolás vágólapra",
       "copy-clipboard-tooltip": "Az összes beállítás másolása a vágólapra YAML formátumban",
       "download-file-btn": "Letöltés fájlként",
-      "download-file-tooltip": "Az összes beállítás letöltése YAML fájlként az eszközre",
-      "view-title": "Beállítások megtekintése"
+      "download-file-tooltip": "Az összes beállítás letöltése YAML fájlként az eszközre"
     }
   },
   "critical-error": {

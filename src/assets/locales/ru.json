@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "Информация о Приложении",
-    "support-dashy": "Поддержать Dashy",
-    "support-dashy-description": "Если вы хотите поддержать проект, пожалуйста посетите страницу",
     "support-dashy-link": "Contributions",
     "report-bug": "Сообщить об ошибке",
     "report-bug-description": "Если вы считаете, что нашли ошибку, пожалуйста",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "Скопировано в буфер обмена",
       "copy-clipboard-tooltip": "Скопировать всю конфигурацию приложения, в формате YAML",
       "download-file-btn": "Скачать как файл",
-      "download-file-tooltip": "Скачать файл конфигурации на ваше устройство в формате YAML",
-      "view-title": "Просмотреть конфигурацию"
+      "download-file-tooltip": "Скачать файл конфигурации на ваше устройство в формате YAML"
     }
   },
   "critical-error": {

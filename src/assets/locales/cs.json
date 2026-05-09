@@ -236,8 +236,7 @@
       "copy-clipboard-btn": "Kopírovať do schránky",
       "copy-clipboard-tooltip": "Kopírovať všechny konfigurace aplikace do systémové schránky ve formátu YAML",
       "download-file-btn": "Stáhnout jako soubor",
-      "download-file-tooltip": "Stáhnout všechny konfigurace aplikace do svého zažízení v souboru YAML",
-      "view-title": "Zobrazit konfiguraci"
+      "download-file-tooltip": "Stáhnout všechny konfigurace aplikace do svého zažízení v souboru YAML"
     }
   },
   "widgets": {

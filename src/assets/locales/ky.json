@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "Тиркеме жөнүндө маалымат",
-    "support-dashy": "Dashy'ди колдоо",
-    "support-dashy-description": "Катышуунун жолдору жөнүндө маалымат алуу үчүн",
     "support-dashy-link": "Салым кошкондор бети",
     "report-bug": "Ката тууралуу билдирүү",
     "report-bug-description": "Эгер ката таптым деп ойлосоңуз",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "Алмашуу буферине көчүрүү",
       "copy-clipboard-tooltip": "Конфигурацияны YAML форматында алмашуу буферине көчүрүү",
       "download-file-btn": "Файл катары жүктөө",
-      "download-file-tooltip": "Конфигурацияны YAML файлы катары түзмөккө жүктөө",
-      "view-title": "Конфигурацияны көрүү"
+      "download-file-tooltip": "Конфигурацияны YAML файлы катары түзмөккө жүктөө"
     }
   },
   "critical-error": {

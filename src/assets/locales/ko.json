@@ -236,8 +236,7 @@
       "copy-clipboard-btn": "클립보드에 복사",
       "copy-clipboard-tooltip": "모든 앱 설정을 YAML 형식으로 시스템 클립보드에 복사",
       "download-file-btn": "파일로 다운로드",
-      "download-file-tooltip": "모든 앱 설정을 YAML 파일로 기기에 다운로드합니다.",
-      "view-title": "설정 보기"
+      "download-file-tooltip": "모든 앱 설정을 YAML 파일로 기기에 다운로드합니다."
     }
   },
   "widgets": {

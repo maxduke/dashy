@@ -47,8 +47,6 @@
   },
   "app-info": {
     "title": "Uygulama Bilgisi",
-    "support-dashy": "Dashy'yi Destekleyin",
-    "support-dashy-description": "Katkıda bulunabileceğiniz yollar için şuraya göz atın:",
     "support-dashy-link": "Katkı sayfası",
     "report-bug": "Hata Bildir",
     "report-bug-description": "Bir hata bulduğunuzu düşünüyorsanız, lütfen",
@@ -284,8 +282,7 @@
       "copy-clipboard-btn": "Yapılandırmayı Panoya Kopyala",
       "copy-clipboard-tooltip": "Tüm uygulama yapılandırmasını sistem panosuna YAML biçiminde kopyalayın",
       "download-file-btn": "Dosya Olarak İndir",
-      "download-file-tooltip": "Tüm uygulama yapılandırmasını bir YAML dosyasında cihazınıza indirin",
-      "view-title": "Yapılandırmayı Görüntüle"
+      "download-file-tooltip": "Tüm uygulama yapılandırmasını bir YAML dosyasında cihazınıza indirin"
     }
   },
   "critical-error": {

@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "應用程式資訊",
-    "support-dashy": "支持 Dashy",
-    "support-dashy-description": "您也能幫助 Dashy！請參閱",
     "support-dashy-link": "貢獻頁面",
     "report-bug": "回報錯誤",
     "report-bug-description": "若您認為您找到錯誤，請",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "複製至剪貼簿",
       "copy-clipboard-tooltip": "將所有應用程式設定以 YAML 格式複製到系統剪貼簿。",
       "download-file-btn": "下載檔案",
-      "download-file-tooltip": "將所有應用程式設定以 YAML 檔案下載到您的裝置。",
-      "view-title": "檢視設定"
+      "download-file-tooltip": "將所有應用程式設定以 YAML 檔案下載到您的裝置。"
     }
   },
   "widgets": {

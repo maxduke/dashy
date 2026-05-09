@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "Informations sur l'application",
-    "support-dashy": "Soutenir Dashy",
-    "support-dashy-description": "Pour savoir comment vous pouvez vous impliquer, consultez la page",
     "support-dashy-link": "« Contributions »",
     "report-bug": "Signaler un bug",
     "report-bug-description": "Si vous pensez avoir trouvé un bug, alors s'il vous plaît, ",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "Copier dans le presse-papiers",
       "copy-clipboard-tooltip": "Copier la configuration complète de l'application sur votre appareil dans un fichier YAML",
       "download-file-btn": "Télécharger le fichier",
-      "download-file-tooltip": "Télécharge la configuration complète de l'application sur votre appareil dans un fichier YAML",
-      "view-title": "Affichage de la configuration"
+      "download-file-tooltip": "Télécharge la configuration complète de l'application sur votre appareil dans un fichier YAML"
     }
   },
   "widgets": {

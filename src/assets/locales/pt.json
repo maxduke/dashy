@@ -246,8 +246,7 @@
       "copy-clipboard-btn": "Copiar para área de transferência",
       "copy-clipboard-tooltip": "Copiar toda as configurações do app para a área de transferência, no formato YAML",
       "download-file-btn": "Baixar como arquivo",
-      "download-file-tooltip": "Baixa todas as configurações do aplicativo para o seu dispositivo, no formato YAML.",
-      "view-title": "Ver configuração"
+      "download-file-tooltip": "Baixa todas as configurações do aplicativo para o seu dispositivo, no formato YAML."
     }
   },
   "widgets": {

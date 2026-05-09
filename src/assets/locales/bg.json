@@ -236,8 +236,7 @@
       "copy-clipboard-btn": "Копиране в клипборда",
       "copy-clipboard-tooltip": "Кпиране на конфигурациите на приложението в YAML формат",
       "download-file-btn": "Запазване във файл",
-      "download-file-tooltip": "Изтегляне на всички конфигурации на приложението в YAML файл",
-      "view-title": "Преглед конфигурация"
+      "download-file-tooltip": "Изтегляне на всички конфигурации на приложението в YAML файл"
     }
   },
   "widgets": {

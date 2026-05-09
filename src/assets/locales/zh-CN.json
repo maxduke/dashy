@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "应用信息",
-    "support-dashy": "支持Dashy",
-    "support-dashy-description": "了解参与Dashy项目的方式，请查看",
     "support-dashy-link": "贡献页面",
     "report-bug": "报告漏洞",
     "report-bug-description": "如果您认为发现了漏洞，请",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "复制到剪切板",
       "copy-clipboard-tooltip": "以YAML格式，将所有配置复制到剪切板 ",
       "download-file-btn": "下载配置文件",
-      "download-file-tooltip": "以YAML文件格式，保存所有配置到本地",
-      "view-title": "查看配置"
+      "download-file-tooltip": "以YAML文件格式，保存所有配置到本地"
     }
   },
   "widgets": {

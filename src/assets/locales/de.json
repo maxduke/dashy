@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "App Info",
-    "support-dashy": "Dashy unterstützen",
-    "support-dashy-description": "Für Wege, sich zu beteiligen, besuchen Sie die",
     "support-dashy-link": "Contributions Seite",
     "report-bug": "Melde einen Fehler",
     "report-bug-description": "Wenn Sie glauben, einen Fehler gefunden zu haben, dann bitte",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "In Zwischenablage kopieren",
       "copy-clipboard-tooltip": "Applikationskonfiguration als YAML in Zwischenablage kopieren",
       "download-file-btn": "Datei herunterladen",
-      "download-file-tooltip": "Applikationskonfiguration auf Ihr Gerät herunterladen",
-      "view-title": "Konfiguration anzeigen"
+      "download-file-tooltip": "Applikationskonfiguration auf Ihr Gerät herunterladen"
     }
   },
   "widgets": {

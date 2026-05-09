@@ -225,8 +225,7 @@
       "copy-clipboard-btn": "Kopirati v Odložišče",
       "copy-clipboard-tooltip": "Kopirajte vso konfiguracijo aplikacije v sistemsko odložišče v formatu YAML",
       "download-file-btn": "Prenesi kot Datoteko",
-      "download-file-tooltip": "Prenesite vso konfiguracijo aplikacije v svojo napravo v formatu YAML",
-      "view-title": "Ogled Konfiguracije"
+      "download-file-tooltip": "Prenesite vso konfiguracijo aplikacije v svojo napravo v formatu YAML"
     }
   }
 }

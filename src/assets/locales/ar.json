@@ -52,8 +52,6 @@
     "help-support": "المساعدة والدعم",
     "help-support-description": "للحصول على دعم في تشغيل أو إعداد Dashy، راجع",
     "help-support-discussions": "المناقشات",
-    "support-dashy": "دعم Dashy",
-    "support-dashy-description": "للمشاركة والمساهمة، تحقق من",
     "support-dashy-link": "صفحة المساهمات",
     "report-bug": "الإبلاغ عن خطأ",
     "report-bug-description": "إذا كنت تعتقد أنك وجدت خطأ، يرجى",
@@ -295,8 +293,7 @@
       "copy-clipboard-btn": "نسخ إلى الحافظة",
       "copy-clipboard-tooltip": "نسخ جميع إعدادات التطبيق إلى حافظة النظام بتنسيق YAML",
       "download-file-btn": "تحميل كملف",
-      "download-file-tooltip": "تحميل جميع إعدادات التطبيق إلى جهازك كملف YAML",
-      "view-title": "عرض الإعدادات"
+      "download-file-tooltip": "تحميل جميع إعدادات التطبيق إلى جهازك كملف YAML"
     }
   },
   "critical-error": {

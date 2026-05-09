@@ -46,8 +46,6 @@
   },
   "app-info": {
     "title": "アプリ情報",
-    "support-dashy": "Dashyを支援",
-    "support-dashy-description": "参加する方法を知るには、こちらをご覧ください: ",
     "support-dashy-link": "コントリビューションページ",
     "report-bug": "バグの報告",
     "report-bug-description": "バグを発見したと思われる場合は、Issueを立ててください: ",
@@ -282,8 +280,7 @@
       "copy-clipboard-btn": "クリップボードにコピー",
       "copy-clipboard-tooltip": "すべてのアプリ設定をシステムのクリップボードにYAML形式でコピーします",
       "download-file-btn": "ファイルとしてダウンロード",
-      "download-file-tooltip": "すべてのアプリ設定をYAMLファイルとしてダウンロードします",
-      "view-title": "設定"
+      "download-file-tooltip": "すべてのアプリ設定をYAMLファイルとしてダウンロードします"
     }
   },
   "widgets": {

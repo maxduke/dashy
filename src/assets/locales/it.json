@@ -232,8 +232,7 @@
       "copy-clipboard-btn": "Copia negli Appunti",
       "copy-clipboard-tooltip": "Copia la configurazione negli appunti, in formato YAML",
       "download-file-btn": "Salva file",
-      "download-file-tooltip": "Salva la configurazione dell'app in un file YAML",
-      "view-title": "View Config"
+      "download-file-tooltip": "Salva la configurazione dell'app in un file YAML"
     }
   },
   "widgets": {

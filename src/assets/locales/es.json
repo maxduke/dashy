@@ -236,8 +236,7 @@
       "copy-clipboard-btn": "Copiar al portapapeles",
       "copy-clipboard-tooltip": "Copiar toda la configuración de la aplicación al portapapeles del sistema, en formato YAML",
       "download-file-btn": "Descargar como archivo",
-      "download-file-tooltip": "Descargue toda la configuración de la aplicación en su dispositivo, en un archivo YAML",
-      "view-title": "Ver configuración"
+      "download-file-tooltip": "Descargue toda la configuración de la aplicación en su dispositivo, en un archivo YAML"
     }
   },
   "widgets": {
