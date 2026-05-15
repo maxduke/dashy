@@ -8,6 +8,7 @@
  */
 
 import { makeBasicAuthHeaders } from '@/utils/auth/Auth';
+import getApiAuthHeader from '@/utils/auth/getApiAuthHeader';
 
 /** Check if a request URL targets the local Dashy server */
 function isLocalRequest(url) {
@@ -64,11 +65,17 @@ async function makeRequest(config) {
     signal: controller.signal,
   };
 
-  // For local API requests, include basic auth headers when configured
+  // For local API requests, attach auth headers when configured
+  // Bearer (OIDC / Keycloak id_token) takes precedence over basic-auth cookie header
   if (isLocalRequest(fullUrl) && !fetchOptions.headers.Authorization) {
-    const authConfig = makeBasicAuthHeaders();
-    if (authConfig.headers) {
-      Object.assign(fetchOptions.headers, authConfig.headers);
+    const bearer = getApiAuthHeader();
+    if (bearer) {
+      Object.assign(fetchOptions.headers, bearer);
+    } else {
+      const authConfig = makeBasicAuthHeaders();
+      if (authConfig.headers) {
+        Object.assign(fetchOptions.headers, authConfig.headers);
+      }
     }
   }
 

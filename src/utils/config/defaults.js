@@ -145,6 +145,7 @@ const defaults = {
     LAST_USED: 'lastUsed',
     KEYCLOAK_INFO: 'keycloakInfo',
     ISADMIN: 'isAdmin',
+    ID_TOKEN: 'idToken',
     DISABLE_CRITICAL_WARNING: 'disableCriticalWarning',
   },
   /* Key names for cookie identifiers */

@@ -53,39 +53,43 @@ class OidcAuth {
     const code = url.searchParams.get('code');
 
     if (code) {
-      await this.userManager.signinCallback(window.location.href);
+      // Populate localStorage before the reload so the post-reload route guard
+      // sees the user as logged-in and lets them through to /, not /login.
+      const callbackUser = await this.userManager.signinCallback(window.location.href);
+      if (callbackUser) this.persistUserInfo(callbackUser);
       window.location.href = '/';
       return;
     }
 
     const user = await this.userManager.getUser();
-
     if (user === null) {
       if (!isOidcGuestAccessEnabled()) {
         await this.userManager.signinRedirect();
       }
     } else {
-      const { roles = [], groups = [] } = user.profile;
-      const info = {
-        groups,
-        roles,
-      };
-      const isAdmin = (Array.isArray(groups) && groups.includes(this.adminGroup))
-                      || (Array.isArray(roles) && roles.includes(this.adminRole))
-                      || false;
-
-      statusMsg(`user: ${user.profile.preferred_username}   admin: ${isAdmin}`, JSON.stringify(info));
-
-      localStorage.setItem(localStorageKeys.KEYCLOAK_INFO, JSON.stringify(info));
-      localStorage.setItem(localStorageKeys.USERNAME, user.profile.preferred_username);
-      localStorage.setItem(localStorageKeys.ISADMIN, isAdmin);
+      this.persistUserInfo(user);
     }
+  }
+
+  /* Mirror the OIDC user into the localStorage keys other parts of Dashy read */
+  persistUserInfo(user) {
+    const { roles = [], groups = [] } = user.profile;
+    const info = { groups, roles };
+    const isAdmin = (Array.isArray(groups) && groups.includes(this.adminGroup))
+      || (Array.isArray(roles) && roles.includes(this.adminRole))
+      || false;
+    statusMsg(`user: ${user.profile.preferred_username}   admin: ${isAdmin}`, JSON.stringify(info));
+    localStorage.setItem(localStorageKeys.KEYCLOAK_INFO, JSON.stringify(info));
+    localStorage.setItem(localStorageKeys.USERNAME, user.profile.preferred_username);
+    localStorage.setItem(localStorageKeys.ISADMIN, isAdmin);
+    if (user.id_token) localStorage.setItem(localStorageKeys.ID_TOKEN, user.id_token);
   }
 
   async logout() {
     localStorage.removeItem(localStorageKeys.USERNAME);
     localStorage.removeItem(localStorageKeys.KEYCLOAK_INFO);
     localStorage.removeItem(localStorageKeys.ISADMIN);
+    localStorage.removeItem(localStorageKeys.ID_TOKEN);
 
     try {
       await this.userManager.signoutRedirect();

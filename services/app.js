@@ -30,6 +30,7 @@ const systemInfo = require('./system-info'); // Basic system info, for resource 
 const sslServer = require('./ssl-server'); // TLS-enabled web server
 const corsProxy = require('./cors-proxy'); // Enables API requests to CORS-blocked services
 const getUser = require('./get-user'); // Enables server side user lookup
+const { loadOidcSettings, createOidcMiddleware } = require('./auth-oidc'); // Server-side OIDC/Keycloak token verification
 
 /* Service endpoint URL paths (see also serviceEndpoints in src/utils/config/defaults.js) */
 const ENDPOINTS = {
@@ -78,7 +79,7 @@ process.on('unhandledRejection', (reason) => {
 /* Load appConfig.auth from config (if present) for authorization purposes */
 function loadAuthConfig() {
   try {
-    const filePath = path.join(rootDir, process.env.USER_DATA_DIR || 'user-data', 'conf.yml');
+    const filePath = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data', 'conf.yml');
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const data = yaml.load(fileContents);
     return data?.appConfig?.auth || {};
@@ -116,9 +117,9 @@ function customAuthorizer(username, password) {
   }
 }
 
-/* If auth is enabled, setup auth for config access, otherwise skip */
-function getBasicAuthMiddleware() {
-  const authConfig = loadAuthConfig();
+/* Pick an auth strategy based on what's configured in conf.yml + env.
+   OIDC / Keycloak takes precedence — it's the strongest enforcement we offer. */
+function getAuthMiddleware(authConfig, oidcSettings) {
   const confUsers = authConfig.users || null;
   const hasConfUsers = confUsers && confUsers.length > 0;
   const useConfAuth = process.env.ENABLE_HTTP_AUTH && hasConfUsers;
@@ -133,7 +134,9 @@ function getBasicAuthMiddleware() {
         + ' This will cause auth failures. Set ENABLE_HTTP_AUTH=true, or remove users from conf.yml.');
   }
 
-  if (useConfAuth) {
+  if (oidcSettings) {
+    return createOidcMiddleware(oidcSettings);
+  } else if (useConfAuth) {
     return basicAuth({
       authorizer: customAuthorizer,
       challenge: true,
@@ -163,11 +166,37 @@ function getBasicAuthMiddleware() {
   return (req, res, next) => next();
 }
 
-const protectConfig = getBasicAuthMiddleware();
+const initialAuthConfig = loadAuthConfig();
+const oidcSettings = loadOidcSettings(initialAuthConfig);
+const protectConfig = getAuthMiddleware(initialAuthConfig, oidcSettings);
 
-/* Middleware to restrict write endpoints to admin users only */
+/* True when any auth method is configured. Used to keep zero-auth deployments
+   open (their original behaviour) while closing the gate for everyone else. */
+const authIsConfigured = Boolean(
+  oidcSettings
+  || (process.env.ENABLE_HTTP_AUTH && initialAuthConfig.users?.length)
+  || (process.env.BASIC_AUTH_USERNAME && process.env.BASIC_AUTH_PASSWORD)
+  || (initialAuthConfig.enableHeaderAuth && initialAuthConfig.headerAuth),
+);
+
+/* Require an authenticated identity on this request. No-op for zero-auth deploys. */
+function requireAuth(req, res, next) {
+  if (!authIsConfigured) return next();
+  if (req.auth) return next();
+  return res.status(401).json({ success: false, message: 'Unauthorized' });
+}
+
+/* Restrict to admin users. OIDC/Keycloak get isAdmin from token claims; the
+   conf.yml `users[]` path falls back to looking up user.type === 'admin'. */
 function requireAdmin(req, res, next) {
-  if (!req.auth) return next();
+  if (!authIsConfigured) return next();
+  if (!req.auth) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+  if (typeof req.auth.isAdmin === 'boolean') {
+    if (req.auth.isAdmin) return next();
+    return res.status(403).json({ success: false, message: 'Forbidden - Admin access required' });
+  }
   const users = loadUserConfig();
   if (!users || users.length === 0) return next();
   const user = users.find(u => u.user.toLowerCase() === req.auth.user.toLowerCase());
@@ -191,7 +220,7 @@ const app = express()
   // Load middlewares for parsing JSON, and supporting HTML5 history routing
   .use(express.json({ limit: '1mb' }))
   // GET endpoint to run status of a given URL with GET request
-  .use(ENDPOINTS.statusCheck, protectConfig, method('GET', (req, res) => {
+  .use(ENDPOINTS.statusCheck, protectConfig, requireAuth, method('GET', (req, res) => {
     try {
       statusCheck(req.url, (results) => {
         if (!res.headersSent) {
@@ -223,7 +252,7 @@ const app = express()
     });
   }))
   // GET endpoint to return system info, for widget
-  .use(ENDPOINTS.systemInfo, protectConfig, method('GET', (req, res) => {
+  .use(ENDPOINTS.systemInfo, protectConfig, requireAuth, method('GET', (req, res) => {
     try {
       safeEnd(res, JSON.stringify(systemInfo()));
     } catch (e) {
@@ -231,7 +260,7 @@ const app = express()
     }
   }))
   // GET for accessing non-CORS API services
-  .use(ENDPOINTS.corsProxy, protectConfig, (req, res) => {
+  .use(ENDPOINTS.corsProxy, protectConfig, requireAuth, (req, res) => {
     try {
       corsProxy(req, res);
     } catch (e) {
@@ -239,7 +268,7 @@ const app = express()
     }
   })
   // GET endpoint to return user info
-  .use(ENDPOINTS.getUser, protectConfig, method('GET', (req, res) => {
+  .use(ENDPOINTS.getUser, protectConfig, requireAuth, method('GET', (req, res) => {
     try {
       safeEnd(res, JSON.stringify(getUser(config, req)));
     } catch (e) {
@@ -249,13 +278,13 @@ const app = express()
   // Middleware to serve any .yml files in USER_DATA_DIR with optional protection
   .get('/*.yml', protectConfig, (req, res) => {
     const ymlFile = req.path.split('/').pop();
-    const filePath = path.join(rootDir, process.env.USER_DATA_DIR || 'user-data', ymlFile);
+    const filePath = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data', ymlFile);
     res.sendFile(filePath, (err) => {
       if (err) safeEnd(res, errBody(`Could not read ${ymlFile}`), 404);
     });
   })
   // Serves up static files
-  .use(express.static(path.join(rootDir, process.env.USER_DATA_DIR || 'user-data')))
+  .use(express.static(path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data')))
   .use(express.static(path.join(rootDir, 'dist')))
   .use(express.static(path.join(rootDir, 'public'), { index: 'initialization.html' }))
   // If no other route is matched, serve up the index.html with a 404 status

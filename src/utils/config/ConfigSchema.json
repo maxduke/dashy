@@ -694,6 +694,16 @@
                   "type": "string",
                   "description": "Set to the 'Alias' of an existing Identity Provider in the specified realm to skip the Keycloak login page and redirect straight to the external IdP for authentication"
                 },
+                "adminRole": {
+                  "title": "Admin Role",
+                  "type": "string",
+                  "description": "The realm or client role that grants admin privileges (mapped into realm_access.roles in the id_token). If not set, no roles will be considered admin."
+                },
+                "adminGroup": {
+                  "title": "Admin Group",
+                  "type": "string",
+                  "description": "The group claim value that grants admin privileges. Requires a Keycloak mapper that puts a 'groups' claim into the id_token. If not set, no groups will be considered admin."
+                },
                 "legacySupport": {
                   "title": "Legacy Support",
                   "type": "boolean",

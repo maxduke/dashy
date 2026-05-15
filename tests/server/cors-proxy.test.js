@@ -1,9 +1,17 @@
 // @vitest-environment node
 import http from 'http';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import {
   describe, it, expect, afterEach, beforeAll, afterAll, vi,
 } from 'vitest';
 import request from 'supertest';
+
+// Isolate from the repo's conf.yml so test behaviour doesn't depend on which
+// auth method (if any) the developer has configured locally.
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dashy-cors-test-'));
+process.env.USER_DATA_DIR = tmpDir;
 
 const app = require('../../services/app');
 const { substituteEnv } = require('../../services/cors-proxy');

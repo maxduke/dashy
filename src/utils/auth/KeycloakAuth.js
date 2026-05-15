@@ -17,8 +17,10 @@ class KeycloakAuth {
   constructor(Keycloak) {
     const { auth } = getAppConfig();
     const {
-      serverUrl, realm, clientId, idpHint, legacySupport,
+      serverUrl, realm, clientId, idpHint, legacySupport, adminGroup, adminRole,
     } = auth.keycloak;
+    this.adminGroup = adminGroup;
+    this.adminRole = adminRole;
     if (typeof clientId === 'number' && !Number.isSafeInteger(clientId)) {
       ErrorHandler(
         'Keycloak clientId appears invalid. ',
@@ -31,12 +33,12 @@ class KeycloakAuth {
     const loginOptions = idpHint ? { idpHint } : {};
 
     this.loginOptions = loginOptions;
-    this.keycloakClient = Keycloak(initOptions);
+    this.keycloakClient = new Keycloak(initOptions);
   }
 
   login() {
     return new Promise((resolve, reject) => {
-      this.keycloakClient.init({ onLoad: 'check-sso' })
+      this.keycloakClient.init({ onLoad: 'check-sso', responseMode: 'query' })
         .then((auth) => {
           if (auth) {
             this.storeKeycloakInfo();
@@ -55,6 +57,8 @@ class KeycloakAuth {
   logout() {
     localStorage.removeItem(localStorageKeys.USERNAME);
     localStorage.removeItem(localStorageKeys.KEYCLOAK_INFO);
+    localStorage.removeItem(localStorageKeys.ISADMIN);
+    localStorage.removeItem(localStorageKeys.ID_TOKEN);
     this.keycloakClient.logout();
   }
 
@@ -68,10 +72,10 @@ class KeycloakAuth {
         preferred_username: preferredUsername,
       } = this.keycloakClient.tokenParsed;
 
-      const realmRoles = realmAccess.roles || [];
+      const realmRoles = (realmAccess && realmAccess.roles) || [];
 
       let clientRoles = [];
-      if (Object.hasOwn(resourceAccess, clientId)) {
+      if (resourceAccess && Object.hasOwn(resourceAccess, clientId)) {
         clientRoles = resourceAccess[clientId].roles || [];
       }
 
@@ -82,8 +86,18 @@ class KeycloakAuth {
         roles,
       };
 
+      // Compute isAdmin from the configured admin group/role
+      const isAdmin = (Array.isArray(groups) && this.adminGroup && groups.includes(this.adminGroup))
+        || (Array.isArray(roles) && this.adminRole && roles.includes(this.adminRole))
+        || false;
+
       localStorage.setItem(localStorageKeys.KEYCLOAK_INFO, JSON.stringify(info));
       localStorage.setItem(localStorageKeys.USERNAME, preferredUsername);
+      localStorage.setItem(localStorageKeys.ISADMIN, isAdmin);
+      // Save id_token locally, so it can be attached as Bearer for network requests
+      if (this.keycloakClient.idToken) {
+        localStorage.setItem(localStorageKeys.ID_TOKEN, this.keycloakClient.idToken);
+      }
     }
   }
 }

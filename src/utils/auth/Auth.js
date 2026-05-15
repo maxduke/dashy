@@ -33,14 +33,11 @@ const getUsers = () => {
   // Otherwise, return the users array, if available
 
   const users = auth.users ? [...auth.users] : [];
-  if (isOidcEnabled()) {
-    if (localStorage[localStorageKeys.USERNAME]) {
-      const user = {
-        user: localStorage[localStorageKeys.USERNAME],
-        type: localStorage[localStorageKeys.ISADMIN] === 'true' ? 'admin' : 'normal',
-      };
-      users.push(user);
-    }
+  if ((isOidcEnabled() || isKeycloakEnabled()) && localStorage[localStorageKeys.USERNAME]) {
+    users.push({
+      user: localStorage[localStorageKeys.USERNAME],
+      type: localStorage[localStorageKeys.ISADMIN] === 'true' ? 'admin' : 'normal',
+    });
   }
 
   return users;
@@ -91,7 +88,7 @@ export const isLoggedIn = () => {
   const users = getUsers();
   const cookieToken = getCookieToken();
 
-  if (isOidcEnabled()) {
+  if (isOidcEnabled() || isKeycloakEnabled()) {
     const username = localStorage[localStorageKeys.USERNAME]; // Get username
     if (!username) return false; // No username
     return users.some((user) => (

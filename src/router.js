@@ -18,15 +18,21 @@ import Keys from '@/utils/StoreMutations';
 import { isAuthEnabled, isLoggedIn, isGuestAccessEnabled } from '@/utils/auth/Auth';
 import { isOidcEnabled } from '@/utils/auth/OidcAuth';
 import { isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
+import { isHeaderAuthEnabled } from '@/utils/auth/HeaderAuth';
 import { startingView as defaultStartingView, routePaths } from '@/utils/config/defaults';
 import { VIEW_META } from '@/utils/config/ConfigHelpers';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 
 const progress = new Progress({ color: 'var(--progress-bar)' });
 
+/* True for ANY auth (OIDC, KC, HeaderAuth, etc) */
+const isAnyAuthConfigured = () =>
+  isAuthEnabled() || isOidcEnabled() || isKeycloakEnabled() || isHeaderAuthEnabled();
+
 /* Returns true if user is already authenticated, or if auth is not enabled */
 const isAuthenticated = () => {
-  const authEnabled = isAuthEnabled();
+  if (store.state.criticalError) return false;
+  const authEnabled = isAnyAuthConfigured();
   const userLoggedIn = isLoggedIn();
   const guestEnabled = isGuestAccessEnabled();
   return (!authEnabled || userLoggedIn || guestEnabled);

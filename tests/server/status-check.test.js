@@ -1,6 +1,12 @@
 // @vitest-environment node
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
+
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dashy-status-test-'));
+process.env.USER_DATA_DIR = tmpDir;
 
 const app = require('../../services/app');
 
