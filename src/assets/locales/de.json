@@ -1,4 +1,9 @@
 {
+  "general": {
+    "close-modal": "Dialog schließen",
+    "confirm": "Bestätigen",
+    "cancel": "Abbrechen"
+  },
   "home": {
     "no-results": "keine Suchergebnisse",
     "no-data": "keine Daten konfiguriert",
@@ -6,9 +11,10 @@
   },
   "search": {
     "search-label": "Suche",
-    "search-placeholder": "Tippe um zu filtern",
+    "search-placeholder": "Tippe, um zu filtern",
     "clear-search-tooltip": "Suchfeld leeren",
-    "enter-to-search-web": "Drücke Enter um das Internet zu durchsuchen"
+    "enter-to-search-web": "Drücke Enter, um das Internet zu durchsuchen",
+    "enter-to-open-url": "Drücke die Eingabetaste, um die URL zu öffnen"
   },
   "splash-screen": {
     "loading": "Lädt"
@@ -38,38 +44,44 @@
     "proceed-guest-button": "Als Gast fortfahren",
     "guest-intro-1": "Diese Instanz hat Gastzugriffe aktiviert",
     "guest-intro-2": "Gäste haben lesenden Zugriff auf Dashboards, können also keine Veränderungen auf die Festplatte schreiben.",
-    "error": "Error",
+    "error": "Fehler",
     "error-no-user-configured": "Authentifizierung ist nicht aktiviert, oder es sind keine Benutzer konfiguriert",
-    "error-go-home-button": "Geh nach Hause",
+    "error-go-home-button": "Zur Startseite",
     "logged-in-guest": "Als Gast eingeloggt, Umleitung...",
     "error-guest-access": "Gastzugriff nicht erlaubt"
   },
   "app-info": {
     "title": "App Info",
-    "report-bug": "Melde einen Fehler",
-    "report-bug-description": "Wenn Sie glauben, einen Fehler gefunden zu haben, dann bitte",
-    "report-bug-link": "öffne ein Issue",
+    "sponsor-heading": "Dashy sponsern",
+    "sponsor-l1-prefix": "Gefällt Ihnen Dashy? Dann sollten Sie sich überlegen,",
+    "sponsor-l1-link": "mich auf GitHub zu sponsern",
+    "sponsor-l1-suffix": "um die weitere Entwicklung zu unterstützen.",
+    "report-bug": "Fehler melden",
+    "report-bug-description": "Wenn Sie glauben, einen Fehler gefunden zu haben,",
+    "report-bug-debug-link": "überprüfen Sie das Debug-Menü",
+    "report-bug-middle": "und",
+    "report-bug-link": "öffnen Sie ein Issue",
     "more-info": "Mehr Informationen",
     "source": "Quellcode",
     "documentation": "Dokumentation",
     "privacy-and-security": "Datenschutz & Sicherheit",
-    "privacy-and-security-l1": "Für eine Übersicht, wie Dashy mit Ihren Daten umgeht, siehe die",
+    "privacy-and-security-l1": "Für eine Übersicht, wie Dashy mit Ihren Daten umgeht, lesen Sie die",
     "privacy-and-security-privacy-policy": "Datenschutzerklärung",
     "privacy-and-security-advice": "Für Anleitung, um Ihr Dashboard zu sichern, konsultieren Sie die",
     "privacy-and-security-advice-link": "Management Dokumentation",
-    "privacy-and-security-security-issue": "Wenn Sie glauben, eine mögliche Sicherheitslücke gefunden zu haben, melde sie wie beschrieben in unserer",
+    "privacy-and-security-security-issue": "Wenn Sie glauben, eine mögliche Sicherheitslücke gefunden zu haben, melden Sie diese wie beschrieben in unserer",
     "privacy-and-security-security-policy": "Security Policy",
     "license": "Lizenz",
-    "license-under": "Lizensiert unter",
-    "list-contributors": "Für eine vollstandige Liste aller Beteiligten und Dank, siehe",
+    "license-under": "Lizenziert unter",
+    "list-contributors": "Für eine vollständige Liste aller Beteiligten und Danksagungen, sehen Sie",
     "list-contributors-link": "Credits",
     "version": "Version"
   },
   "config": {
     "main-tab": "Hauptmenü",
-    "view-config-tab": "Konfiguration",
+    "view-config-tab": "Konfiguration exportieren",
     "edit-config-tab": "Konfiguration bearbeiten",
-    "custom-css-tab": "eigene CSS",
+    "custom-css-tab": "Eigenes CSS",
     "heading": "Konfigurationseinstellungen",
     "download-config-button": "Konfigurationsdownload",
     "edit-config-button": "Konfiguration bearbeiten",
@@ -78,9 +90,10 @@
     "edit-cloud-sync-button": "Cloud-Synchronisation bearbeiten",
     "change-language-button": "App-Sprache ändern",
     "reset-settings-button": "lokale Einstellungen zurücksetzen",
-    "disabled-note": "Einige Konfigurationsoptionen wurden vom Administrator deaktivert",
+    "disabled-note": "Einige Konfigurationsoptionen wurden vom Administrator deaktiviert",
     "small-screen-note": "Sie benutzen einen sehr kleinen Bildschirm. Einige Seiten in diesem Menü sind dafür möglicherweise nicht ideal.",
     "app-info-button": "App Informationen",
+    "debug-info-button": "Debug-Informationen",
     "backup-note": "Es wird empfohlen ein Backup der Konfiguration zu erstellen bevor Änderungen durchgeführt werden.",
     "reset-config-msg-l1": "Dadurch werden alle Benutzereinstellungen aus dem lokalen Speicher entfernt, dies hat jedoch keine Auswirkungen auf Ihre Datei 'conf.yml'.",
     "reset-config-msg-l2": "Sie sollten zuerst alle Änderungen, die Sie lokal vorgenommen haben, sichern, wenn Sie sie in Zukunft wiederverwenden möchten.",
@@ -104,29 +117,119 @@
     "workspace": "Arbeitsplatz",
     "minimal": "Minimal"
   },
+  "remote-config": {
+    "title": "Remote-Konfiguration laden?",
+    "apply-button": "Vorschau anwenden",
+    "intro": "Sie laden eine Konfiguration von einer externen URL. Möchten Sie fortfahren?",
+    "warning": "Stellen Sie sicher, dass Sie den zu ladenden Inhalt gelesen haben, bevor Sie fortfahren. Nach dem Laden kann Ihr Browser jeden clientseitigen Code ausführen, der in dieser Konfiguration angegeben ist.",
+    "field-title": "Titel",
+    "field-source": "Quelle",
+    "field-sections": "Sektionen",
+    "field-items": "Elemente",
+    "preview-note": "Nur Vorschau. Es werden keine Änderungen auf der Festplatte vorgenommen und Ihre Dashy-Instanz wird nicht beeinflusst.",
+    "applied-toast": "Remote-Konfiguration angewendet (nur Vorschau)",
+    "previewing-banner": "Remote-Konfiguration wird angezeigt",
+    "revert-button": "Rückgängig",
+    "error-invalid-url": "Remote-Konfigurations-URL ist ungültig (muss http oder https sein)",
+    "error-fetch": "Remote-Konfiguration konnte nicht abgerufen werden. Überprüfen Sie, ob die URL erreichbar ist und CORS erlaubt ist.",
+    "error-parse": "Remote-Konfiguration ist kein gültiges YAML",
+    "error-not-config": "Remote-Datei sieht nicht wie eine Dashy-Konfiguration aus",
+    "error-apply": "Remote-Konfiguration konnte nicht angewendet werden"
+  },
   "settings": {
     "theme-label": "Design",
     "layout-label": "Layout",
     "layout-auto": "Auto",
     "layout-horizontal": "Horizontal",
     "layout-vertical": "Vertikal",
-    "item-size-label": "Itemgröße",
+    "layout-masonry": "Rasterlayout",
+    "item-size-label": "Elementgröße",
     "item-size-small": "klein",
     "item-size-medium": "mittel",
     "item-size-large": "groß",
+    "language-label": "Sprache",
     "config-launcher-label": "Konfiguration",
     "config-launcher-tooltip": "Konfiguration aktualisieren",
+    "nav-links-tooltip": "Navigation und Konfigurationen",
+    "toggle-nav-aria": "Navigationsmenü ein- und ausblenden",
     "sign-out-tooltip": "Abmelden",
     "sign-in-tooltip": "Anmelden",
     "sign-in-welcome": "Hallo {username}!",
-    "hide": "Verstecke"
+    "please-login": "Melden Sie sich an, um vollen Zugriff zu erhalten",
+    "hide": "Ausblenden",
+    "options-title": "Optionen",
+    "options-tooltip": "Optionen"
   },
   "updates": {
     "app-version-note": "Dashy Version",
     "up-to-date": "Aktuell",
     "out-of-date": "Update verfügbar",
     "unsupported-version-l1": "Sie verwenden eine nicht unterstützte Version von Dashy",
-    "unsupported-version-l2": "Für die beste Erfahrung und aktuelle Sicherheitspatches aktualisieren Sie bitte auf"
+    "unsupported-version-l2": "Für die beste Erfahrung und aktuelle Sicherheitspatches aktualisieren Sie bitte auf",
+    "sw-update-available": "Es ist eine neue Version von Dashy verfügbar.",
+    "sw-update-action": "Aktualisieren"
+  },
+  "debug": {
+    "getting-help": "Hilfe erhalten",
+    "getting-help-msg": "Wenn Sie auf ein Problem stoßen, kann Ihnen die Community helfen.",
+    "resources": {
+      "troubleshooting-name": "Fehlerbehebung",
+      "troubleshooting-desc": "Hier haben wir Lösungen für häufig auftretende Probleme zusammengestellt",
+      "docs-name": "Dokumentation",
+      "docs-desc": "Anleitungen zur Verwendung und Konfiguration",
+      "source-name": "Quellcode",
+      "source-desc": "Ansonsten können Sie das Problem anhand des folgenden Codes feststellen",
+      "email-name": "E-Mail-Support",
+      "email-note": "(nur für Sponsoren)",
+      "email-desc": "Schreiben Sie mir einfach, ich werde versuchen, Ihnen zu helfen"
+    },
+    "reporting-bug": "Einen Fehler melden",
+    "reporting-bug-l1-prefix": "Falls Sie feststellen, dass etwas nicht wie vorgesehen funktioniert, bitten wir Sie",
+    "reporting-bug-l1-link": "ein Ticket erstellen",
+    "reporting-bug-l1-suffix": "in unserem GitHub-Repository.",
+    "reporting-bug-l2-intro": "Wenn Sie einen Fehlerbericht erstellen, geben Sie bitte die relevanten Informationen an, wie zum Beispiel:",
+    "reporting-bug-list": {
+      "version": "Dashy Version",
+      "deployment": "Deployment Art",
+      "errors": "Fehlerprotokolle",
+      "config": "Konfigurationsausschnitte",
+      "overrides": "Relevante Änderungen",
+      "environment": "Informationen zur Umgebung"
+    },
+    "reporting-bug-note": "Achten Sie darauf, alle vertraulichen Informationen zu anonymisieren. Tickets, die nicht genügend Informationen für die Fehlerbehebung, Diagnose und Korrektur enthalten, werden möglicherweise geschlossen. Aufgrund zeitlicher Beschränkungen werden Supportanfragen und Feature-Anfragen von Sponsoren vorrangig behandelt.",
+    "app-version": "App-Version",
+    "error-log": "Fehlerprotokoll",
+    "error-log-hint-prefix": "Siehe",
+    "error-log-hint-link": "hier",
+    "error-log-hint-suffix": "eine Anleitung zum Anzeigen der Browserprotokolle. Nützliche Informationen finden sich möglicherweise auch in den Serverprotokollen.",
+    "no-errors": "In dieser Sitzung wurden keine Fehler festgestellt.",
+    "current-config": "Aktuelle Konfiguration",
+    "current-config-hint": "Bitte fügen Sie beim Erstellen eines Tickets die relevanten Abschnitte Ihrer Konfigurationsdatei hinzu.",
+    "config-render-error": "Konfiguration konnte nicht dargestellt werden: {error}",
+    "local-storage": "Lokaler Speicher",
+    "local-storage-hint": "Diese Einstellungen wurden in diesem Browser gespeichert. Sie haben Vorrang vor den Standardeinstellungen, bis sie gelöscht werden.",
+    "no-local-storage": "Nichts ist lokal gespeichert.",
+    "local-storage-error": "Lokaler Speicher konnte nicht gelesen werden: {error}",
+    "environment": "Umgebung",
+    "environment-hint": "Informationen zu Browser und Gerät, die bei der Einreichung eines Fehlerberichts anzugeben sind.",
+    "env": {
+      "unknown": "Unbekannt",
+      "yes": "Ja",
+      "no": "Nein",
+      "browser": "Browser",
+      "os": "Betriebssystem",
+      "viewport": "Viewport",
+      "screen": "Bildschirm",
+      "dpr": "Pixelverhältnis",
+      "languages": "Sprachen",
+      "timezone": "Zeitzone",
+      "colorScheme": "Farbschema",
+      "reducedMotion": "Reduzierte Bewegung",
+      "online": "Online",
+      "route": "Aktueller Pfad",
+      "mode": "Build-Modus",
+      "swActive": "Service Worker"
+    }
   },
   "language-switcher": {
     "title": "Applikationssprache ändern",
@@ -152,7 +255,26 @@
     "success-msg-disk": "Konfigurationsdatei wurde erfolgreich auf die Festplatte geschrieben",
     "success-msg-local": "Lokale Änderungen wurden erfolgreich gespeichert",
     "error-msg-cannot-save": "Beim Speichern der Konfiguration ist ein Fehler aufgetreten",
-    "not-admin-note": "Änderungen können nicht auf die Festplatte gespeichert werden, da Sie nicht als Administrator angemeldet sind"
+    "not-admin-note": "Änderungen können nicht auf die Festplatte gespeichert werden, da Sie nicht als Administrator angemeldet sind",
+    "preview-applied-msg": "Die Konfiguration wurde in der Vorschau angezeigt. Schließen Sie dieses Fenster, um die Änderungen anzuzeigen.",
+    "reset-confirm-msg": "Alle nicht gespeicherten Änderungen verwerfen und zur ursprünglichen Konfiguration zurückkehren?",
+    "wrap-label": "Zeilenumbruch",
+    "format-label": "Format",
+    "reset-label": "Zurücksetzen",
+    "reset-tooltip": "Alle Änderungen verwerfen und zur ursprünglichen Konfiguration zurückkehren",
+    "download-tooltip": "Als conf.yml herunterladen",
+    "download-label": "YAML herunterladen",
+    "copy-tooltip": "YAML in die Zwischenablage kopieren",
+    "copy-label": "YAML kopieren",
+    "copy-success-msg": "Konfiguration in die Zwischenablage kopiert",
+    "copy-fail-msg": "Das Kopieren ist fehlgeschlagen: {message}",
+    "format-fail-msg": "Kann nicht formatiert werden: {message}",
+    "status-valid": "Gültig",
+    "status-invalid": "Ungültig",
+    "status-warning": "{n} Warnung",
+    "status-warnings": "{n} Warnungen",
+    "parse-fail-msg": "YAML-Parsing-Fehler: {message}",
+    "editor-init-fail-msg": "Der Editor konnte nicht gestartet werden: {message}"
   },
   "cloud-sync": {
     "title": "Cloud Backup & Wiederherstellung",
@@ -185,6 +307,7 @@
       "modal": "Popup Modal",
       "workspace": "Arbeitsflächenansicht",
       "clipboard": "In Zwischenablage kopieren",
+      "newwindow": "Neues Fenster",
       "options-section-title": "Optionen",
       "edit-item": "Bearbeiten",
       "move-item": "Kopieren oder Verschieben",
@@ -195,19 +318,24 @@
       "open-section": "Sektion öffnen",
       "edit-section": "Bearbeiten",
       "expand-collapse": "Aus- / Einklappen",
-      "remove-section": "Entfernen"
+      "remove-section": "Entfernen",
+      "section-options": "Sektions-Optionen"
     }
   },
   "interactive-editor": {
     "menu": {
       "start-editing-tooltip": "Interaktiven Editor starten",
+      "config-unavailable": "Konfigurationseditor nicht verfügbar",
       "edit-site-data-subheading": "Seiteninformationen bearbeiten",
+      "edit-config-as-code-btn": "Konfiguration als Code bearbeiten",
+      "edit-config-as-code-tooltip": "Öffnen Sie den YAML-Editor, um die Konfigurationsdatei zu bearbeiten",
       "edit-page-info-btn": "Seiteninformationen bearbeiten",
       "edit-page-info-tooltip": "Applikationstitel, Beschreibung, Nav. links, Fußzeile, etc.",
       "edit-app-config-btn": "Applikationskonfiguration bearbeiten",
       "edit-app-config-tooltip": "Alle anderen Konfigurationsoptionen",
       "edit-pages-btn": "Seiten bearbeiten",
       "edit-pages-tooltip": "Hinzufügen oder entfernen von zusätzlichen Ansichten",
+      "edit-pages-subconfig-disabled": "Seiten können nur über die Haupt-Konfiguration bearbeitet werden",
       "config-save-methods-subheading": "Speicheroptionen der Konfiguration",
       "save-locally-btn": "Lokal speichern",
       "save-locally-tooltip": "Konfiguration lokal im Browser speichern. Dies hat keinen Einfluss auf die Konfigurationsdatei, aber Änderungen werden nur in diesem Browser gespeichert",
@@ -216,11 +344,12 @@
       "export-config-btn": "Konfiguration exportieren",
       "export-config-tooltip": "Konfiguration anzeigen und exportieren, entweder in eine Datei oder in die Zwischenablage",
       "cloud-backup-btn": "Cloud-Backup starten",
-      "cloud-backup-tooltip": "Speichert ein verrschlüsseltes Backup in die Cloud",
+      "cloud-backup-tooltip": "Speichert ein verschlüsseltes Backup in die Cloud",
       "edit-raw-config-btn": "Konfiguration als Rohdaten bearbeiten",
       "edit-raw-config-tooltip": "Anzeigen und bearbeiten der Konfiguration als Rohdaten im JSON-Editor",
       "cancel-changes-btn": "Verwerfen",
       "cancel-changes-tooltip": "Modifikationen zurücksetzen und Bearbeitungsmodus schließen. Dies hat keinen Einfluss auf die Konfigurationsdatei",
+      "leave-while-editing-confirm": "Sie haben ungespeicherte Änderungen. Möchten Sie diese Seite verlassen und die Änderungen verwerfen?",
       "edit-mode-name": "Bearbeitung",
       "edit-mode-subtitle": "Sie sind im Bearbeitungsmodus",
       "edit-mode-description": "Das bedeutet, dass Änderungen an der Konfigurationsdatei vorgenommen werden können. Änderungen können vor dem Speichern betrachtet werden.",
@@ -229,13 +358,31 @@
       "save-locally-warning": "Wenn Sie fortfahren werden die Änderungen nur in Ihrem Browser gespeichert. Um die Konfiguration auf anderen Geräten zu nutzen sollten Sie sie exportieren. Möchten Sie fortfahren?"
     },
     "edit-item": {
-      "missing-title-err": "Ein Titel is zwingend notwendig"
+      "missing-title-err": "Ein Titel ist zwingend erforderlich"
     },
     "edit-section": {
       "edit-section-title": "Sektion bearbeiten",
       "add-section-title": "Neue Sektion hinzufügen",
       "edit-tooltip": "Klicken zum Bearbeiten oder Rechtsklick für weitere Optionen",
-      "remove-confirm": "Sind Sie sicher, dass sie diese Sektion entfernen möchten? Diese Aktion kann nicht rückgänging gemacht werden."
+      "remove-confirm": "Sind Sie sicher, dass Sie diese Sektion entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "edit-widget": {
+      "edit-widget-title": "Widget bearbeiten",
+      "add-widget-title": "Neues Widget hinzufügen",
+      "add-widget-btn": "Widget hinzufügen",
+      "type-label": "Widget-Typ",
+      "label-label": "Label",
+      "update-interval-label": "Aktualisierungsintervall (Sekunden)",
+      "timeout-label": "Zeitlimit (ms)",
+      "use-proxy-label": "Proxy verwenden",
+      "ignore-errors-label": "Fehler ignorieren",
+      "options-heading": "Widget-Optionen",
+      "add-option-btn": "Option hinzufügen",
+      "key-placeholder": "Schlüssel",
+      "value-placeholder": "Wert",
+      "missing-type-err": "Ein Widget-Typ ist erforderlich",
+      "remove-widget": "Widget entfernen",
+      "remove-confirm": "Sind Sie sicher, dass Sie dieses Widget entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
     },
     "edit-app-config": {
       "warning-msg-title": "Ab hier ist Vorsicht geboten",
@@ -248,8 +395,37 @@
       "copy-clipboard-btn": "In Zwischenablage kopieren",
       "copy-clipboard-tooltip": "Applikationskonfiguration als YAML in Zwischenablage kopieren",
       "download-file-btn": "Datei herunterladen",
-      "download-file-tooltip": "Applikationskonfiguration auf Ihr Gerät herunterladen"
+      "download-file-tooltip": "Applikationskonfiguration auf Ihr Gerät herunterladen",
+      "current-config-title": "Aktuelle Konfiguration",
+      "preview-toggle": "YAML Vorschau",
+      "issues-title": "Schema-Fehler ({n})",
+      "config-list-title": "Konfigurationsliste",
+      "col-title": "Titel",
+      "col-path": "Pfad",
+      "col-content": "Inhalt",
+      "col-status": "Status",
+      "col-actions": "Aktionen",
+      "content-summary": "{sections} Sektionen, {items} Elemente, {widgets} Widgets",
+      "status-loading": "laden",
+      "status-valid": "gültig",
+      "status-warnings": "{n} Warnungen",
+      "status-error": "Fehler",
+      "status-unknown": "unbekannt",
+      "edit-current-btn": "Konfiguration bearbeiten",
+      "edit-current-tooltip": "Die aktuelle Konfiguration im JSON-Editor öffnen",
+      "copy-fail-msg": "Kopieren in die Zwischenablage nicht möglich, siehe Protokoll",
+      "download-row-tooltip": "YAML herunterladen",
+      "preview-row-tooltip": "YAML-Vorschau ein-/ausblenden",
+      "apply-row-tooltip": "Konfiguration anwenden"
     }
+  },
+  "critical-error": {
+    "title": "Konfigurationsfehler",
+    "subtitle": "Dashy konnte nicht korrekt geladen werden, aufgrund eines Fehlers in der Konfiguration.",
+    "sub-ensure-that": "Stellen Sie sicher, dass",
+    "sub-error-details": "Details zum Fehler",
+    "sub-next-steps": "Nächste Schritte",
+    "ignore-button": "Kritische Fehler ignorieren"
   },
   "widgets": {
     "general": {
@@ -269,14 +445,14 @@
     "net-data": {
       "cpu-chart-title": "CPU Historie",
       "mem-chart-title": "Speichernutzung",
-      "mem-breakdown-title": "Speichernutzung",
+      "mem-breakdown-title": "Speichernutzung aufgeschlüsselt",
       "load-chart-title": "Systemlast"
     },
     "glances": {
       "disk-space-free": "Frei",
       "disk-space-used": "Genutzt",
       "disk-mount-point": "Mountpunkt",
-      "disk-file-system": "Dateisystem,",
+      "disk-file-system": "Dateisystem",
       "disk-io-read": "Lesen",
       "disk-io-write": "Schreiben",
       "system-load-desc": "Prozesse in der Warteschlange, Durchschnitt aller Kerne"
@@ -289,8 +465,8 @@
       "departures": "Abflüge"
     },
     "tfl-status": {
-      "good-service-all": "Guter Service auf allen Leitungen",
-      "good-service-rest": "Guter Service auf allen anderen Leitungen"
+      "good-service-all": "Guter Service auf allen Linien",
+      "good-service-rest": "Guter Service auf allen anderen Linien"
     },
     "synology-download": {
       "downloaded": "Heruntergeladen",
@@ -300,12 +476,13 @@
     "gluetun-status": {
       "vpn-ip": "VPN IP",
       "country": "Land",
-      "region": "Bundesland",
+      "region": "Region",
       "city": "Stadt",
       "post-code": "Postleitzahl",
       "location": "Standort",
       "timezone": "Zeitzone",
-      "organization": "Organisation"
+      "organization": "Organisation",
+      "forwarded-port": "Weitergeleiteter Port"
     },
     "nextcloud": {
       "active": "Aktiv",
@@ -317,7 +494,7 @@
       "chat-room": "Chatraum",
       "delete-all": "Alle löschen",
       "delete-notification": "Benachrichtigung löschen",
-      "disabled": "deaktivert",
+      "disabled": "deaktiviert",
       "disk-quota": "Disk Quota",
       "disk-space": "Disk Speicherplatz",
       "dnd": "Nicht stören",
@@ -343,7 +520,7 @@
       "local": "lokal",
       "max-keys": "Maximale Schlüssel",
       "memory-used": "Speichernutzung",
-      "memory-utilisation": "Speichernutzung",
+      "memory-utilisation": "Speicherauslastung",
       "memory": "Speicher",
       "misses": "Fehlschläge",
       "no-notifications": "Keine Benachrichtigungen",
