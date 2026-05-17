@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "App Info",
-    "support-dashy-link": "közreműködők oldalát",
     "report-bug": "Hiba bejelentése",
     "report-bug-description": "Ha úgy gondolod, hogy hibát találtál, kérlek",
     "report-bug-link": "jelentsd be itt",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "biztonsági szabályzatunk alapján",
     "license": "Licenc",
     "license-under": "Licenc típusa:",
-    "licence-third-party": "A harmadik féltől származó modulok licenceiért látogasd meg a",
-    "licence-third-party-link": "jogi oldalunkat",
     "list-contributors": "A teljes közreműködői lista és köszönetnyilvánítás itt található:",
     "list-contributors-link": "Készítők",
     "version": "Verzió"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "Mentsd el a helyi változtatásokat, ha később is használni akarod őket",
     "reset-config-msg-l3": "Biztosan folytatod?",
     "data-cleared-msg": "Az adatok sikeresen törölve",
-    "actions-label": "Műveletek",
-    "copy-config-label": "Beállítások másolása",
     "data-copied-msg": "A konfiguráció a vágólapra másolva",
     "reset-config-label": "Beállítások visszaállítása",
     "css-save-btn": "Változtatások mentése",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "Kijelentkezés",
     "sign-in-tooltip": "Bejelentkezés",
     "sign-in-welcome": "Szia, {username}!",
-    "hide": "Elrejtés",
-    "open": "Megnyitás"
+    "hide": "Elrejtés"
   },
   "updates": {
     "app-version-note": "Dashy verzió",
@@ -153,23 +147,11 @@
     "reset-toast": "A(z) {theme} egyéni színei törölve"
   },
   "config-editor": {
-    "save-location-label": "Mentés helye",
-    "location-local-label": "Helyi mentés",
-    "location-disk-label": "Változások mentése a konfigurációs fájlba",
-    "save-button": "Változtatások mentése",
     "preview-button": "Változtatások előnézete",
     "valid-label": "A konfiguráció érvényes",
-    "status-success-msg": "Feladat sikeresen befejezve",
-    "status-fail-msg": "A feladat sikertelen volt",
     "success-msg-disk": "A konfigurációs fájl sikeresen mentve a lemezre",
     "success-msg-local": "A helyi változtatások sikeresen elmentve",
-    "success-note-l1": "A változtatások érvényesítéséhez frissítened kell az oldalt.",
-    "success-note-l2": "",
-    "success-note-l3": "",
-    "error-msg-save-mode": "Válaszd ki a mentés módját: helyi vagy fájlba mentés",
     "error-msg-cannot-save": "Hiba történt a konfiguráció mentése közben",
-    "error-msg-bad-json": "Hibás JSON-formátum, valószínűleg rosszul van megadva",
-    "warning-msg-validation": "Érvényesítési figyelmeztetés",
     "not-admin-note": "Nem írhatsz a lemezre, mert nem rendszergazdaként vagy bejelentkezve"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "További információért lásd a",
     "intro-docs": "dokumentációt",
     "backup-title-setup": "Biztonsági mentés készítése",
-    "backup-title-update": "Mentés frissítése",
     "password-label-setup": "Válassz jelszót",
     "password-label-update": "Add meg a jelszavad",
     "backup-button-setup": "Biztonsági mentés",
@@ -195,17 +176,6 @@
     "backup-error-password": "Hibás jelszó. Kérlek, add meg a helyes jelszót.",
     "backup-success-msg": "Sikeresen befejezve",
     "restore-success-msg": "A beállítások sikeresen visszaállítva"
-  },
-  "menu": {
-    "open-section-title": "Megnyitás itt",
-    "sametab": "Jelenlegi fülön",
-    "newtab": "Új fülön",
-    "modal": "Felugró ablakban",
-    "workspace": "Munkaterület nézet",
-    "options-section-title": "Beállítások",
-    "edit-item": "Szerkesztés",
-    "move-item": "Másolás vagy áthelyezés",
-    "remove-item": "Eltávolítás"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "Szakasz megnyitása",
       "edit-section": "Szerkesztés",
       "expand-collapse": "Kinyitás / Összecsukás",
-      "move-section": "Áthelyezés ide",
       "remove-section": "Eltávolítás"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": "hogy elkerüld a nem kívánt következményeket."
     },
     "export": {
-      "export-title": "Konfiguráció exportálása",
       "copy-clipboard-btn": "Másolás vágólapra",
       "copy-clipboard-tooltip": "Az összes beállítás másolása a vágólapra YAML formátumban",
       "download-file-btn": "Letöltés fájlként",
@@ -293,7 +261,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Betöltés",
       "show-more": "Részletek megjelenítése",
       "cpu-details": "CPU adatai",
       "mem-details": "Mamória adatai",
@@ -334,13 +301,9 @@
       "good-service-rest": "Minden más vonalon zavartalan a közlekedés"
     },
     "synology-download": {
-      "download": "Letöltés",
-      "upload": "Feltöltés",
       "downloaded": "Letöltve",
       "uploaded": "Feltöltve",
-      "remaining": "Hátralévő",
-      "up": "Feltöltés",
-      "down": "Letöltés"
+      "remaining": "Hátralévő"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP-cím",

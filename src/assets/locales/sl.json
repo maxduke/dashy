@@ -50,8 +50,6 @@
     "reset-config-msg-l2": "Če želeti spremembe, ki ste jih naredili lokalno uporabiti v prihodnosti, ustvarite varnostno kopijo.",
     "reset-config-msg-l3": "Ali ste prepričani, da želite nadaljevati?",
     "data-cleared-msg": "Podatki so bili uspešno izbrisani",
-    "actions-label": "Dejanja",
-    "copy-config-label": "Kopiraj Konfiguracijo",
     "data-copied-msg": "Config je bil kopiran v odložišče",
     "reset-config-label": "Ponastavi Konfiguracijo",
     "css-save-btn": "Shrani spremembe",
@@ -108,23 +106,11 @@
     "reset-toast": "Barve po Meri za {theme} Odstranjene"
   },
   "config-editor": {
-    "save-location-label": "Način Shranjevanja",
-    "location-local-label": "Shrani Lokalno",
-    "location-disk-label": "Zapišite spremembe v datoteko za konfiguracijo",
-    "save-button": "Shrani Spremembe",
     "preview-button": "Predogled Sprememb",
     "valid-label": "Konfiguracija je veljavna",
-    "status-success-msg": "Operacija dokončana",
-    "status-fail-msg": "Operacija ni uspela",
     "success-msg-disk": "Konfiguracijska datoteka je uspešno zapisana na disk",
     "success-msg-local": "Lokalne spremembe so bile uspešno shranjene",
-    "success-note-l1": "Aplikacija se bo samodejno obnovila.",
-    "success-note-l2": "To lahko traja do ene minute.",
-    "success-note-l3": "Za uveljavitev sprememb boste morali osvežiti stran.",
-    "error-msg-save-mode": "Izberite način shranjevanja: Lokalno ali v Datoteko",
     "error-msg-cannot-save": "Pri shranjevanju konfiguracije je prišlo do napake",
-    "error-msg-bad-json": "Napaka v JSON -u, morda nepravilno oblikovana",
-    "warning-msg-validation": "Opozorilo o Validaciji",
     "not-admin-note": "Ne morete zapisati spremenjenega na disk, ker niste prijavljeni kot skrbnik"
   },
   "cloud-sync": {
@@ -133,7 +119,6 @@
     "intro-l2": "Vsi podatki so v celoti šifrirani z AES, pri čemer je vaše geslo ključ.",
     "intro-l3": "Za več informacij si oglejte",
     "backup-title-setup": "Ustvari Varnostno Kopijo",
-    "backup-title-update": "Posodobi Varnostno Kopijo",
     "password-label-setup": "Izberi Geslo",
     "password-label-update": "Vnesite Geslo",
     "backup-button-setup": "Varnosto Kopiraj",
@@ -150,17 +135,6 @@
     "backup-success-msg": "Uspešno Zaključeno",
     "restore-success-msg": "Konfiguracija Uspešno Obnovljena"
   },
-  "menu": {
-    "open-section-title": "Odpri V",
-    "sametab": "Odpri v Trenutnem Zavihku",
-    "newtab": "Odpri v Novem Zavihku",
-    "modal": "Odpri v Pojavnem Oknu",
-    "workspace": "Odpri v Delovnem Pogledu",
-    "options-section-title": "Nastavitve",
-    "edit-item": "Uredi",
-    "move-item": "Kopiral ali Premakni",
-    "remove-item": "Odstrani"
-  },
   "context-menus": {
     "item": {
       "open-section-title": "Odpri V",
@@ -176,7 +150,6 @@
     "section": {
       "open-section": "Odpri Razdelek",
       "edit-section": "Uredi",
-      "move-section": "Premakni v",
       "remove-section": "Odstrani"
     }
   },
@@ -221,7 +194,6 @@
       "warning-msg-l3": "da bi se izognili neželenim posledicam."
     },
     "export": {
-      "export-title": "Izvozi Nastavitve",
       "copy-clipboard-btn": "Kopirati v Odložišče",
       "copy-clipboard-tooltip": "Kopirajte vso konfiguracijo aplikacije v sistemsko odložišče v formatu YAML",
       "download-file-btn": "Prenesi kot Datoteko",

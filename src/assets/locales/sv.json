@@ -55,8 +55,6 @@
     "reset-config-msg-l2": "Du bör först göra en säkerhetskopia av alla ändringar du har gjort lokalt, om du vill använda dem i framtiden.",
     "reset-config-msg-l3": "Är du säker på att du vill fortsätta?",
     "data-cleared-msg": "Datarensning har lyckats",
-    "actions-label": "Åtgärder",
-    "copy-config-label": "Kopiera konfiguration",
     "data-copied-msg": "Konfiguration har kopierats till urklipp",
     "reset-config-label": "Återställ konfiguration",
     "css-save-btn": "Spara ändringar",
@@ -86,8 +84,7 @@
     "sign-out-tooltip": "Logga ut",
     "sign-in-tooltip": "Logga in",
     "sign-in-welcome": "Hej {username}!",
-    "hide": "Göm",
-    "open": "Öppna"
+    "hide": "Göm"
   },
   "updates": {
     "app-version-note": "Dashy-version",
@@ -115,23 +112,11 @@
     "reset-toast": "Egna färger för {theme} har tagits bort"
   },
   "config-editor": {
-    "save-location-label": "Sparningsplats",
-    "location-local-label": "Tillämpa lokalt",
-    "location-disk-label": "Skriv ändringar till konfigurationsfil",
-    "save-button": "Spara ändringar",
     "preview-button": "Förhandsgranska ändringar",
     "valid-label": "Konfigurationen är giltig",
-    "status-success-msg": "Åtgärden slutfördes",
-    "status-fail-msg": "Åtgärden misslyckades",
     "success-msg-disk": "Konfigurationsfil har skrivits till disk utan problem",
     "success-msg-local": "Lokala ändringar har sparats utan problem",
-    "success-note-l1": "Återskapa",
-    "success-note-l2": "Detta kan ta upp till en minut.",
-    "success-note-l3": "Du måste uppdatera sidan för att ändringar ska gälla",
-    "error-msg-save-mode": "Välj Lagringsläge: Lokalt eller Fil",
     "error-msg-cannot-save": "Ett fel uppstod när konfigurationen skulle sparas",
-    "error-msg-bad-json": "Fel i JSON, möjligen felformaterat",
-    "warning-msg-validation": "Valideringsvarning",
     "not-admin-note": "Du kan inte skriva ändringar till disk, eftersom du inte är inloggad som admin"
   },
   "cloud-sync": {
@@ -140,7 +125,6 @@
     "intro-l2": "All data är fullständigt end-to-end krypterad med AES, med ditt lösenord som nyckel.",
     "intro-l3": "För mer information, vänligen se",
     "backup-title-setup": "Gör en säkerhetskopia",
-    "backup-title-update": "Uppdatera säkerhetskopia",
     "password-label-setup": "Välj lösenord",
     "password-label-update": "Ange ditt lösenord",
     "backup-button-setup": "Säkerhetskopiering",
@@ -156,17 +140,6 @@
     "backup-error-password": "Fel lösenord. Vänligen ange ditt aktuella lösenord.",
     "backup-success-msg": "Slutfört utan problem",
     "restore-success-msg": "Konfigurationen har återställts utan problem"
-  },
-  "menu": {
-    "open-section-title": "Öppna i",
-    "sametab": "Denna flik",
-    "newtab": "Ny flik",
-    "modal": "Pop-Up Modal",
-    "workspace": "Workspace-vy",
-    "options-section-title": "Alternativ",
-    "edit-item": "Redigera",
-    "move-item": "Kopiera eller flytta",
-    "remove-item": "Ta bort"
   },
   "context-menus": {
     "item": {
@@ -186,7 +159,6 @@
       "open-section": "Öppna sektion",
       "edit-section": "Redigera",
       "expand-collapse": "Expandera / Minimera",
-      "move-section": "Flytta till",
       "remove-section": "Ta bort"
     }
   },
@@ -236,7 +208,6 @@
       "warning-msg-l3": "för att undvika oavsiktliga konsekvenser."
     },
     "export": {
-      "export-title": "Exportera konfiguration",
       "copy-clipboard-btn": "Kopiera till urklipp",
       "copy-clipboard-tooltip": "Kopiera alla appkonfigurationer till systemets urklipp i YAML-format",
       "download-file-btn": "Ladda ned som fil",
@@ -245,7 +216,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Laddar...",
       "show-more": "Visa mer info",
       "show-less": "Visa mindre",
       "open-link": "Läs mer"

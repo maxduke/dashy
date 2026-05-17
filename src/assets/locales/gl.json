@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "Información da aplicación",
-    "support-dashy-link": "Contribucións",
     "report-bug": "Informar dun erro",
     "report-bug-description": "Se atopaches un erro, por favor",
     "report-bug-link": "abre unha incidencia",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "Política de seguridade",
     "license": "Licenza",
     "license-under": "Licenciado baixo",
-    "licence-third-party": "Para licenzas de módulos de terceiros, consulta",
-    "licence-third-party-link": "Legal",
     "list-contributors": "Para a lista completa de contribuíntes e agradecementos, consulta",
     "list-contributors-link": "Créditos",
     "version": "Versión"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "Deberías facer unha copia de seguridade de calquera cambio que fixeches localmente, se queres usalos no futuro.",
     "reset-config-msg-l3": "Seguro que queres continuar?",
     "data-cleared-msg": "Datos eliminados correctamente",
-    "actions-label": "Accións",
-    "copy-config-label": "Copiar configuración",
     "data-copied-msg": "A configuración foi copiada ao portapapeis",
     "reset-config-label": "Restablecer configuración",
     "css-save-btn": "Gardar cambios",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "Pechar sesión",
     "sign-in-tooltip": "Iniciar sesión",
     "sign-in-welcome": "Ola {username}!",
-    "hide": "Ocultar",
-    "open": "Abrir"
+    "hide": "Ocultar"
   },
   "updates": {
     "app-version-note": "Versión de Dashy",
@@ -153,23 +147,11 @@
     "reset-toast": "Eliminadas as cores personalizadas de {theme}"
   },
   "config-editor": {
-    "save-location-label": "Localización de gardado",
-    "location-local-label": "Aplicar localmente",
-    "location-disk-label": "Gardar cambios no ficheiro de configuración",
-    "save-button": "Gardar cambios",
     "preview-button": "Previsualizar cambios",
     "valid-label": "A configuración é válida",
-    "status-success-msg": "Tarefa completada",
-    "status-fail-msg": "Fallou a tarefa",
     "success-msg-disk": "Ficheiro de configuración gardado no disco correctamente",
     "success-msg-local": "Cambios locais gardados correctamente",
-    "success-note-l1": "A aplicación debe reconstruírse automaticamente.",
-    "success-note-l2": "Isto pode levar ata un minuto.",
-    "success-note-l3": "Terás que actualizar a páxina para que se apliquen os cambios.",
-    "error-msg-save-mode": "Selecciona un modo de gardado: Local ou Ficheiro",
     "error-msg-cannot-save": "Produciuse un erro ao gardar a configuración",
-    "error-msg-bad-json": "Erro en JSON, posiblemente malformado",
-    "warning-msg-validation": "Aviso de validación",
     "not-admin-note": "Non podes gardar cambios no disco porque non iniciaches sesión como administrador"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "Para obter máis información, consulta a",
     "intro-docs": "documentación",
     "backup-title-setup": "Facer unha copia de seguridade",
-    "backup-title-update": "Actualizar copia de seguridade",
     "password-label-setup": "Escolle un contrasinal",
     "password-label-update": "Introduce o teu contrasinal",
     "backup-button-setup": "Copia de seguridade",
@@ -195,17 +176,6 @@
     "backup-error-password": "Contrasinal incorrecto. Introduce o teu contrasinal actual.",
     "backup-success-msg": "Completado con éxito",
     "restore-success-msg": "Configuración restaurada con éxito"
-  },
-  "menu": {
-    "open-section-title": "Abrir en",
-    "sametab": "Lapela actual",
-    "newtab": "Nova lapela",
-    "modal": "Diálogo emerxente",
-    "workspace": "Vista do espazo de traballo",
-    "options-section-title": "Opcións",
-    "edit-item": "Editar",
-    "move-item": "Copiar ou mover",
-    "remove-item": "Eliminar"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "Abrir sección",
       "edit-section": "Editar",
       "expand-collapse": "Expandir / Colapsar",
-      "move-section": "Mover a",
       "remove-section": "Eliminar"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": "para evitar consecuencias non desexadas."
     },
     "export": {
-      "export-title": "Exportar configuración",
       "copy-clipboard-btn": "Copiar ao portapapeis",
       "copy-clipboard-tooltip": "Copiar toda a configuración da aplicación ao portapapeis do sistema, en formato YAML",
       "download-file-btn": "Descargar como ficheiro",
@@ -285,7 +253,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Cargando...",
       "show-more": "Expandir detalles",
       "show-less": "Amosar menos",
       "open-link": "Continuar lendo"
@@ -324,13 +291,9 @@
       "good-service-rest": "Bos servizos en todas as outras liñas"
     },
     "synology-download": {
-      "download": "Descargar",
-      "upload": "Subir",
       "downloaded": "Descargado",
       "uploaded": "Subido",
-      "remaining": "Restante",
-      "up": "Arriba",
-      "down": "Abaixo"
+      "remaining": "Restante"
     },
     "gluetun-status": {
       "vpn-ip": "IP da VPN",

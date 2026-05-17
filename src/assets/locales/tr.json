@@ -47,7 +47,6 @@
   },
   "app-info": {
     "title": "Uygulama Bilgisi",
-    "support-dashy-link": "Katkı sayfası",
     "report-bug": "Hata Bildir",
     "report-bug-description": "Bir hata bulduğunuzu düşünüyorsanız, lütfen",
     "report-bug-link": "bir Sorun bildirin",
@@ -63,8 +62,6 @@
     "privacy-and-security-security-policy": "Güvenlik Politikası",
     "license": "Lisans",
     "license-under": "Şu lisans altında:",
-    "licence-third-party": "Üçüncü taraf modüllerin lisansları için lütfen şuraya bakın:",
-    "licence-third-party-link": "Yasal Bilgiler",
     "list-contributors": "Katkıda bulunanların tam listesi ve teşekkürler için şuraya bakın:",
     "list-contributors-link": "Katkıda Bulunanlar",
     "version": "Sürüm"
@@ -90,8 +87,6 @@
     "reset-config-msg-l2": "Gelecekte kullanmak istiyorsanız, önce yerel olarak yaptığınız tüm değişiklikleri yedeklemelisiniz.",
     "reset-config-msg-l3": "Devam etmek istediğinizden emin misiniz?",
     "data-cleared-msg": "Veriler başarıyla temizlendi",
-    "actions-label": "Eylemler",
-    "copy-config-label": "Yapılandırmayı Kopyala",
     "data-copied-msg": "Yapılandırma panoya kopyalandı",
     "reset-config-label": "Yapılandırmayı Sıfırla",
     "css-save-btn": "Değişiklikleri Kaydet",
@@ -125,8 +120,7 @@
     "sign-out-tooltip": "Çıkış Yap",
     "sign-in-tooltip": "Giriş Yap",
     "sign-in-welcome": "Merhaba {username}!",
-    "hide": "Gizle",
-    "open": "Aç"
+    "hide": "Gizle"
   },
   "updates": {
     "app-version-note": "Dashy versiyon",
@@ -154,23 +148,11 @@
     "reset-toast": "{theme} İçin Özel Renkler Kaldırıldı"
   },
   "config-editor": {
-    "save-location-label": "Konumu kaydet",
-    "location-local-label": "Yerel Olarak Uygula",
-    "location-disk-label": "Değişiklikleri Yapılandırma Dosyasına Yaz",
-    "save-button": "Değişiklikleri Kaydet",
     "preview-button": "Değişiklikleri Önizle",
     "valid-label": "Yapılandırma Geçerli",
-    "status-success-msg": "İşlem Tamamlandı",
-    "status-fail-msg": "İşlem Başarısız",
     "success-msg-disk": "Yapılandırma dosyası diske başarıyla yazıldı",
     "success-msg-local": "Yerel değişiklikler başarıyla kaydedildi",
-    "success-note-l1": "Değişikliklerin etkili olması için sayfayı yenilemeniz gerekecek.",
-    "success-note-l2": "",
-    "success-note-l3": "",
-    "error-msg-save-mode": "Lütfen bir Kaydetme Modu seçin: Yerel veya Dosya",
     "error-msg-cannot-save": "Yapılandırma kaydedilirken bir hata oluştu",
-    "error-msg-bad-json": "JSON'da hata, muhtemelen hatalı biçimlendirilmiş",
-    "warning-msg-validation": "Doğrulama Uyarısı",
     "not-admin-note": "Yönetici olarak giriş yapmadığınız için değiştirilenleri diske yazamazsınız."
   },
   "cloud-sync": {
@@ -180,7 +162,6 @@
     "intro-l3": "Daha fazla bilgi için lütfen şuraya bakın:",
     "intro-docs": "belgeler",
     "backup-title-setup": "Yedekleme Yap",
-    "backup-title-update": "Yedeği Güncelle",
     "password-label-setup": "Bir Şifre Seçin",
     "password-label-update": "Şifrenizi Girin",
     "backup-button-setup": "Yedekle",
@@ -196,17 +177,6 @@
     "backup-error-password": "Yanlış şifre. Lütfen mevcut şifrenizi giriniz.",
     "backup-success-msg": "Başarıyla tamamlandı",
     "restore-success-msg": "Yapılandırma Başarıyla Geri Yüklendi"
-  },
-  "menu": {
-    "open-section-title": "Şurada Aç",
-    "sametab": "Mevcut Sekme",
-    "newtab": "Yeni Sekme",
-    "modal": "Açılır Pencere",
-    "workspace": "Çalışma Alanı Görünümü",
-    "options-section-title": "Seçenekler",
-    "edit-item": "Düzenle",
-    "move-item": "Kopyala veya Taşı",
-    "remove-item": "Kaldır"
   },
   "context-menus": {
     "item": {
@@ -227,7 +197,6 @@
       "open-section": "Bölümü Aç",
       "edit-section": "Düzenle",
       "expand-collapse": "Genişlet / Daralt",
-      "move-section": "Şuraya Taşı:",
       "remove-section": "Kaldır"
     }
   },
@@ -278,7 +247,6 @@
       "warning-msg-l3": "istenmeyen sonuçlardan kaçınmak için."
     },
     "export": {
-      "export-title": "Yapılandırmayı Dışarı Aktar",
       "copy-clipboard-btn": "Yapılandırmayı Panoya Kopyala",
       "copy-clipboard-tooltip": "Tüm uygulama yapılandırmasını sistem panosuna YAML biçiminde kopyalayın",
       "download-file-btn": "Dosya Olarak İndir",
@@ -295,7 +263,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Yükleniyor...",
       "show-more": "Ayrıntıları Genişlet",
       "cpu-details": "CPU Detayları",
       "mem-details": "Bellek Detayları",
@@ -336,13 +303,9 @@
       "good-service-rest": "Diğer Hatlarda İyi Hizmet"
     },
     "synology-download": {
-      "download": "İndir",
-      "upload": "Yükle",
       "downloaded": "İndirildi",
       "uploaded": "Yüklendi",
-      "remaining": "Kalan",
-      "up": "Yükleme",
-      "down": "İndirme"
+      "remaining": "Kalan"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

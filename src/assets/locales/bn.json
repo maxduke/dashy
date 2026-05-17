@@ -60,8 +60,6 @@
     "reset-config-msg-l2": "আপনি যদি ভবিষ্যতে সেগুলি ব্যবহার করতে চান তবে প্রথমে স্থানীয়ভাবে আপনার করা যেকোনো পরিবর্তনের ব্যাকআপ নেওয়া উচিত।",
     "reset-config-msg-l3": "আপনি কি নিশ্চিত আপনি সামনে এগুতে চান?",
     "data-cleared-msg": "ডেটা সফলভাবে মুছে ফেলা হয়েছে৷",
-    "actions-label": "ক্রিয়াকলাপ",
-    "copy-config-label": "সজ্জিতকরণ অনুলিপি",
     "data-copied-msg": "কনফিগারেশনটি ক্লিপবোর্ডে অনুলিপি করা হয়েছে",
     "reset-config-label": "সজ্জিতকরণ পুন:স্থাপন",
     "css-save-btn": "পরিবর্তনগুলোর সংরক্ষন",
@@ -118,23 +116,11 @@
     "reset-toast": "{theme}-এর জন্য কাস্টম রং সরানো হয়েছে"
   },
   "config-editor": {
-    "save-location-label": "স্থান সংরক্ষন",
-    "location-local-label": "স্থানীয়ভাবে আবেদন করুন",
-    "location-disk-label": "কনফিগ ফাইলে পরিবর্তন লিখুন",
-    "save-button": "পরিবর্তনগুলোর সংরক্ষন",
     "preview-button": "পূর্বরূপ পরিবর্তন",
     "valid-label": "কনফিগ বৈধ",
-    "status-success-msg": "কাজ সম্পূর্ণ",
-    "status-fail-msg": "কাজ ব্যর্থ হয়েছে৷",
     "success-msg-disk": "কনফিগ ফাইল সফলভাবে ডিস্কে লেখা হয়েছে",
     "success-msg-local": "স্থানীয় পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে৷",
-    "success-note-l1": "অ্যাপটি স্বয়ংক্রিয়ভাবে পুনর্নির্মাণ করা উচিত।",
-    "success-note-l2": "এতে এক মিনিট পর্যন্ত সময় লাগতে পারে।",
-    "success-note-l3": "পরিবর্তনগুলি কার্যকর করার জন্য আপনাকে পৃষ্ঠাটি রিফ্রেশ করতে হবে৷",
-    "error-msg-save-mode": "অনুগ্রহ করে একটি সংরক্ষণ মোড নির্বাচন করুন: স্থানীয় বা ফাইল।",
     "error-msg-cannot-save": "কনফিগার সংরক্ষণ করার সময় একটি ত্রুটি ঘটেছে৷",
-    "error-msg-bad-json": "JSON-এ ত্রুটি, সম্ভবত বিকৃত",
-    "warning-msg-validation": "বৈধতা সতর্কতা",
     "not-admin-note": "আপনি ডিস্কে পরিবর্তিত লিখতে পারবেন না, কারণ আপনি অ্যাডমিন হিসাবে লগ ইন করেননি৷"
   },
   "cloud-sync": {
@@ -143,7 +129,6 @@
     "intro-l2": "All data is fully end-to-end encrypted with AES, using your password as the key.",
     "intro-l3": "আরো তথ্যের জন্য, দেখুন",
     "backup-title-setup": "একটি ব্যাকআপ করুন",
-    "backup-title-update": "ব্যাকআপ আপডেট করুন",
     "password-label-setup": "একটি পাসওয়ার্ড চয়ন করুন",
     "password-label-update": "আপনার পাসওয়ার্ড লিখুন",
     "backup-button-setup": "ব্যাকআপ",
@@ -159,17 +144,6 @@
     "backup-error-password": "ভুল পাসওয়ার্ড। আপনার বর্তমান পাসওয়ার্ড লিখুন।",
     "backup-success-msg": "সফলভাবে সম্পন্ন",
     "restore-success-msg": "কনফিগারেশন সফলভাবে পুনরুদ্ধার করা হয়েছে"
-  },
-  "menu": {
-    "open-section-title": "খুলুন",
-    "sametab": "বর্তমান ট্যাব",
-    "newtab": "নতুন ট্যাব",
-    "modal": "পপ-আপ মডেল",
-    "workspace": "ওয়ার্কস্পেস ভিউ",
-    "options-section-title": "বিকল্প",
-    "edit-item": "সম্পাদনা করুন",
-    "move-item": "অনুলিপি বা সরান",
-    "remove-item": "মুছুন"
   },
   "context-menus": {
     "item": {
@@ -189,7 +163,6 @@
       "open-section": "বিভাগ খুলুন",
       "edit-section": "সম্পাদনা করুন",
       "expand-collapse": "প্রসারিত/সংকোচন করুন",
-      "move-section": "সরান-",
       "remove-section": "মুছুন"
     }
   },
@@ -240,7 +213,6 @@
       "warning-msg-l3": "অনাকাঙ্ক্ষিত পরিণতি এড়াতে।"
     },
     "export": {
-      "export-title": "এক্সপোর্ট কনফিগার",
       "copy-clipboard-btn": "ক্লিপবোর্ডে কপি করুন",
       "copy-clipboard-tooltip": "YAML ফর্ম্যাটে, সিস্টেম ক্লিপবোর্ডে সমস্ত অ্যাপ কনফিগারেশন কপি করুন",
       "download-file-btn": "ফাইল হিসাবে ডাউনলোড করুন",
@@ -249,7 +221,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "লোড হচ্ছে...",
       "show-more": "বিস্তারিত বিবরণ...",
       "show-less": "কম প্রদর্শন",
       "open-link": "পড়া চালিয়ে যান"
@@ -288,13 +259,9 @@
       "good-service-rest": "অন্যান্য সমস্ত লাইনে ভাল পরিষেবা"
     },
     "synology-download": {
-      "download": "ডাউনলোড করুন",
-      "upload": "আপলোড করুন",
       "downloaded": "ডাউনলোড করা হয়েছে",
       "uploaded": "আপলোড করা হয়েছে",
-      "remaining": "অবশিষ্ট",
-      "up": "উপরে",
-      "down": "নিচে"
+      "remaining": "অবশিষ্ট"
     },
     "gluetun-status": {
       "vpn-ip": "ভিপিএন আইপি",

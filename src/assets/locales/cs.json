@@ -52,8 +52,6 @@
     "reset-config-msg-l2": "Všechny změny, které jste vykonali lokálně, byste si měli co nejdříve zálohovat, pokud je chcete použít v budoucnosti.",
     "reset-config-msg-l3": "Opravdu chcete pokračovat?",
     "data-cleared-msg": "Údaje byly úspěšne vymazány",
-    "actions-label": "Akce",
-    "copy-config-label": "Kopírovat konfiguraci",
     "data-copied-msg": "Konfigurace byla zkopírována do schránky",
     "reset-config-label": "Obnovit konfiguraci",
     "css-save-btn": "Uložit změny",
@@ -110,23 +108,11 @@
     "reset-toast": "Vlastní barvy pro {theme} byly odstraněny"
   },
   "config-editor": {
-    "save-location-label": "Uložit umístění",
-    "location-local-label": "Aplikovať lokálně",
-    "location-disk-label": "Zapsat změny do konfiguračního souboru",
-    "save-button": "Uložit změny",
     "preview-button": "Ukázka změn",
     "valid-label": "Konfigurace je platná",
-    "status-success-msg": "Akce dokončena",
-    "status-fail-msg": "Akce selhala",
     "success-msg-disk": "Konfigurační soubor byl úspěšně zapsán na disk",
     "success-msg-local": "Místní změny byly úspěšne uloženy",
-    "success-note-l1": "Aplikace by se měla automaticky obnovit.",
-    "success-note-l2": "Můýe to trvat až minutu.",
-    "success-note-l3": "Aby se změny projevily, budete museť obnovit stránku.",
-    "error-msg-save-mode": "Vyberte režim uložení: Místní/Soubor",
     "error-msg-cannot-save": "Při ukládání konfigurace se vyskytla chyba",
-    "error-msg-bad-json": "Chyba v JSON, možná má nesprávny formát",
-    "warning-msg-validation": "Chyba validace",
     "not-admin-note": "Nemůžete zapisovat změny na disk, protože  nejste přihlášený/á jako správca"
   },
   "cloud-sync": {
@@ -135,7 +121,6 @@
     "intro-l2": "Všechny údaje jsou end-to-end šifrované pomocí AES, pričemž jako klíč se používá Vaše heslo.",
     "intro-l3": "Více informací nájdete na",
     "backup-title-setup": "Vytvořit zálohu",
-    "backup-title-update": "Aktualizovat zálohu",
     "password-label-setup": "Vytvořte heslo pro cloud",
     "password-label-update": "Zadajte heslo pro cloud",
     "backup-button-setup": "Záloha",
@@ -151,17 +136,6 @@
     "backup-error-password": "Nesprávne heslo.",
     "backup-success-msg": "Záloha úspěšně dokončena.",
     "restore-success-msg": "Záloha byla úspěšně obnovena"
-  },
-  "menu": {
-    "open-section-title": "Otevřít v",
-    "sametab": "Aktuální karta",
-    "newtab": "Nová karta",
-    "modal": "Modální okno",
-    "workspace": "Zobrazení pracovního prostoru",
-    "options-section-title": "Možnosti",
-    "edit-item": "Upravit",
-    "move-item": "Kopírovat nebo přesunout",
-    "remove-item": "Odstranit"
   },
   "context-menus": {
     "item": {
@@ -181,7 +155,6 @@
       "open-section": "Otevřená sekce",
       "edit-section": "Upravit",
       "expand-collapse": "Rozbalit / sbaliť",
-      "move-section": "Přesunout do",
       "remove-section": "Odstranit"
     }
   },
@@ -232,7 +205,6 @@
       "warning-msg-l3": "Aby se předešlo neúmyslným následkům."
     },
     "export": {
-      "export-title": "Exportovat konfiguraci",
       "copy-clipboard-btn": "Kopírovať do schránky",
       "copy-clipboard-tooltip": "Kopírovať všechny konfigurace aplikace do systémové schránky ve formátu YAML",
       "download-file-btn": "Stáhnout jako soubor",
@@ -241,7 +213,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Načítání...",
       "show-more": "Rozbalit podrobnosti",
       "show-less": "Zobrazit méně",
       "open-link": "Pokračovať ve čtení"
@@ -280,13 +251,9 @@
       "good-service-rest": "Dobré služby na všech ostatních linkách"
     },
     "synology-download": {
-      "download": "Stáhnout",
-      "upload": "Nahrat",
       "downloaded": "Stáhnuto",
       "uploaded": "Nahráno",
-      "remaining": "Zbývající",
-      "up": "Aktivní",
-      "down": "Neaktivní"
+      "remaining": "Zbývající"
     },
     "gluetun-status": {
       "vpn-ip": "IP VPN",

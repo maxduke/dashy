@@ -47,12 +47,6 @@
   },
   "app-info": {
     "title": "معلومات التطبيق",
-    "error-log": "سجل الأخطاء",
-    "no-errors": "لم يتم اكتشاف أخطاء مؤخراً",
-    "help-support": "المساعدة والدعم",
-    "help-support-description": "للحصول على دعم في تشغيل أو إعداد Dashy، راجع",
-    "help-support-discussions": "المناقشات",
-    "support-dashy-link": "صفحة المساهمات",
     "report-bug": "الإبلاغ عن خطأ",
     "report-bug-description": "إذا كنت تعتقد أنك وجدت خطأ، يرجى",
     "report-bug-link": "فتح Issue",
@@ -68,8 +62,6 @@
     "privacy-and-security-security-policy": "سياسة الأمن",
     "license": "الترخيص",
     "license-under": "مرخص بموجب",
-    "licence-third-party": "لتراخيص الوحدات الخارجية، يرجى الاطلاع على",
-    "licence-third-party-link": "قانوني",
     "list-contributors": "للقائمة الكاملة للمساهمين والشكر، انظر",
     "list-contributors-link": "الاعتمادات",
     "version": "الإصدار"
@@ -95,8 +87,6 @@
     "reset-config-msg-l2": "يجب عليك أولاً الاحتفاظ بنسخة احتياطية من أي تغييرات أجريتها محليًا ، إذا كنت ترغب في استخدامها في المستقبل.",
     "reset-config-msg-l3": "هل أنت متأكد انك تريد المتابعة؟",
     "data-cleared-msg": "تم مسح البيانات بنجاح",
-    "actions-label": "أجراءات",
-    "copy-config-label": "نسخ التكوين",
     "data-copied-msg": "تم نسخ التكوين إلى الحافظة",
     "reset-config-label": "إعادة التهيئة",
     "css-save-btn": "حفظ التغييرات",
@@ -130,8 +120,7 @@
     "sign-out-tooltip": "خروج",
     "sign-in-tooltip": "تسجيل دخول",
     "sign-in-welcome": "مرحبًا {username}!",
-    "hide": "إخفاء",
-    "open": "فتح"
+    "hide": "إخفاء"
   },
   "updates": {
     "app-version-note": "ملاحظة نسخة التطبيق",
@@ -159,23 +148,11 @@
     "reset-toast": "تمت إزالة الألوان المخصصة لـ {theme}"
   },
   "config-editor": {
-    "save-location-label": "حفظ الموقع",
-    "location-local-label": "تطبيق محليا",
-    "location-disk-label": "اكتب التغييرات في ملف التكوين",
-    "save-button": "حفظ التغييرات",
     "preview-button": "معاينة التغييرات",
     "valid-label": "التكوين صالح",
-    "status-success-msg": "اكتملت المهمة",
-    "status-fail-msg": "فشلت المهمة",
     "success-msg-disk": "تمت كتابة ملف التكوين على القرص بنجاح",
     "success-msg-local": "تم حفظ التغييرات المحلية بنجاح",
-    "success-note-l1": "يجب إعادة إنشاء التطبيق تلقائيًا.",
-    "success-note-l2": "قد يستغرق هذا ما يصل إلى دقيقة.",
-    "success-note-l3": "ستحتاج إلى تحديث الصفحة لتصبح التغييرات سارية المفعول.",
-    "error-msg-save-mode": "الرجاء تحديد \"وضع الحفظ\": محلي أو ملف",
     "error-msg-cannot-save": "حدث خطأ أثناء حفظ التكوين",
-    "error-msg-bad-json": "خطأ في JSON ، ربما يكون غير صحيح",
-    "warning-msg-validation": "تحذير التحقق",
     "not-admin-note": "لا يمكنك الكتابة التغيير إلى القرص ، لأنك لم تقم بتسجيل الدخول كمسؤول"
   },
   "cloud-sync": {
@@ -185,7 +162,6 @@
     "intro-l3": "لمزيد من المعلومات ، يرجى الاطلاع على",
     "intro-docs": "الوثائق",
     "backup-title-setup": "أصنع نسخة إحتياطية",
-    "backup-title-update": "تحديث النسخ الاحتياطي",
     "password-label-setup": "اختر كلمة مرور",
     "password-label-update": "ادخل رقمك السري",
     "backup-button-setup": "دعم",
@@ -201,17 +177,6 @@
     "backup-error-password": "كلمة سر خاطئة. الرجاء إدخال كلمة المرور الحالية الخاصة بك.",
     "backup-success-msg": "تم بنجاح",
     "restore-success-msg": "تمت استعادة التكوين بنجاح"
-  },
-  "menu": {
-    "open-section-title": "فتح في",
-    "sametab": "فتح في علامة التبويب الحالية",
-    "newtab": "فتح في علامة تبويب جديدة",
-    "modal": "فتح في Pop-Up Modal",
-    "workspace": "فتح في عرض مساحة العمل",
-    "options-section-title": "خيارات",
-    "edit-item": "تعديل",
-    "move-item": "نسخ أو نقل",
-    "remove-item": "إزالة"
   },
   "context-menus": {
     "item": {
@@ -232,15 +197,8 @@
       "open-section": "فتح القسم",
       "edit-section": "تعديل",
       "expand-collapse": "توسيع / طي",
-      "move-section": "نقل إلى",
       "remove-section": "إزالة"
     }
-  },
-  "footer": {
-    "dev-by": "تطوير بواسطة",
-    "licensed-under": "مرخص بموجب",
-    "get-the": "احصل على",
-    "source-code": "كود المصدر"
   },
   "interactive-editor": {
     "menu": {
@@ -289,7 +247,6 @@
       "warning-msg-l3": "لتجنب العواقب غير المقصودة."
     },
     "export": {
-      "export-title": "تصدير الإعدادات",
       "copy-clipboard-btn": "نسخ إلى الحافظة",
       "copy-clipboard-tooltip": "نسخ جميع إعدادات التطبيق إلى حافظة النظام بتنسيق YAML",
       "download-file-btn": "تحميل كملف",
@@ -306,7 +263,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "جاري التحميل...",
       "show-more": "توسيع التفاصيل",
       "cpu-details": "تفاصيل الـ CPU",
       "mem-details": "تفاصيل الذاكرة (RAM)",
@@ -347,13 +303,9 @@
       "good-service-rest": "خدمة جيدة في جميع الخطوط الأخرى"
     },
     "synology-download": {
-      "download": "تحميل",
-      "upload": "رفع",
       "downloaded": "تم تحميله",
       "uploaded": "تم رفعه",
-      "remaining": "متبقي",
-      "up": "أعلى",
-      "down": "أسفل"
+      "remaining": "متبقي"
     },
     "gluetun-status": {
       "vpn-ip": "عنوان VPN IP",

@@ -127,11 +127,13 @@ export default {
 <style scoped lang="scss">
 
 .language-switcher {
-  height: 100%;
   margin: 0;
   padding: 1rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
   background: var(--config-settings-background);
   color: var(--config-settings-color);
+  position: relative;
   h3.title {
     text-align: center;
   }
@@ -153,8 +155,8 @@ export default {
     position: absolute;
     margin: 1rem auto;
     cursor: default;
-    width: 100%;
     bottom: 0;
+    width: inherit;
   }
   &.mini {
     height: auto;

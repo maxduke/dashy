@@ -52,8 +52,6 @@
     "reset-config-msg-l2": "Dovresti prima eseguire il backup di tutte le modifiche apportate localmente, se desideri utilizzarle in futuro.",
     "reset-config-msg-l3": "Sei sicuro di voler procedere?",
     "data-cleared-msg": "Dati cancellati con successo",
-    "actions-label": "Azioni",
-    "copy-config-label": "Copia configurazione",
     "data-copied-msg": "La configurazione è stata copiata negli appunti",
     "reset-config-label": "Ripristina configurazione",
     "css-save-btn": "Salvare le modifiche",
@@ -110,23 +108,11 @@
     "reset-toast": "Rimossi Colori personalizzati per {theme}"
   },
   "config-editor": {
-    "save-location-label": "Posizione del salvataggio",
-    "location-local-label": "Salvataggio Locale",
-    "location-disk-label": "Salva le modifiche nel file di configurazione",
-    "save-button": "Salvare le modifiche",
     "preview-button": "Preview Changes",
     "valid-label": "La configurazione è valida",
-    "status-success-msg": "Attività completata",
-    "status-fail-msg": "Attività fallita",
     "success-msg-disk": "File di configurazione scritto correttamente su disco",
     "success-msg-local": "Modifiche locali salvate correttamente",
-    "success-note-l1": "L'app dovrebbe ricompilarsi automaticamente.",
-    "success-note-l2": "Questa operazione potrebbe richiedere fino a un minuto.",
-    "success-note-l3": "Sarà necessario aggiornare la pagina affinché le modifiche abbiano effetto.",
-    "error-msg-save-mode": "Seleziona una modalità di salvataggio: Localmente o in un File",
     "error-msg-cannot-save": "Si è verificato un errore durante il salvataggio della configurazione",
-    "error-msg-bad-json": "Errore nella struttura JSON, probabilmente non formattata correttamente",
-    "warning-msg-validation": "Avviso di convalida",
     "not-admin-note": "Non puoi scrivere le modifiche su disco, perché non sei autenticato come amministratore"
   },
   "cloud-sync": {
@@ -135,7 +121,6 @@
     "intro-l2": "Tutti i dati sono completamente crittografati end-to-end con AES, utilizzando la tua password come chiave.",
     "intro-l3": "Per maggiori informazioni, vedere il",
     "backup-title-setup": "Fai un backup",
-    "backup-title-update": "Aggiorna backup",
     "password-label-setup": "Scegli una password",
     "password-label-update": "Inserisci la tua password",
     "backup-button-setup": "Backup",
@@ -151,17 +136,6 @@
     "backup-error-password": "Password errata. Inserisci la tua password attuale.",
     "backup-success-msg": "Completato con successo",
     "restore-success-msg": "Configurazione ripristinata con successo"
-  },
-  "menu": {
-    "open-section-title": "Open In",
-    "sametab": "Tab Attuale",
-    "newtab": "Nuovo Tab",
-    "modal": "Pop-Up",
-    "workspace": "Workspace",
-    "options-section-title": "Opzioni",
-    "edit-item": "Edita",
-    "move-item": "Copia/Sposta",
-    "remove-item": "Rimuovi"
   },
   "context-menus": {
     "item": {
@@ -180,7 +154,6 @@
     "section": {
       "open-section": "Apri Sezione",
       "edit-section": "Edita",
-      "move-section": "Sposta in",
       "remove-section": "Rimuovi"
     }
   },
@@ -228,7 +201,6 @@
       "warning-msg-l3": "per evitare spiacevoli conseguenze."
     },
     "export": {
-      "export-title": "Esporta Configurazione",
       "copy-clipboard-btn": "Copia negli Appunti",
       "copy-clipboard-tooltip": "Copia la configurazione negli appunti, in formato YAML",
       "download-file-btn": "Salva file",
@@ -237,7 +209,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Caricamento...",
       "show-more": "Dettagli",
       "show-less": "Minori dettagli",
       "open-link": "Continua Lettura"

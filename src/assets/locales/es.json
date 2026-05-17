@@ -52,8 +52,6 @@
     "reset-config-msg-l2": "Es recomedable realizar primero una copia de seguridad de los cambios hecho en su configuración local, por si los necesitas usar en el futuro.",
     "reset-config-msg-l3": "¿Estás seguro de que quieres continuar?",
     "data-cleared-msg": "Datos eliminados correctamente",
-    "actions-label": "Acciones",
-    "copy-config-label": "Copiar la Configuración",
     "data-copied-msg": "La configuración ha sido copiada al portapapeles",
     "reset-config-label": "Resetear la Configuración",
     "css-save-btn": "Guardar Cambios",
@@ -110,23 +108,11 @@
     "reset-toast": "Colores personalizados de {theme} borrados"
   },
   "config-editor": {
-    "save-location-label": "Guardar Ubicación",
-    "location-local-label": "Aplicar localmente",
-    "location-disk-label": "Guardar cambion en el fichero de configuración",
-    "save-button": "Guardar Cambios",
     "preview-button": "Previsualizar los cambios",
     "valid-label": "La configuración es válida",
-    "status-success-msg": "Tarea Completada",
-    "status-fail-msg": "La Tarea ha fallado",
     "success-msg-disk": "Fichero de configuración guardado en disco correctamente",
     "success-msg-local": "Los cambios locales se han guardado correctamente",
-    "success-note-l1": "La app se recompilará automáticamente.",
-    "success-note-l2": "Esto puede llevar algo más de un minuto.",
-    "success-note-l3": "Es necesario refrescar la página para que los cambios tengan efecto.",
-    "error-msg-save-mode": "Por favor selecciona un modo de Guardar: Local o Fichero",
     "error-msg-cannot-save": "Se ha producido un error al guardar la configuración",
-    "error-msg-bad-json": "Error en el JSON, probablemente esté mal construído",
-    "warning-msg-validation": "Advertencia de validación",
     "not-admin-note": "No puedes guardar los cambios en el disco, porque no estás conectado como un Administrador"
   },
   "cloud-sync": {
@@ -135,7 +121,6 @@
     "intro-l2": "Todos los datos están cifrados de extremo a extremo con AES, la Contraseña elegida es la clave de cifrado.",
     "intro-l3": "Para más información, por favor consulta",
     "backup-title-setup": "Hacer una copia de seguridad",
-    "backup-title-update": "Restaurar copia de seguridad",
     "password-label-setup": "Selecciona una Contraseña",
     "password-label-update": "Escribe tu Contraseña",
     "backup-button-setup": "Copia de Seguridad",
@@ -151,17 +136,6 @@
     "backup-error-password": "Contraseña incorrecta. Por favor introduce la contraseña.",
     "backup-success-msg": "Completado con éxito",
     "restore-success-msg": "Configuración restaurada con éxito"
-  },
-  "menu": {
-    "open-section-title": "Abrir en",
-    "sametab": "Abrir en la pestaña actual",
-    "newtab": "Abrir en una nueva pestaña",
-    "modal": "Abrir en un Pop-Up",
-    "workspace": "Abrir en el espacio de trabajo",
-    "options-section-title": "Opciones",
-    "edit-item": "Editar",
-    "move-item": "Copiar o Mover",
-    "remove-item": "Eliminar"
   },
   "context-menus": {
     "item": {
@@ -181,7 +155,6 @@
       "open-section": "Abrir la sección",
       "edit-section": "Editar",
       "expand-collapse": "Expandir / Colapsar",
-      "move-section": "Mover a",
       "remove-section": "Eliminar"
     }
   },
@@ -232,7 +205,6 @@
       "warning-msg-l3": "para evitar consecuencias imprevistas."
     },
     "export": {
-      "export-title": "Exportar configuración",
       "copy-clipboard-btn": "Copiar al portapapeles",
       "copy-clipboard-tooltip": "Copiar toda la configuración de la aplicación al portapapeles del sistema, en formato YAML",
       "download-file-btn": "Descargar como archivo",
@@ -241,7 +213,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Cargando...",
       "show-more": "Ampliar detalles",
       "show-less": "Mostrar menos",
       "open-link": "Continuar leyendo"
@@ -280,13 +251,9 @@
       "good-service-rest": "Buen servicio en todas las demás líneas"
     },
     "synology-download": {
-      "download": "Descargar",
-      "upload": "Cargar",
       "downloaded": "Descargado",
       "uploaded": "Cargado",
-      "remaining": "Restante",
-      "up": "Levantado",
-      "down": "Caído"
+      "remaining": "Restante"
     },
     "gluetun-status": {
       "vpn-ip": "IP de la VPN",

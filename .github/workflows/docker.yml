@@ -34,7 +34,7 @@ permissions:
   contents: read
 
 env:
-  DH_IMAGE: ${{ secrets.DOCKER_REPO }}
+  DH_IMAGE: ${{ vars.DOCKER_REPO || 'lissy93/dashy' }}
   GH_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
@@ -45,6 +45,9 @@ jobs:
       contents: read
       packages: write
       security-events: write
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
+      DOCKER_BUILD_RECORD_UPLOAD: "false"
     strategy:
       fail-fast: false
       matrix:
@@ -124,6 +127,7 @@ jobs:
           TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db:2
           TRIVY_JAVA_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-java-db:1
         with:
+          version: v0.70.0
           image-ref: dashy-scan:${{ matrix.arch }}
           severity: CRITICAL
           ignore-unfixed: true
@@ -135,10 +139,19 @@ jobs:
 
       - name: 📤 Upload Trivy SARIF
         if: always() && hashFiles(format('trivy-{0}.sarif', matrix.arch)) != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-${{ matrix.arch }}.sarif
           category: trivy-${{ matrix.arch }}
+
+      - name: 📤 Upload Trivy artifact
+        if: always() && hashFiles(format('trivy-{0}.sarif', matrix.arch)) != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: trivy-${{ matrix.arch }}
+          path: trivy-${{ matrix.arch }}.sarif
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: 🚀 Push by digest
         id: push
@@ -156,9 +169,13 @@ jobs:
             CREATED=${{ steps.timestamp.outputs.iso }}
 
       - name: 🧬 Write digest
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+          DIGESTS_DIR: ${{ runner.temp }}/digests
+          ARCH: ${{ matrix.arch }}
         run: |
-          mkdir -p "${{ runner.temp }}/digests"
-          echo "${{ steps.push.outputs.digest }}" > "${{ runner.temp }}/digests/${{ matrix.arch }}"
+          mkdir -p "$DIGESTS_DIR"
+          echo "$DIGEST" > "$DIGESTS_DIR/$ARCH"
 
       - name: 📤 Upload digest
         uses: actions/upload-artifact@v7
@@ -179,7 +196,7 @@ jobs:
       id-token: write
       attestations: write
     env:
-      HAS_DH: ${{ secrets.DOCKER_USERNAME != '' && secrets.DOCKER_PASSWORD != '' && secrets.DOCKER_REPO != '' }}
+      HAS_DH: ${{ secrets.DOCKER_USERNAME != '' && secrets.DOCKER_PASSWORD != '' }}
       SEMVER_VALUE: ${{ inputs.tag || github.ref_name }}
       SEMVER_ENABLE: ${{ github.event_name == 'push' || inputs.tag != '' }}
       LATEST_ENABLE: ${{ inputs.tag == '' }}
@@ -189,6 +206,14 @@ jobs:
         with:
           path: ${{ runner.temp }}/digests
           pattern: digest-*
+          merge-multiple: true
+
+      - name: 📥 Download Trivy SARIFs
+        uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/trivy
+          pattern: trivy-*
           merge-multiple: true
 
       - name: 🔧 Set up Buildx
@@ -235,8 +260,8 @@ jobs:
           for f in *; do SOURCES+=("${GH_IMAGE}@$(cat "$f")"); done
           docker buildx imagetools create "${TAGS[@]}" "${SOURCES[@]}"
           PRIMARY=$(jq -r --arg img "$GH_IMAGE" \
-            '.tags[] | select(startswith($img + ":"))' \
-            <<< "$DOCKER_METADATA_OUTPUT_JSON" | head -1)
+            '[.tags[] | select(startswith($img + ":"))] | first // empty' \
+            <<< "$DOCKER_METADATA_OUTPUT_JSON")
           DIGEST=$(docker buildx imagetools inspect "$PRIMARY" --format '{{.Manifest.Digest}}')
           echo "primary_tag=$PRIMARY" >> "$GITHUB_OUTPUT"
           echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
@@ -251,7 +276,7 @@ jobs:
 
       - name: 🪪 Attest SBOM
         id: attest_sbom
-        uses: actions/attest-sbom@v4
+        uses: actions/attest@v4
         continue-on-error: true
         with:
           subject-name: ${{ env.GH_IMAGE }}
@@ -270,36 +295,106 @@ jobs:
 
       - name: 📋 Summary
         if: always()
+        continue-on-error: true
         env:
           SBOM_OUTCOME: ${{ steps.attest_sbom.outcome }}
           SBOM_URL: ${{ steps.attest_sbom.outputs.attestation-url }}
           PROV_OUTCOME: ${{ steps.attest_provenance.outcome }}
           PROV_URL: ${{ steps.attest_provenance.outputs.attestation-url }}
           DIGEST: ${{ steps.manifest.outputs.digest }}
+          PRIMARY: ${{ steps.manifest.outputs.primary_tag }}
           TAGS_JSON: ${{ steps.meta.outputs.json }}
+          DIGESTS_DIR: ${{ runner.temp }}/digests
+          TRIVY_DIR: ${{ runner.temp }}/trivy
+        # Behold, some ugly bash, to produce a pretty output (don't read it, just trust)
         run: |
           set -euo pipefail
-          attest() {
-            case "$2" in
+
+          attest_line() {
+            local label="$1" outcome="$2" url="$3"
+            case "$outcome" in
               success)
-                if [ -n "$3" ]; then
-                  echo "- ✅ $1 attested ([view]($3))"
+                if [ -n "$url" ]; then
+                  echo "- ✅ $label attested ([view]($url))"
                 else
-                  echo "- ✅ $1 attested"
+                  echo "- ✅ $label attested"
                 fi ;;
-              failure) echo "- ⚠️ $1 attestation failed (image pushed without attest)" ;;
-              *)       echo "- ⏭️ $1 attestation \`$2\`" ;;
+              failure) echo "- ⚠️ $label attestation failed (image pushed without attest)" ;;
+              *)       echo "- ⏭️ $label attestation \`$outcome\`" ;;
             esac
           }
+
+          trivy_section() {
+            local dir="$1"
+            [ -d "$dir" ] || return 0
+            local found=0
+            local lines=""
+            local arch f n
+            for arch in amd64 arm64 armv7; do
+              f="$dir/trivy-$arch.sarif"
+              [ -f "$f" ] || continue
+              found=1
+              n=$(jq '[.runs[]?.results[]?] | length' "$f" 2>/dev/null || echo 0)
+              [[ "$n" =~ ^[0-9]+$ ]] || n=0
+              if [ "$n" = "0" ]; then
+                lines+="- ✅ \`$arch\` — no fixable CRITICAL CVEs"$'\n'
+              else
+                lines+="- ⚠️ \`$arch\` — $n fixable CRITICAL CVE(s)"$'\n'
+              fi
+            done
+            [ "$found" = "1" ] || return 0
+            echo "## Security Scan"
+            echo ""
+            echo "Trivy (CRITICAL severity, fixable only):"
+            echo ""
+            printf '%s\n' "$lines"
+            echo "---"
+            echo ""
+          }
+
+          arch_section() {
+            local arch="$1"
+            local file="$DIGESTS_DIR/$arch"
+            [ -f "$file" ] || return 0
+            local digest manifest size count
+            digest=$(cat "$file")
+            manifest=$(docker buildx imagetools inspect "${PRIMARY%%:*}@$digest" --raw 2>/dev/null || echo '{}')
+            size=$(jq '[.layers[]?.size // 0] | add // 0' <<< "$manifest")
+            count=$(jq '.layers // [] | length' <<< "$manifest")
+            echo "#### Dashy \`$arch\`"
+            echo ""
+            echo "- **Digest:** \`$digest\`"
+            [ "$size" != "0" ] && echo "- **Size:** $(numfmt --to=iec --suffix=B "$size" 2>/dev/null || echo "$size B")"
+            [ "$count" != "0" ] && echo "- **Layers:** $count"
+            echo ""
+          }
+
+          # Clear auto-generated "Attestation Created" blocks from attest actions.
+          : > "$GITHUB_STEP_SUMMARY"
           {
             if [ -n "$DIGEST" ]; then
-              echo "## 🐳 Docker Image"
+              echo "## Docker Image"
+              echo ""
               echo "**Manifest:** \`$DIGEST\`"
+              echo ""
               echo '```bash'
               jq -r '.tags[] | "docker pull \(.)"' <<< "$TAGS_JSON"
               echo '```'
+              echo ""
+              echo "---"
+              echo ""
             fi
-            echo "## 🪪 Attestations"
-            attest "SBOM" "$SBOM_OUTCOME" "$SBOM_URL"
-            attest "Build provenance" "$PROV_OUTCOME" "$PROV_URL"
+            echo "## Attestations"
+            echo ""
+            attest_line "SBOM" "$SBOM_OUTCOME" "$SBOM_URL"
+            attest_line "Build provenance" "$PROV_OUTCOME" "$PROV_URL"
+            echo ""
+            echo "---"
+            echo ""
+            trivy_section "$TRIVY_DIR"
+            echo "## Build Info"
+            echo ""
+            for arch in amd64 arm64 armv7; do
+              arch_section "$arch"
+            done
           } >> "$GITHUB_STEP_SUMMARY"

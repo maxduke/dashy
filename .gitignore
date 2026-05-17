@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# Dashy config backups
+user-data/config-backups/
+
 # local env files
 .env.local
 .env.*.local

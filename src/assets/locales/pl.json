@@ -50,8 +50,6 @@
     "reset-config-msg-l2": "Zrób kopię zapasową jeśli obecne ustawienia są ważne.",
     "reset-config-msg-l3": "Czy na pewno chcesz kontynuować?",
     "data-cleared-msg": "Dane wyczyszczone pomyślnie",
-    "actions-label": "Akcje",
-    "copy-config-label": "Kopia konfiguracji",
     "data-copied-msg": "Konfiguracja skopiowana do schowka",
     "reset-config-label": "Zresetuj konfigurację",
     "css-save-btn": "Zapisz zmiany",
@@ -107,22 +105,10 @@
     "reset-toast": "Niestandardowe kolory dla {theme} usunięte"
   },
   "config-editor": {
-    "save-location-label": "Lokalizacja zapisu",
-    "location-local-label": "Pamięć podręczna",
-    "location-disk-label": "Plik na dysku",
-    "save-button": "Zapisz",
     "valid-label": "Konfiguracja poprawna",
-    "status-success-msg": "Zadanie ukończone",
-    "status-fail-msg": "Zadanie nie powiodło się",
     "success-msg-disk": "Pomyślnie zapisano na dysku",
     "success-msg-local": "Pomyślnie zapisano w pamięci podręcznej",
-    "success-note-l1": "Aplikacja powinna automatycznie się przebudować.",
-    "success-note-l2": "Może to zająć około minuty.",
-    "success-note-l3": "Będzie konieczne odświeżenie strony",
-    "error-msg-save-mode": "Proszę wybrać pomiędzy pamięcią podręczną lub plikiem na dysku",
     "error-msg-cannot-save": "Wystąpił błąd podczas zapisywania",
-    "error-msg-bad-json": "Błąd w JSON",
-    "warning-msg-validation": "Ostrzeżenie",
     "not-admin-note": "Nie możesz zapisywać na dysku, wymagane uprawnienia administratora"
   },
   "cloud-sync": {
@@ -131,7 +117,6 @@
     "intro-l2": "Wszystkie dane są w pełni zaszyfrowane z wykorzystaniem AES, kluczem będzie podane hasło.",
     "intro-l3": "Aby uzyskać więcej informacji przejdź do",
     "backup-title-setup": "Tworzenie",
-    "backup-title-update": "Zaktualizuj",
     "password-label-setup": "Wybierz hasło",
     "password-label-update": "Wprowadź hasło",
     "backup-button-setup": "Zapisz",
@@ -147,11 +132,5 @@
     "backup-error-password": "Hasło niepoprawne. Proszę wprowadzić aktualne hasło.",
     "backup-success-msg": "zakończono pomyślnie",
     "restore-success-msg": "Przywrócono pomyślnie"
-  },
-  "menu": {
-    "sametab": "Otwórz w tej karcie",
-    "newtab": "Otwórz w nowej karcie",
-    "modal": "Otwórz w oknie modalnym",
-    "workspace": "Otwórz w obszarze roboczym"
   }
 }

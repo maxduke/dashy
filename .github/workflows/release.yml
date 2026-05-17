@@ -5,7 +5,7 @@
 # - Push of any major/minor (X.Y.0) git tag
 # - Manual dispatch with any existing tag (any version)
 
-name: 🚀 Build & Release
+name: 🚀 Release
 
 on:
   push:
@@ -42,10 +42,9 @@ jobs:
           fetch-depth: 0
 
       - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v6 # zizmor: ignore[cache-poisoning]
         with:
           node-version: '20'
-          cache: 'yarn'
 
       - name: 📥 Install dependencies
         run: yarn install --frozen-lockfile --ignore-engines --network-timeout 300000
@@ -119,7 +118,9 @@ jobs:
 
       - name: 📝 Create draft release
         id: release
-        uses: softprops/action-gh-release@v3
+        # Kept over `gh release create` for built-in generate_release_notes,
+        # previous_tag selection, fail_on_unmatched_files, and multi-file upload.
+        uses: softprops/action-gh-release@v3 # zizmor: ignore[superfluous-actions]
         with:
           tag_name: ${{ env.TAG }}
           name: Release ${{ env.TAG }}

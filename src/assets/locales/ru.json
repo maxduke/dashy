@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "Информация о Приложении",
-    "support-dashy-link": "Contributions",
     "report-bug": "Сообщить об ошибке",
     "report-bug-description": "Если вы считаете, что нашли ошибку, пожалуйста",
     "report-bug-link": "сообщите о проблеме",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "Политикой Безопасности",
     "license": "Лицензия",
     "license-under": "Лицензировано под",
-    "licence-third-party": "Лицензии на модули сторонних производителей см.",
-    "licence-third-party-link": "Legal",
     "list-contributors": "Чтобы посмотреть полный список авторов и благодарностей, см.",
     "list-contributors-link": "Credits",
     "version": "Версия"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "Вы должны сначала сделать резервную копию любых изменений, которые вы внесли локально, если вы хотите использовать их в будущем.",
     "reset-config-msg-l3": "Вы уверены, что хотите продолжить?",
     "data-cleared-msg": "Данные успешно очищены",
-    "actions-label": "Действия",
-    "copy-config-label": "Скопировать конфигурацию",
     "data-copied-msg": "Конфиг скопирован в буфер обмена",
     "reset-config-label": "Сбросить конфигурацию",
     "css-save-btn": "Сохранить изменения",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "Выход",
     "sign-in-tooltip": "Авторизоваться",
     "sign-in-welcome": "Здравствуйте, {username}!",
-    "hide": "Скрыть",
-    "open": "Открыть"
+    "hide": "Скрыть"
   },
   "updates": {
     "app-version-note": "Dashy версия",
@@ -153,23 +147,11 @@
     "reset-toast": "Пользовательские цвета для темы {theme} удалены"
   },
   "config-editor": {
-    "save-location-label": "Место сохранения",
-    "location-local-label": "Применить локально",
-    "location-disk-label": "Записать изменения в файл конфигурации на диск",
-    "save-button": "Сохранить изменения",
     "preview-button": "Предпросмотр",
     "valid-label": "Конфигурация верна",
-    "status-success-msg": "Задача завершена",
-    "status-fail-msg": "Задача была провалена",
     "success-msg-disk": "Файл конфигурации успешно записан на диск",
     "success-msg-local": "Локальные изменения успешно сохранены",
-    "success-note-l1": "Приложение должно перестроиться автоматически.",
-    "success-note-l2": "Это может занять до минуты.",
-    "success-note-l3": "Вам нужно будет обновить страницу, чтобы изменения вступили в силу.",
-    "error-msg-save-mode": "Пожалуйста, выберите режим сохранения: локальный или файл",
     "error-msg-cannot-save": "Произошла ошибка при сохранении конфигурации",
-    "error-msg-bad-json": "Ошибка в JSON, возможно, неверный формат",
-    "warning-msg-validation": "Предупреждение валидатора",
     "not-admin-note": "Вы не можете записать измененные на диск, потому что вы не вошли в систему как администратор"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "Для получения дополнительной информации см.",
     "intro-docs": "документацию",
     "backup-title-setup": "Создать резервную копию",
-    "backup-title-update": "Обновить резервную копию",
     "password-label-setup": "Выберите пароль",
     "password-label-update": "Введите ваш пароль",
     "backup-button-setup": "Создать резервную копию",
@@ -195,17 +176,6 @@
     "backup-error-password": "Неверный пароль. Пожалуйста, введите ваш текущий пароль.",
     "backup-success-msg": "Успешно завершено",
     "restore-success-msg": "Конфигурация успешно восстановлена"
-  },
-  "menu": {
-    "open-section-title": "Открыть в",
-    "sametab": "Текущей вкладке",
-    "newtab": "Новой вкладке",
-    "modal": "Всплывающем окне",
-    "workspace": "Рабочей области",
-    "options-section-title": "Настройки",
-    "edit-item": "Редактировать",
-    "move-item": "Скопировать или переместить",
-    "remove-item": "Удалить"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "Открыть секцию",
       "edit-section": "Редактировать",
       "expand-collapse": "Раскрыть / Свернуть",
-      "move-section": "Переместить в",
       "remove-section": "Удалить"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": "для избежания непредвиденных последствий."
     },
     "export": {
-      "export-title": "Экспорт конфигурации",
       "copy-clipboard-btn": "Скопировано в буфер обмена",
       "copy-clipboard-tooltip": "Скопировать всю конфигурацию приложения, в формате YAML",
       "download-file-btn": "Скачать как файл",
@@ -293,7 +261,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Загрузка...",
       "show-more": "Развернуть сведения",
       "cpu-details": "Сведения о ЦПУ",
       "mem-details": "Сведения о памяти",
@@ -334,13 +301,9 @@
       "good-service-rest": "Хорошее обслуживание на всех остальных линиях"
     },
     "synology-download": {
-      "download": "Скачивание",
-      "upload": "Загрузка",
       "downloaded": "Скачано",
       "uploaded": "Загружено",
-      "remaining": "Остаётся",
-      "up": "Вверх",
-      "down": "Вниз"
+      "remaining": "Остаётся"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

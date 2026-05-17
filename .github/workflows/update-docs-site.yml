@@ -1,4 +1,4 @@
-name: 📝 Update Documentation
+name: 📝 Sync Docs
 
 # This will run whenever the /docs directory in master branch is updated,
 # or if the workflow is manually dispatched, plus a sync check on Sun at 03:30 UTC
@@ -12,6 +12,8 @@ on:
     paths:
       - 'docs/**'
 
+permissions:
+  contents: write
 
 # Jobs to be run:
 # 1. Checkout master branch

@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "App Info",
-    "support-dashy-link": "Contributions Seite",
     "report-bug": "Melde einen Fehler",
     "report-bug-description": "Wenn Sie glauben, einen Fehler gefunden zu haben, dann bitte",
     "report-bug-link": "öffne ein Issue",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "Security Policy",
     "license": "Lizenz",
     "license-under": "Lizensiert unter",
-    "licence-third-party": "Für Lizenzen von Drittanbietermodulen, siehe",
-    "licence-third-party-link": "Legal",
     "list-contributors": "Für eine vollstandige Liste aller Beteiligten und Dank, siehe",
     "list-contributors-link": "Credits",
     "version": "Version"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "Sie sollten zuerst alle Änderungen, die Sie lokal vorgenommen haben, sichern, wenn Sie sie in Zukunft wiederverwenden möchten.",
     "reset-config-msg-l3": "Sind Sie sicher, dass Sie fortfahren möchten?",
     "data-cleared-msg": "Daten erfolgreich gelöscht",
-    "actions-label": "Aktionen",
-    "copy-config-label": "Konfiguration kopieren",
     "data-copied-msg": "Konfiguration wurde in die Zwischenablage kopiert",
     "reset-config-label": "Konfiguration zurücksetzen",
     "css-save-btn": "Änderungen speichern",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "Abmelden",
     "sign-in-tooltip": "Anmelden",
     "sign-in-welcome": "Hallo {username}!",
-    "hide": "Verstecke",
-    "open": "Öffne"
+    "hide": "Verstecke"
   },
   "updates": {
     "app-version-note": "Dashy Version",
@@ -153,23 +147,11 @@
     "reset-toast": "Benutzerdefinierte Farben für {theme} wurden entfernt"
   },
   "config-editor": {
-    "save-location-label": "Speicherort",
-    "location-local-label": "Lokal anwenden",
-    "location-disk-label": "Änderungen in die Konfigurationsdatei schreiben",
-    "save-button": "Änderungen speichern",
     "preview-button": "Vorschau der Änderungen",
     "valid-label": "Syntax ist gültig",
-    "status-success-msg": "Aufgabe abgeschlossen",
-    "status-fail-msg": "Aufgabe fehlgeschlagen",
     "success-msg-disk": "Konfigurationsdatei wurde erfolgreich auf die Festplatte geschrieben",
     "success-msg-local": "Lokale Änderungen wurden erfolgreich gespeichert",
-    "success-note-l1": "Die Applikation sollte automatisch re-kompiliert werden.",
-    "success-note-l2": "Dies kann bis zu einer Minute dauern.",
-    "success-note-l3": "Sie müssen die Seite aktualisieren damit die Änderungen wirksam werden.",
-    "error-msg-save-mode": "Bitte wählen Sie einen Speichermodus: Lokal oder Datei",
     "error-msg-cannot-save": "Beim Speichern der Konfiguration ist ein Fehler aufgetreten",
-    "error-msg-bad-json": "Fehler in JSON-Daten, möglicherweise fehlerhafter Syntax",
-    "warning-msg-validation": "Validierungswarnung",
     "not-admin-note": "Änderungen können nicht auf die Festplatte gespeichert werden, da Sie nicht als Administrator angemeldet sind"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "Weitere Informationen finden Sie in der",
     "intro-docs": "Dokumentation",
     "backup-title-setup": "Backup erstellen",
-    "backup-title-update": "Backup aktualisieren",
     "password-label-setup": "Passwort auswählen",
     "password-label-update": "Passwort eingeben",
     "backup-button-setup": "Backup",
@@ -195,17 +176,6 @@
     "backup-error-password": "Falsches Passwort. Bitte geben Sie Ihr aktuelles Passwort ein.",
     "backup-success-msg": "Erfolgreich abgeschlossen",
     "restore-success-msg": "Konfiguration erfolgreich wiederhergestellt"
-  },
-  "menu": {
-    "open-section-title": "Öffne in",
-    "sametab": "Aktueller Tab",
-    "newtab": "Neuer Tab",
-    "modal": "Popup Modal",
-    "workspace": "Arbeitsflächenansicht",
-    "options-section-title": "Optionen",
-    "edit-item": "Bearbeiten",
-    "move-item": "Kopieren oder Verschieben",
-    "remove-item": "Entfernen"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "Sektion öffnen",
       "edit-section": "Bearbeiten",
       "expand-collapse": "Aus- / Einklappen",
-      "move-section": "Verschieben nach",
       "remove-section": "Entfernen"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": "um unbeabsichtigte Folgen zu vermeiden."
     },
     "export": {
-      "export-title": "Konfiguration exportieren",
       "copy-clipboard-btn": "In Zwischenablage kopieren",
       "copy-clipboard-tooltip": "Applikationskonfiguration als YAML in Zwischenablage kopieren",
       "download-file-btn": "Datei herunterladen",
@@ -285,7 +253,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Lade...",
       "show-more": "Details",
       "cpu-details": "Details CPU",
       "mem-details": "Details Arbeitsspeicher",
@@ -326,13 +293,9 @@
       "good-service-rest": "Guter Service auf allen anderen Leitungen"
     },
     "synology-download": {
-      "download": "Download",
-      "upload": "Upload",
       "downloaded": "Heruntergeladen",
       "uploaded": "Hochgeladen",
-      "remaining": "Verbleibend",
-      "up": "Hoch",
-      "down": "Runter"
+      "remaining": "Verbleibend"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

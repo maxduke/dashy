@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "Інформація про програму",
-    "support-dashy-link": "Сторінка внесків",
     "report-bug": "Повідомити про помилку",
     "report-bug-description": "Якщо ви вважаєте, що знайшли помилку, будь ласка",
     "report-bug-link": "повідомте про проблему",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "Політика безпеки",
     "license": "Ліцензія",
     "license-under": "Ліцензія згідно",
-    "licence-third-party": "Ліцензії на сторонні модулі див.",
-    "licence-third-party-link": "Юридична інформація",
     "list-contributors": "Повний список співавторів та подяки див.",
     "list-contributors-link": "Подяки",
     "version": "Версія"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "Ви повинні спочатку створити резервну копію будь-яких змін, які ви внесли локально, якщо ви хочете використовувати їх у майбутньому.",
     "reset-config-msg-l3": "Ви впевнені, що бажаєте продовжити?",
     "data-cleared-msg": "Дані успішно видалено",
-    "actions-label": "Дії",
-    "copy-config-label": "Копіювати налаштування",
     "data-copied-msg": "Налаштування скопійовано до буфера обміну",
     "reset-config-label": "Скинути налаштування",
     "css-save-btn": "Зберегти зміни",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "Вийти",
     "sign-in-tooltip": "Увійти",
     "sign-in-welcome": "Вітаємо {username}!",
-    "hide": "Приховати",
-    "open": "Відкрити"
+    "hide": "Приховати"
   },
   "updates": {
     "app-version-note": "Версія Dashy",
@@ -153,23 +147,11 @@
     "reset-toast": "Видалені користувацькі кольори для {theme}"
   },
   "config-editor": {
-    "save-location-label": "Місце збереження",
-    "location-local-label": "Застосувати локально",
-    "location-disk-label": "Записати зміни до файлу налаштування",
-    "save-button": "Зберегти зміни",
     "preview-button": "Попередній перегляд змін",
     "valid-label": "Налаштування дійсне",
-    "status-success-msg": "Завдання виконано",
-    "status-fail-msg": "Не вдалося виконати завдання",
     "success-msg-disk": "Файл налаштування успішно записаний на диск",
     "success-msg-local": "Локальні зміни успішно збережено",
-    "success-note-l1": "Програма повинна автоматично перебудуватися.",
-    "success-note-l2": "Це може зайняти до хвилини.",
-    "success-note-l3": "Вам потрібно буде оновити сторінку, щоб зміни набули чинності.",
-    "error-msg-save-mode": "Будь ласка, виберіть режим збереження: локальний або файловий",
     "error-msg-cannot-save": "Під час збереження налаштування сталася помилка",
-    "error-msg-bad-json": "Помилка у форматі JSON, можливо, некоректно сформований",
-    "warning-msg-validation": "Попередження про перевірку",
     "not-admin-note": "Ви не можете записати зміни на диск, оскільки ви не увійшли як адміністратор"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "Для отримання додаткової інформації див.",
     "intro-docs": "документи",
     "backup-title-setup": "Створити резервну копію",
-    "backup-title-update": "Оновити резервну копію",
     "password-label-setup": "Оберіть пароль",
     "password-label-update": "Введіть свій пароль",
     "backup-button-setup": "Резервна копія",
@@ -195,17 +176,6 @@
     "backup-error-password": "Неправильний пароль. Будь ласка, введіть поточний пароль.",
     "backup-success-msg": "Успішно завершено",
     "restore-success-msg": "Налаштування успішно відновлено"
-  },
-  "menu": {
-    "open-section-title": "Відкрити в",
-    "sametab": "Поточна вкладка",
-    "newtab": "Нова вкладка",
-    "modal": "Модальне спливаюче вікно",
-    "workspace": "Перегляд робочого простору",
-    "options-section-title": "Параметри",
-    "edit-item": "Редагувати",
-    "move-item": "Копіювати або перемістити",
-    "remove-item": "Видалити"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "Відкрити розділ",
       "edit-section": "Редагувати",
       "expand-collapse": "Розгорнути / Згорнути",
-      "move-section": "Перемістити до",
       "remove-section": "Видалити"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": ", щоб уникнути небажаних наслідків."
     },
     "export": {
-      "export-title": "Експорт налаштування",
       "copy-clipboard-btn": "Копіювати до буфера обміну",
       "copy-clipboard-tooltip": "Скопіювати всі налаштування програми до системного буфера обміну у форматі YAML",
       "download-file-btn": "Завантажити як файл",
@@ -293,7 +261,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Завантаження...",
       "show-more": "Розгорнути детальніше",
       "cpu-details": "Детальніше по ЦПУ",
       "mem-details": "Детальніше по пам'яті",
@@ -334,13 +301,9 @@
       "good-service-rest": "Якісний сервіс на всіх інших лініях"
     },
     "synology-download": {
-      "download": "Завантажити (Download)",
-      "upload": "Вивантажити (Upload)",
       "downloaded": "Завантажено",
       "uploaded": "Вивантажено",
-      "remaining": "Залишилося",
-      "up": "Вгору",
-      "down": "Вниз"
+      "remaining": "Залишилося"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

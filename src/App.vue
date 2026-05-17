@@ -183,17 +183,21 @@ export default {
       }
     },
 
+    /* Case-insensitive lookup that returns the canonical locale code, or undefined */
+    resolveLocale(availibleLocales, userLang) {
+      if (!userLang) return undefined;
+      const target = userLang.toLowerCase();
+      return availibleLocales.find((lang) => lang.toLowerCase() === target);
+    },
+
     /* Auto-detects users language from browser/ os, when not specified */
     autoDetectLanguage(availibleLocales) {
-      const isLangSupported = (languageList, userLang) => languageList
-        .map(lang => lang.toLowerCase()).find((lang) => lang === userLang.toLowerCase());
-
       const usersBorwserLang1 = window.navigator.language || ''; // e.g. en-GB or or ''
       const usersBorwserLang2 = usersBorwserLang1.split('-')[0]; // e.g. en or undefined
-      const usersSpairLangs = window.navigator.languages; // e.g [en, en-GB, en-US]
-      return isLangSupported(availibleLocales, usersBorwserLang1)
-        || isLangSupported(availibleLocales, usersBorwserLang2)
-        || usersSpairLangs.find((spair) => isLangSupported(availibleLocales, spair))
+      const usersSpairLangs = window.navigator.languages || []; // e.g [en, en-GB, en-US]
+      return this.resolveLocale(availibleLocales, usersBorwserLang1)
+        || this.resolveLocale(availibleLocales, usersBorwserLang2)
+        || usersSpairLangs.map((spair) => this.resolveLocale(availibleLocales, spair)).find(Boolean)
         || defaultLanguage;
     },
 
@@ -202,11 +206,9 @@ export default {
       const availibleLocales = this.$i18n.availableLocales; // All available locales
       const usersLang = localStorage[localStorageKeys.LANGUAGE] || this.appConfig.language;
       if (usersLang) {
-        if (availibleLocales.includes(usersLang)) {
-          return usersLang;
-        } else {
-          ErrorHandler(`Unsupported Language: '${usersLang}'`);
-        }
+        const resolved = this.resolveLocale(availibleLocales, usersLang);
+        if (resolved) return resolved;
+        ErrorHandler(`Unsupported Language: '${usersLang}'`);
       }
       return this.autoDetectLanguage(availibleLocales);
     },

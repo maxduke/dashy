@@ -51,21 +51,10 @@
     "copied-toast": "Theme data for {theme} copied t' ye clipboard"
   },
   "config-editor": {
-    "save-location-label": "Save Location",
-    "location-local-label": "Apply Locally",
-    "location-disk-label": "Write Changes to Config File",
-    "save-button": "Save Changes",
     "valid-label": "Config is Valid",
-    "status-success-msg": "Task Complete",
-    "status-fail-msg": "Task Failed",
     "success-msg-disk": "Th' config file written to disk successfully",
     "success-msg-local": "Ye local changes were successfully saved",
-    "success-note-l1": "th' app should rebuild automatically.",
-    "success-note-l2": "This may take up t' a minute.",
-    "success-note-l3": "ye will need t' refresh th' page fer changes t' take effect.",
     "error-msg-cannot-save": "An error occurred savin' config",
-    "error-msg-bad-json": "Error in ye JSON, possibly malformed",
-    "warning-msg-validation": "Validation Warnin' Ahead",
     "not-admin-note": "ye cannot write changed t' disk, because ye be not logged in as an admin"
   },
   "cloud-sync": {
@@ -73,7 +62,6 @@
     "intro-l2": "All data be fully end-t'-end encrypted with AES, usin' yer password as th' key.",
     "intro-l3": "For more info, please see th'",
     "backup-title-setup": "Make ye Backup",
-    "backup-title-update": "Update ye Backup",
     "password-label-setup": "Choose ye Password",
     "password-label-update": "Enter yer Password",
     "backup-id-label": "Yer Backup ID",
@@ -81,11 +69,5 @@
     "backup-missing-password": "Missin'g' Password",
     "backup-error-unknown": "Unable t' process request",
     "backup-error-password": "Incorrect password. Walk the plank! Please enter yer current password."
-  },
-  "menu": {
-    "sametab": "Stay Aboard",
-    "newtab": "Walk the Plank",
-    "modal": "Open in ye Pop-Up Ship",
-    "workspace": "Open on Workspace Deck"
   }
 }

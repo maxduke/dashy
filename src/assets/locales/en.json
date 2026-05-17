@@ -52,7 +52,6 @@
   },
   "app-info": {
     "title": "App Info",
-    "support-dashy-link": "Contributions page",
     "sponsor-heading": "Sponsor Dashy",
     "sponsor-l1-prefix": "Enjoying Dashy? Consider",
     "sponsor-l1-link": "sponsoring me on GitHub",
@@ -74,8 +73,6 @@
     "privacy-and-security-security-policy": "Security Policy",
     "license": "License",
     "license-under": "Licensed under",
-    "licence-third-party": "For licenses for third-party modules, please see",
-    "licence-third-party-link": "Legal",
     "list-contributors": "For the full list of contributors and thanks, see",
     "list-contributors-link": "Credits",
     "version": "Version"
@@ -102,8 +99,6 @@
     "reset-config-msg-l2": "You should first backup any changes you've made locally, if you want to use them in the future.",
     "reset-config-msg-l3": "Are you sure you want to proceed?",
     "data-cleared-msg": "Data cleared successfully",
-    "actions-label": "Actions",
-    "copy-config-label": "Copy Config",
     "data-copied-msg": "Config has been copied to clipboard",
     "reset-config-label": "Reset Config",
     "css-save-btn": "Save Changes",
@@ -162,7 +157,6 @@
     "sign-in-welcome": "Hello {username}!",
     "please-login": "Log in for full access",
     "hide": "Hide",
-    "open": "Open",
     "options-title": "Options",
     "options-tooltip": "Options"
   },
@@ -256,23 +250,11 @@
     "reset-toast": "Custom Colors for {theme} Removed"
   },
   "config-editor": {
-    "save-location-label": "Save Location",
-    "location-local-label": "Apply Locally",
-    "location-disk-label": "Write Changes to Config File",
-    "save-button": "Save Changes",
     "preview-button": "Preview Changes",
     "valid-label": "Config is Valid",
-    "status-success-msg": "Task Complete",
-    "status-fail-msg": "Task Failed",
     "success-msg-disk": "Config file written to disk successfully",
     "success-msg-local": "Local changes saved successfully",
-    "success-note-l1": "You will need to refresh the page for changes to take effect.",
-    "success-note-l2": "",
-    "success-note-l3": "",
-    "error-msg-save-mode": "Please select a Save Mode: Local or File",
     "error-msg-cannot-save": "An error occurred saving config",
-    "error-msg-bad-json": "Error in JSON, possibly malformed",
-    "warning-msg-validation": "Validation Warning",
     "not-admin-note": "You cannot write changes to disk because you are not logged in as an administrator",
     "preview-applied-msg": "Config previewed. Close this modal to see the changes.",
     "reset-confirm-msg": "Discard all unsaved changes and revert to the original config?",
@@ -301,7 +283,6 @@
     "intro-l3": "For more info, please see the",
     "intro-docs": "docs",
     "backup-title-setup": "Make a Backup",
-    "backup-title-update": "Update Backup",
     "password-label-setup": "Choose a Password",
     "password-label-update": "Enter your Password",
     "backup-button-setup": "Backup",
@@ -317,17 +298,6 @@
     "backup-error-password": "Incorrect password. Please enter your current password.",
     "backup-success-msg": "Completed Successfully",
     "restore-success-msg": "Config Restored Successfully"
-  },
-  "menu": {
-    "open-section-title": "Open In",
-    "sametab": "Current Tab",
-    "newtab": "New Tab",
-    "modal": "Pop-Up Modal",
-    "workspace": "Workspace View",
-    "options-section-title": "Options",
-    "edit-item": "Edit",
-    "move-item": "Copy or Move",
-    "remove-item": "Remove"
   },
   "context-menus": {
     "item": {
@@ -348,7 +318,6 @@
       "open-section": "Open Section",
       "edit-section": "Edit",
       "expand-collapse": "Expand / Collapse",
-      "move-section": "Move To",
       "remove-section": "Remove",
       "section-options": "Section Options"
     }
@@ -423,7 +392,6 @@
       "warning-msg-l3": "to avoid unintended consequences."
     },
     "export": {
-      "export-title": "Export Config",
       "copy-clipboard-btn": "Copy to Clipboard",
       "copy-clipboard-tooltip": "Copy all app config to system clipboard, in YAML format",
       "download-file-btn": "Download as File",
@@ -461,7 +429,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Loading...",
       "show-more": "Expand Details",
       "cpu-details": "CPU Details",
       "mem-details": "Memory Details",
@@ -502,13 +469,9 @@
       "good-service-rest": "Good Service on all other Lines"
     },
     "synology-download": {
-      "download": "Download",
-      "upload": "Upload",
       "downloaded": "Downloaded",
       "uploaded": "Uploaded",
-      "remaining": "Remaining",
-      "up": "Up",
-      "down": "Down"
+      "remaining": "Remaining"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

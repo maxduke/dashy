@@ -52,8 +52,6 @@
     "reset-config-msg-l2": "나중에 사용하려면 먼저 로컬에서 변경한 내용을 백업해야 합니다.",
     "reset-config-msg-l3": "계속하시겠습니까?",
     "data-cleared-msg": "데이터 삭제 성공",
-    "actions-label": "동작",
-    "copy-config-label": "설정 복사",
     "data-copied-msg": "설정이 클립보드에 복사되었습니다.",
     "reset-config-label": "설정 초기화",
     "css-save-btn": "변경 사항을 저장",
@@ -110,23 +108,11 @@
     "reset-toast": "C{theme}에 대한 사용자 정의 색상이 제거되었습니다."
   },
   "config-editor": {
-    "save-location-label": "저장 위치",
-    "location-local-label": "로컬로 적용",
-    "location-disk-label": "설정 파일에 변경 사항 쓰기",
-    "save-button": "변경 사항 저장",
     "preview-button": "변경 사항 미리보기",
     "valid-label": "유효한 설정",
-    "status-success-msg": "작업 완료",
-    "status-fail-msg": "작업 실패",
     "success-msg-disk": "설정 파일이 디스크에 성공적으로 저장되었습니다.",
     "success-msg-local": "로컬 변경 사항이 성공적으로 저장되었습니다.",
-    "success-note-l1": "앱이 자동으로 다시 빌드됩니다.",
-    "success-note-l2": "이 작업은 최대 몇 분이 걸릴 수 있습니다.",
-    "success-note-l3": "변경 사항을 적용하려면 페이지를 새로고침해야 합니다.",
-    "error-msg-save-mode": "저장 모드를 선택하세요: 로컬 또는 파일",
     "error-msg-cannot-save": "설정을 저장하는 동안 오류가 발생했습니다.",
-    "error-msg-bad-json": "JSON 오류, 형식이 잘못되었을 수 있습니다.",
-    "warning-msg-validation": "유효성 검증 경고",
     "not-admin-note": "관리자로 로그인하지 않았기 때문에 디스크에 변경 사항을 저장할 수 없습니다."
   },
   "cloud-sync": {
@@ -135,7 +121,6 @@
     "intro-l2": "모든 데이터는 암호를 키로 사용하여 AES로 종단 간 암호화됩니다..",
     "intro-l3": "자세한 내용은",
     "backup-title-setup": "백업 생성하기",
-    "backup-title-update": "백업 업데이트",
     "password-label-setup": "비밀번호 선택",
     "password-label-update": "비밀번호를 입력하세요",
     "backup-button-setup": "백업",
@@ -151,17 +136,6 @@
     "backup-error-password": "잘못된 비밀번호. 비밀번호를 다시 입력하세요.",
     "backup-success-msg": "성공적으로 완료됨",
     "restore-success-msg": "설정이 성공적으로 복원되었습니다."
-  },
-  "menu": {
-    "open-section-title": "열기",
-    "sametab": "현재 탭",
-    "newtab": "새로운 탭",
-    "modal": "팝업 모달",
-    "workspace": "작업 공간 보기",
-    "options-section-title": "옵션",
-    "edit-item": "수정",
-    "move-item": "복사 또는 이동",
-    "remove-item": "제거"
   },
   "context-menus": {
     "item": {
@@ -181,7 +155,6 @@
       "open-section": "섹션 열기",
       "edit-section": "수정",
       "expand-collapse": "펼치기 / 접기",
-      "move-section": "이동",
       "remove-section": "제거"
     }
   },
@@ -232,7 +205,6 @@
       "warning-msg-l3": "의도하지 않은 결과를 피하기 위해."
     },
     "export": {
-      "export-title": "설정 내보내기",
       "copy-clipboard-btn": "클립보드에 복사",
       "copy-clipboard-tooltip": "모든 앱 설정을 YAML 형식으로 시스템 클립보드에 복사",
       "download-file-btn": "파일로 다운로드",
@@ -241,7 +213,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "로딩중...",
       "show-more": "더보기",
       "show-less": "줄이기",
       "open-link": "계속 읽기"
@@ -280,13 +251,9 @@
       "good-service-rest": "다른 모든 노선 원활히 운행 중"
     },
     "synology-download": {
-      "download": "다운로드",
-      "upload": "업로드",
       "downloaded": "다운로드됨",
       "uploaded": "업로드됨",
-      "remaining": "남은 작업",
-      "up": "위로",
-      "down": "아래로"
+      "remaining": "남은 작업"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

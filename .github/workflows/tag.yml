@@ -15,7 +15,7 @@
 # - If no version is provided, increments patch version automatically
 # - Creates and pushes a git tag, then triggers docs site rebuild
 
-name: 🔖 Auto Version & Tag
+name: 🔖 Tag
 
 on:
   workflow_dispatch:
@@ -24,7 +24,9 @@ on:
         description: 'Version to tag (e.g. 4.1.0). Leave blank to auto-increment patch.'
         required: false
         type: string
-  pull_request_target:
+  # Btw, this is a safe and intentional trigger
+  # It only runs once reviewed PR merged, and secrets are scoped
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [closed]
     branches: [master]
 

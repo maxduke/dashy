@@ -1,7 +1,6 @@
 {
   "app-info": {
-    "license": "Licence",
-    "licence-third-party": "For licences for third-party modules, please see"
+    "license": "Licence"
   },
   "theme-maker": {
     "reset-toast": "Custom Colours for {theme} Removed"

@@ -61,7 +61,7 @@ const mount = () => app.mount('#app');
 /* Handle failures of third-party auth initialization */
 const handleAuthFailure = (provider, err) => {
   ErrorHandler(`Failed to authenticate with ${provider}`, err);
-  store.commit(Keys.CRITICAL_ERROR_MSG, `Authentication failed (${provider}). See console for details.`);
+  store.commit(Keys.CRITICAL_ERROR_MSG, `Authentication failed (${provider}).`);
   router.replace({ name: 'login' }).catch(() => {}).finally(mount);
 };
 

@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "Тиркеме жөнүндө маалымат",
-    "support-dashy-link": "Салым кошкондор бети",
     "report-bug": "Ката тууралуу билдирүү",
     "report-bug-description": "Эгер ката таптым деп ойлосоңуз",
     "report-bug-link": "маселе ачуу",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "Коопсуздук саясаты",
     "license": "Лицензия",
     "license-under": "Лицензиясы",
-    "licence-third-party": "Үчүнчү тарап модулдарынын лицензиялары жөнүндө",
-    "licence-third-party-link": "Юридикалык маалымат",
     "list-contributors": "Салым кошкондордун толук тизмеси жана ыраазычылык билдирүү үчүн",
     "list-contributors-link": "Кредиттер",
     "version": "Версия"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "Жергиликтүү өзгөртүүлөрдү келечекте колдонуу үчүн алдын ала камдык көчүрмөсүн сактаңыз.",
     "reset-config-msg-l3": "Улантууну каалайсызбы?",
     "data-cleared-msg": "Дайындар ийгиликтүү тазаланды",
-    "actions-label": "Аракеттер",
-    "copy-config-label": "Конфигурацияны көчүрүү",
     "data-copied-msg": "Конфигурация алмашуу буферине көчүрүлдү",
     "reset-config-label": "Конфигурацияны баштапкы абалга келтирүү",
     "css-save-btn": "Өзгөртүүлөрдү сактоо",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "Чыгуу",
     "sign-in-tooltip": "Кирүү",
     "sign-in-welcome": "Салам, {username}!",
-    "hide": "Жашыруу",
-    "open": "Ачуу"
+    "hide": "Жашыруу"
   },
   "updates": {
     "app-version-note": "Dashy версиясы",
@@ -153,23 +147,11 @@
     "reset-toast": "{theme} темасынын өзгөчө түстөрү өчүрүлдү"
   },
   "config-editor": {
-    "save-location-label": "Сактоо жайгашуусу",
-    "location-local-label": "Жергиликтүү (браузерде)",
-    "location-disk-label": "Дисктеги конфигурация файлына жазуу",
-    "save-button": "Өзгөртүүлөрдү сактоо",
     "preview-button": "Өзгөртүүлөрдү алдын ала көрүү",
     "valid-label": "Конфигурация туура",
-    "status-success-msg": "Тапшырма ийгиликтүү аткарылды",
-    "status-fail-msg": "Тапшырма аткарылган жок",
     "success-msg-disk": "Конфигурация файлы дискке ийгиликтүү жазылды",
     "success-msg-local": "Жергиликтүү өзгөртүүлөр сакталды",
-    "success-note-l1": "Өзгөртүүлөр күчүнө кириши үчүн баракты жаңыртыңыз.",
-    "success-note-l2": "",
-    "success-note-l3": "",
-    "error-msg-save-mode": "Сактоо режимин тандаңыз: Жергиликтүү же Диск",
     "error-msg-cannot-save": "Конфигурацияны сактоодо ката кетти",
-    "error-msg-bad-json": "JSON'до ката, форматы туура эмес болушу мүмкүн",
-    "warning-msg-validation": "Валидация эскертүүсү",
     "not-admin-note": "Дискке жазуу укугу жок, администратор катары кирүү керек"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "Көбүрөөк маалымат алуу үчүн",
     "intro-docs": "документацияны караңыз",
     "backup-title-setup": "Камдык көчүрмө түзүү",
-    "backup-title-update": "Камдык көчүрмөнү жаңыртуу",
     "password-label-setup": "Сырсөз түзүңүз",
     "password-label-update": "Учурдагы сырсөзүңүздү киргизиңиз",
     "backup-button-setup": "Камдык көчүрмө түзүү",
@@ -195,17 +176,6 @@
     "backup-error-password": "Сырсөз туура эмес. Учурдагы сырсөзүңүздү киргизиңиз.",
     "backup-success-msg": "Ийгиликтүү аяктады",
     "restore-success-msg": "Конфигурация ийгиликтүү калыбына келтирилди"
-  },
-  "menu": {
-    "open-section-title": "Ачуу жолу",
-    "sametab": "Учурдагы таб",
-    "newtab": "Жаңы таб",
-    "modal": "Ачылуучу терезе",
-    "workspace": "Жумуш мейкиндиги көрүнүшү",
-    "options-section-title": "Жөндөөлөр",
-    "edit-item": "Түзөтүү",
-    "move-item": "Көчүрүү же жылдыруу",
-    "remove-item": "Өчүрүү"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "Бөлүмдү ачуу",
       "edit-section": "Түзөтүү",
       "expand-collapse": "Жайуу / Жыйноо",
-      "move-section": "Жылдыруу",
       "remove-section": "Өчүрүү"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": "керексиз кесепеттерден качуу үчүн."
     },
     "export": {
-      "export-title": "Конфигурацияны экспорттоо",
       "copy-clipboard-btn": "Алмашуу буферине көчүрүү",
       "copy-clipboard-tooltip": "Конфигурацияны YAML форматында алмашуу буферине көчүрүү",
       "download-file-btn": "Файл катары жүктөө",
@@ -293,7 +261,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Жүктөлүүдө...",
       "show-more": "Көбүрөөк чоо-жай",
       "cpu-details": "Процессор чоо-жайы",
       "mem-details": "Эстутум чоо-жайы",
@@ -334,13 +301,9 @@
       "good-service-rest": "Калган линияларда кызмат жакшы"
     },
     "synology-download": {
-      "download": "Жүктөө",
-      "upload": "Жүктөө (upload)",
       "downloaded": "Жүктөлгөн",
       "uploaded": "Жүктөлгөн (upload)",
-      "remaining": "Калганы",
-      "up": "Өйдө",
-      "down": "Төмөн"
+      "remaining": "Калганы"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP дареги",

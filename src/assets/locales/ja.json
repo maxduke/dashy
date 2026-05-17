@@ -46,7 +46,6 @@
   },
   "app-info": {
     "title": "アプリ情報",
-    "support-dashy-link": "コントリビューションページ",
     "report-bug": "バグの報告",
     "report-bug-description": "バグを発見したと思われる場合は、Issueを立ててください: ",
     "report-bug-link": "Issueを立てる",
@@ -62,8 +61,6 @@
     "privacy-and-security-security-policy": "セキュリティーポリシー",
     "license": "ライセンス",
     "license-under": "Licensed under",
-    "licence-third-party": "サードパーティーモジュールのライセンスは、こちらをご覧ください: ",
-    "licence-third-party-link": "リーガル",
     "list-contributors": "すべてのコントリビューターのリストは、こちらをご覧ください: ",
     "list-contributors-link": "クレジット",
     "version": "バージョン"
@@ -89,8 +86,6 @@
     "reset-config-msg-l2": "後でローカルで行った変更を使用したい場合は、先にバックアップしてください。",
     "reset-config-msg-l3": "続行しますか？",
     "data-cleared-msg": "データは正常にクリアされました",
-    "actions-label": "アクション",
-    "copy-config-label": "設定のコピー",
     "data-copied-msg": "設定がクリップボードにコピーされました",
     "reset-config-label": "設定のリセット",
     "css-save-btn": "変更内容を保存",
@@ -124,8 +119,7 @@
     "sign-out-tooltip": "サインアウト",
     "sign-in-tooltip": "ログイン",
     "sign-in-welcome": "{username}さん、こんにちは!",
-    "hide": "閉じる",
-    "open": "開く"
+    "hide": "閉じる"
   },
   "updates": {
     "app-version-note": "Dashyのバージョン",
@@ -153,23 +147,11 @@
     "reset-toast": "{theme}のカスタムカラーが削除されました"
   },
   "config-editor": {
-    "save-location-label": "保存する場所",
-    "location-local-label": "ローカルで適用",
-    "location-disk-label": "設定ファイルに変更を書き込む",
-    "save-button": "変更内容を保存",
     "preview-button": "変更内容をプレビュー",
     "valid-label": "設定は有効です",
-    "status-success-msg": "タスクが完了しました",
-    "status-fail-msg": "タスクが失敗しました",
     "success-msg-disk": "設定ファイルがディスクに正常に書き込まれました",
     "success-msg-local": "ローカルの変更が正常に保存されました",
-    "success-note-l1": "アプリは自動的に再構築されます。",
-    "success-note-l2": "これには最大1分かかる場合があります。",
-    "success-note-l3": "変更を適用にするには、ページを更新する必要があります。",
-    "error-msg-save-mode": "保存モードを選択してください (ローカルまたはファイル)",
     "error-msg-cannot-save": "設定の保存中にエラーが発生しました",
-    "error-msg-bad-json": "JSONに間違いがあります。形式が間違っているかもしれません",
-    "warning-msg-validation": "バリデーション警告",
     "not-admin-note": "管理者としてログインしていないため、変更をディスクに書き込むことはできません"
   },
   "cloud-sync": {
@@ -179,7 +161,6 @@
     "intro-l3": "詳細については、以下をご覧ください: ",
     "intro-docs": "ドキュメント",
     "backup-title-setup": "バックアップの作成",
-    "backup-title-update": "バックアップの更新",
     "password-label-setup": "パスワード",
     "password-label-update": "パスワードを入力してください",
     "backup-button-setup": "バックアップ",
@@ -195,17 +176,6 @@
     "backup-error-password": "パスワードが正しくありません。現在のパスワードを入力してください。",
     "backup-success-msg": "正常に完了しました",
     "restore-success-msg": "設定が正常に復元されました"
-  },
-  "menu": {
-    "open-section-title": "開く",
-    "sametab": "現在のタブで開く",
-    "newtab": "新しいタブで開く",
-    "modal": "ポップアップモーダルで開く",
-    "workspace": "ワークスペース表示で開く",
-    "options-section-title": "編集",
-    "edit-item": "編集",
-    "move-item": "コピー・移動",
-    "remove-item": "削除"
   },
   "context-menus": {
     "item": {
@@ -225,7 +195,6 @@
       "open-section": "セクションを開く",
       "edit-section": "編集",
       "expand-collapse": "開く / 閉じる",
-      "move-section": "移動",
       "remove-section": "削除"
     }
   },
@@ -276,7 +245,6 @@
       "warning-msg-l3": "を参照し、意図しない結果にならないように注意してください。"
     },
     "export": {
-      "export-title": "設定をエクスポート",
       "copy-clipboard-btn": "クリップボードにコピー",
       "copy-clipboard-tooltip": "すべてのアプリ設定をシステムのクリップボードにYAML形式でコピーします",
       "download-file-btn": "ファイルとしてダウンロード",
@@ -285,7 +253,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "読み込み中...",
       "show-more": "詳細を開く",
       "show-less": "詳細を閉じる",
       "open-link": "続きを読む"

@@ -220,13 +220,12 @@ export default {
     }
   }
   &.orientation-horizontal, &.orientation-vertical, &.single-section-view {
-    @include phone { --content-max-width: 100%; }
-    @include tablet { --content-max-width: 98%; }
-    @include laptop { --content-max-width: 90%; }
-    @include monitor { --content-max-width: 85%; }
-    @include big-screen { --content-max-width: 80%; }
-    @include big-screen-up { --content-max-width: 60%; }
-    max-width: var(--content-max-width, 90%);
+    @include phone { max-width: var(--content-max-width, 100%); }
+    @include tablet { max-width: var(--content-max-width, 98%); }
+    @include laptop { max-width: var(--content-max-width, 90%); }
+    @include monitor { max-width: var(--content-max-width, 85%); }
+    @include big-screen { max-width: var(--content-max-width, 80%); }
+    @include big-screen-up { max-width: var(--content-max-width, 60%); }
   }
 
   /* Specify number of columns, based on screen size or user preference */

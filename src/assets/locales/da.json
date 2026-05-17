@@ -52,8 +52,6 @@
     "reset-config-msg-l2": "Du bør først sikkerhedskopiere eventuelle ændringer, du har foretaget lokalt, hvis du vil bruge dem i fremtiden.",
     "reset-config-msg-l3": "Er du sikker på at du vil fortsætte?",
     "data-cleared-msg": "Data blev succesfuldt ryddet",
-    "actions-label": "Handlinger",
-    "copy-config-label": "Kopiere Config",
     "data-copied-msg": "Konfigurationen er blevet kopieret til clipboard",
     "reset-config-label": "Nulstil konfiguration",
     "css-save-btn": "Gem ændringer",
@@ -110,23 +108,11 @@
     "reset-toast": "Tilpassede farver for {theme} fjernet"
   },
   "config-editor": {
-    "save-location-label": "Lokation for gem",
-    "location-local-label": "Gem lokalt",
-    "location-disk-label": "Skriv ændringer til konfigurationsfil",
-    "save-button": "Gem ændringer",
     "preview-button": "Forhåndsvisning af ændringer",
     "valid-label": "Konfigurationen er gyldig",
-    "status-success-msg": "Opgave fuldført",
-    "status-fail-msg": "Opgave mislykkedes",
     "success-msg-disk": "Konfigurationsfilen er skrevet til disken",
     "success-msg-local": "Lokale ændringer blev gemt",
-    "success-note-l1": "Appen skal genopbygges automatisk.",
-    "success-note-l2": "Dette kan tage op til et minut.",
-    "success-note-l3": "Du skal opdatere siden for at ændringerne træder i kraft.",
-    "error-msg-save-mode": "Vælg venligst en gemtilstand: Lokal eller Fil",
     "error-msg-cannot-save": "Der opstod en fejl under lagring af konfiguration",
-    "error-msg-bad-json": "Fejl i JSON, muligvis forkert udformet",
-    "warning-msg-validation": "Valideringsadvarsel",
     "not-admin-note": "Du kan ikke skrive ændringer til disk, fordi du ikke er logget ind som admin"
   },
   "cloud-sync": {
@@ -135,7 +121,6 @@
     "intro-l2": "Alle data er fuldstændigt end-to-end krypteret med AES, ved at bruge din adgangskode som nøglen.",
     "intro-l3": "For mere information, se venligst",
     "backup-title-setup": "Lav en sikkerhedskopi",
-    "backup-title-update": "Opdater sikkerhedskopiering",
     "password-label-setup": "Vælg et kodeord",
     "password-label-update": "Skriv dit kodeord",
     "backup-button-setup": "Sikkerhedskopiering",
@@ -151,17 +136,6 @@
     "backup-error-password": "Forkert kodeord. Indtast venligst din nuværende adgangskode.",
     "backup-success-msg": "Afsluttet med succes",
     "restore-success-msg": "Konfiguration gendannet med succes"
-  },
-  "menu": {
-    "open-section-title": "Åbn i",
-    "sametab": "Aktuel fane",
-    "newtab": "Ny fane",
-    "modal": "Pop-Up Modal",
-    "workspace": "Arbejdsrumsvisning",
-    "options-section-title": "Muligheder",
-    "edit-item": "Rediger",
-    "move-item": "Kopier eller flyt",
-    "remove-item": "Fjern"
   },
   "context-menus": {
     "item": {
@@ -181,7 +155,6 @@
       "open-section": "Åbn sektion",
       "edit-section": "Rediger",
       "expand-collapse": "Udvid / Skjul",
-      "move-section": "Flytte til",
       "remove-section": "Fjerne"
     }
   },
@@ -232,7 +205,6 @@
       "warning-msg-l3": "for at undgå utilsigtede konsekvenser."
     },
     "export": {
-      "export-title": "Eksporter konfiguration",
       "copy-clipboard-btn": "Kopier til udklipsholder",
       "copy-clipboard-tooltip": "Kopier alle app-konfigurationer til systemets udklipsholder i YAML-format",
       "download-file-btn": "Download som fil",
@@ -241,7 +213,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Indlæser...",
       "show-more": "Udvid detaljer",
       "show-less": "Vis mindre",
       "open-link": "Fortsæt med at læse"
@@ -280,13 +251,9 @@
       "good-service-rest": "God service på alle andre linjer"
     },
     "synology-download": {
-      "download": "Download",
-      "upload": "Upload",
       "downloaded": "Downloaded",
       "uploaded": "Uploaded",
-      "remaining": "Tilbage",
-      "up": "Op",
-      "down": "Ned"
+      "remaining": "Tilbage"
     },
     "gluetun-status": {
       "vpn-ip": "VPN IP",

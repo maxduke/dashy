@@ -38,8 +38,6 @@
     "reset-config-msg-l2": "Maak eerst een backup van de lokale veranderingen, om ze later nog te kunnen gebruiken.",
     "reset-config-msg-l3": "Weet je het zeker?",
     "data-cleared-msg": "Data succesvol verwijderd",
-    "actions-label": "Acties",
-    "copy-config-label": "Kopieer Config",
     "data-copied-msg": "Config is gekopieerd naar het klembord",
     "reset-config-label": "Reset Config",
     "css-save-btn": "Sla Wijzigingen Op",
@@ -85,22 +83,10 @@
     "reset-toast": "Aangepaste Kleuren voor {theme} Verwijderd"
   },
   "config-editor": {
-    "save-location-label": "Sla Locatie Op",
-    "location-local-label": "Pas Lokaal Toe",
-    "location-disk-label": "Sla Veranderingen Op in Config Bestand",
-    "save-button": "Opslaan",
     "valid-label": "Config is Geldig",
-    "status-success-msg": "Taak Voltooid",
-    "status-fail-msg": "Taak Gefaald",
     "success-msg-disk": "Config bestand succesvol opgeslagen",
     "success-msg-local": "Lokale aanpassingen succesvol opgeslagen",
-    "success-note-l1": "De applicatie zou automatisch moeten herbouwen.",
-    "success-note-l2": "Dit duurt maximaal een minuut.",
-    "success-note-l3": "Herlaad de pagina om de veranderingen toe te passen.",
-    "error-msg-save-mode": "Selecteer een Save Mode: Lokaal of Bestand",
-    "error-msg-cannot-save": "Een fout trad op tijdens het opslaan van de config",
-    "error-msg-bad-json": "Fout in JSON, mogelijk ongeldige structuur",
-    "warning-msg-validation": "Validatie Waarschuwing"
+    "error-msg-cannot-save": "Een fout trad op tijdens het opslaan van de config"
   },
   "cloud-sync": {
     "title": "Cloud Backup & Herstel",
@@ -108,7 +94,6 @@
     "intro-l2": "Alle data is volledig end-to-end versleuteld met AES, met je wachtwoord als de sleutel.",
     "intro-l3": "Voor meer informatie, zie",
     "backup-title-setup": "Maak een Backup",
-    "backup-title-update": "Update Backup",
     "password-label-setup": "Kies een Wachtwoord",
     "password-label-update": "Voer Wachtwoord in",
     "backup-button-setup": "Backup",

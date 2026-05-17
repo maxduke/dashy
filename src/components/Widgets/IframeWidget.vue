@@ -2,6 +2,7 @@
 <div class="iframe-widget">
   <iframe
     v-if="frameUrl"
+    :key="updateCount"
     :src="frameUrl"
     :id="frameId"
     title="Iframe Widget"
@@ -27,7 +28,7 @@ export default {
         this.error('Iframe widget expects a URL');
         return null;
       }
-      return `${usersChoice}${this.updatePathParam}`;
+      return usersChoice;
     },
     frameHeight() {
       return this.options.frameHeight;
@@ -36,26 +37,12 @@ export default {
     frameId() {
       return `iframe-${btoa(this.frameUrl || 'empty').substring(0, 16)}`;
     },
-    /* Generate a URL param, to be updated in order to re-fetch image */
-    updatePathParam() {
-      return this.updateCount ? `#dashy-update-${this.updateCount}` : '';
-    },
   },
   methods: {
     /* Refreshes iframe contents, called by parent */
     update() {
       this.startLoading();
-      const iframe = document.getElementById(this.frameId);
-      if (iframe.contentWindow) {
-        try {
-          iframe.contentWindow.location.href = this.frameUrl;
-          iframe.contentWindow.location.reload(true);
-        } catch (e) {
-          this.error('Failed to refresh iframe', e, true);
-        }
-      } else {
-        this.error('Couldn\'t find iframe', null, true);
-      }
+      this.updateCount += 1;
       this.finishLoading();
     },
   },

@@ -47,11 +47,16 @@ export default {
     },
     endpoint() {
       const apiKey = this.parseAsEnvVar(this.options.apiKey);
-      const { city, lat, lon } = this.options;
-      const params = (lat && lon)
-        ? `lat=${lat}&lon=${lon}&appid=${apiKey}&units=${this.units}`
-        : `q=${city}&appid=${apiKey}&units=${this.units}`;
-      return `${widgetApiEndpoints.weather}?${params}`;
+      const { city, cityId, lat, lon } = this.options;
+      let locationParams;
+      if (lat && lon) {
+        locationParams = `lat=${lat}&lon=${lon}`;
+      } else if (cityId) {
+        locationParams = `id=${cityId}`;
+      } else {
+        locationParams = `q=${city}`;
+      }
+      return `${widgetApiEndpoints.weather}?${locationParams}&appid=${apiKey}&units=${this.units}`;
     },
     tempDisplayUnits() {
       switch (this.units) {
@@ -111,8 +116,8 @@ export default {
       const ops = this.options;
       if (!ops.apiKey) this.error('Missing API key for OpenWeatherMap');
 
-      if ((!ops.lat || !ops.lon) && !ops.city) {
-        this.error('A city name or lat + lon is required to fetch weather');
+      if ((!ops.lat || !ops.lon) && !ops.city && !ops.cityId) {
+        this.error('A city name, city ID or lat + lon is required to fetch weather');
       }
 
       if (ops.units && ops.units !== 'metric' && ops.units !== 'imperial') {

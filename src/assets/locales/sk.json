@@ -52,8 +52,6 @@
     "reset-config-msg-l2": "Všetky zmeny, ktoré ste vykonali lokálne, by ste si mali najskôr zálohovať, ak ich chcete použiť v budúcnosti.",
     "reset-config-msg-l3": "Naozaj chcete pokračovať?",
     "data-cleared-msg": "Údaje boli úspešne vymazané",
-    "actions-label": "Akcie",
-    "copy-config-label": "Kopírovať konfig",
     "data-copied-msg": "Konfigurácia bola skopírovaná do schránky",
     "reset-config-label": "Obnoviť konfiguráciu",
     "css-save-btn": "Uložiť zmeny",
@@ -110,23 +108,11 @@
     "reset-toast": "Vlastné farby pre {theme} boli odstránené"
   },
   "config-editor": {
-    "save-location-label": "Uložiť umiestnenie",
-    "location-local-label": "Aplikovať lokálne",
-    "location-disk-label": "Zapíšte zmeny do konfiguračného súboru",
-    "save-button": "Uložiť zmeny",
     "preview-button": "Ukážka zmien",
     "valid-label": "Konfigurácia je platná",
-    "status-success-msg": "Úloha dokončená",
-    "status-fail-msg": "Úloha zlyhala",
     "success-msg-disk": "Konfiguračný súbor bol úspešne zapísaný na disk",
     "success-msg-local": "Miestne zmeny boli úspešne uložené",
-    "success-note-l1": "Aplikácia by sa mala automaticky obnoviť.",
-    "success-note-l2": "Môže to trvať až minútu.",
-    "success-note-l3": "Aby sa zmeny prejavili, budete musieť obnoviť stránku.",
-    "error-msg-save-mode": "Vyberte režim uloženia: Miestny alebo Súbor",
     "error-msg-cannot-save": "Pri ukladaní konfigurácie sa vyskytla chyba",
-    "error-msg-bad-json": "Chyba v JSON, možno má nesprávny formát",
-    "warning-msg-validation": "Upozornenie na validáciu",
     "not-admin-note": "Nemôžete zapisovať zmeneny na disk, pretože nie ste prihlásený ako správca"
   },
   "cloud-sync": {
@@ -135,7 +121,6 @@
     "intro-l2": "Všetky údaje sú úplne end-to-end šifrované pomocou AES, pričom ako kľúč sa používa vaše heslo.",
     "intro-l3": "Viac informácií nájdete na",
     "backup-title-setup": "Vytvoriť zálohu",
-    "backup-title-update": "Aktualizovať zálohu",
     "password-label-setup": "Vyberte si heslo",
     "password-label-update": "Zadajte svoje heslo",
     "backup-button-setup": "Záloha",
@@ -151,17 +136,6 @@
     "backup-error-password": "Nesprávne heslo. Zadajte svoje aktuálne heslo.",
     "backup-success-msg": "Úspešne dokončené",
     "restore-success-msg": "Konfigurácia bola úspešne obnovená"
-  },
-  "menu": {
-    "open-section-title": "Otvoriť v",
-    "sametab": "Aktuálna karta",
-    "newtab": "Nová karta",
-    "modal": "Vyskakovací modal",
-    "workspace": "Zobrazenie pracovného priestoru",
-    "options-section-title": "Možnosti",
-    "edit-item": "Upraviť",
-    "move-item": "Kopírovať alebo presunúť",
-    "remove-item": "Odstrániť"
   },
   "context-menus": {
     "item": {
@@ -181,7 +155,6 @@
       "open-section": "Otvorená sekcia",
       "edit-section": "Upraviť",
       "expand-collapse": "Rozbaliť / zbaliť",
-      "move-section": "Presunúť do",
       "remove-section": "Odstrániť"
     }
   },
@@ -232,7 +205,6 @@
       "warning-msg-l3": "aby sa predišlo neúmyselným následkom."
     },
     "export": {
-      "export-title": "Exportovať konfiguráciu",
       "copy-clipboard-btn": "Kopírovať do schránky",
       "copy-clipboard-tooltip": "Kopírovať všetky konfigurácie aplikácie do systémovej schránky vo formáte YAML",
       "download-file-btn": "Stiahnuť ako súbor",
@@ -241,7 +213,6 @@
   },
   "widgets": {
     "general": {
-      "loading": "Načítavam...",
       "show-more": "Rozbaliť podrobnosti",
       "show-less": "Zobraziť menej",
       "open-link": "Pokračovať v čítaní"
@@ -280,13 +251,9 @@
       "good-service-rest": "Dobré služby na všetkých ostatných linkách"
     },
     "synology-download": {
-      "download": "Stiahnuť",
-      "upload": "Nahrať",
       "downloaded": "Stiahnuté",
       "uploaded": "Nahrané",
-      "remaining": "Zostávajúce",
-      "up": "Aktívne",
-      "down": "Neaktívne"
+      "remaining": "Zostávajúce"
     },
     "gluetun-status": {
       "vpn-ip": "IP VPN",
@@ -301,7 +268,6 @@
     "nextcloud": {
       "active": "active",
       "and": "a",
-      "aplications": "aplikácie",
       "available": "dostupné",
       "away": "Preč",
       "cache-full": "MEDZIPAMÄTE PLNÉ",
