@@ -114,6 +114,7 @@ const COMPAT = {
   'nextcloud-system': 'NextcloudSystem',
   'nextcloud-user': 'NextcloudUser',
   'nextcloud-user-status': 'NextcloudUserStatus',
+  'ntfy-stream': 'NtfyStream',
   'pi-hole-stats': 'PiHoleStats',
   'pi-hole-stats-v6': 'PiHoleStatsV6',
   'pi-hole-top-queries': 'PiHoleTopQueries',
