@@ -1,6 +1,6 @@
 {
   "name": "dashy",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "license": "MIT",
   "main": "server",
   "author": "Alicia Sykes <alicia@omg.lol> (https://aliciasykes.com)",
@@ -34,7 +34,7 @@
     "@jsonforms/vue": "^3.7.0",
     "@jsonforms/vue-vanilla": "^3.7.0",
     "@lezer/highlight": "^1.2.3",
-    "@sentry/vue": "^9.0.0",
+    "@sentry/vue": "^10.53.1",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "crypto-js": "^4.2.0",
