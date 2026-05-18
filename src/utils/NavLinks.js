@@ -13,6 +13,15 @@ export const resolveLinkTarget = (link) => {
   return '_blank';
 };
 
+/* Intercept click to open the link in a separate popup window when configured */
+export const openLink = (link, event) => {
+  if (link && link.target === 'newwindow') {
+    event.preventDefault();
+    const { width, height } = window.screen;
+    window.open(link.path, '_blank', `width=${width},height=${height},noopener,noreferrer`);
+  }
+};
+
 /* Combined list of user-defined nav links + visible sub-pages for the current
  * view. Each entry: { path, title, target? }. Empty list means nothing to show. */
 export const buildAllLinks = (store, route, extraLinks = []) => {

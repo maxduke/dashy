@@ -10,7 +10,7 @@
         :href="link.path" :target="resolveLinkTarget(link)"
         class="nav-link" role="menuitem"
         rel="noopener noreferrer"
-        @click="$emit('close')">
+        @click="onLinkClick(link, $event)">
         {{ link.title }}
       </a>
     </template>
@@ -18,7 +18,9 @@
 </template>
 
 <script>
-import { buildAllLinks, isHttpUrl, resolveLinkTarget } from '@/utils/NavLinks';
+import {
+  buildAllLinks, isHttpUrl, openLink, resolveLinkTarget,
+} from '@/utils/NavLinks';
 
 export default {
   name: 'NavLinksSwitcher',
@@ -30,7 +32,11 @@ export default {
       return buildAllLinks(this.$store, this.$route, nav);
     },
   },
-  methods: { isHttpUrl, resolveLinkTarget },
+  methods: {
+    isHttpUrl,
+    resolveLinkTarget,
+    onLinkClick(link, e) { openLink(link, e); this.$emit('close'); },
+  },
 };
 </script>
 

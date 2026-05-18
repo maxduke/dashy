@@ -27,7 +27,7 @@
           :title="link.title"
           class="nav-item"
           rel="noopener noreferrer"
-          @click="closeIfBurger"
+          @click="onLinkClick(link, $event)"
         >{{ link.title }}</a>
       </template>
     </nav>
@@ -36,7 +36,9 @@
 
 <script>
 import IconBurger from '@/assets/interface-icons/burger-menu.svg';
-import { buildAllLinks, isHttpUrl, resolveLinkTarget } from '@/utils/NavLinks';
+import {
+  buildAllLinks, isHttpUrl, openLink, resolveLinkTarget,
+} from '@/utils/NavLinks';
 
 const MOBILE_QUERY = '(max-width: 599px)';
 
@@ -87,6 +89,7 @@ export default {
       if (!this.$el.contains(e.target)) this.isOpen = false;
     },
     closeIfBurger() { if (this.showBurger) this.isOpen = false; },
+    onLinkClick(link, e) { openLink(link, e); this.closeIfBurger(); },
     isHttpUrl,
     resolveLinkTarget,
   },
