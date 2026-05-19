@@ -280,6 +280,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
   word-break: keep-all;
   overflow: hidden;
   span.text {

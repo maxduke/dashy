@@ -29,6 +29,7 @@ html[data-theme='neomorphic'] {
     &:hover {
       border-radius: 0.35rem;
       box-shadow: 0 4px 30px $hover-shadow;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.19);
       background: $hover-bg;
@@ -59,6 +60,7 @@ html[data-theme='neomorphic'] {
 
   // Minimal view components
   .minimal-section-inner, div.minimal-section-heading {
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(145, 145, 145, 0.45);
     border-bottom: none;
@@ -100,6 +102,7 @@ html[data-theme='neomorphic'] {
   a.config-button, button.config-button {
     border-radius: 0.35rem;
     box-shadow: var(--glass-button-shadow);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.19);
     background: rgba(255, 255, 255, 0.15);
@@ -154,6 +157,7 @@ html[data-theme='neomorphic'] {
   }
 
   .theme-configurator-wrapper, .view-switcher {
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     background: var(--config-settings-background);
     border: 1px solid rgba(255, 255, 255, 0.19);
@@ -161,6 +165,7 @@ html[data-theme='neomorphic'] {
   }
 
   .edit-mode-top-banner {
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     background: #ffffff6b;
     border-bottom: 1px solid black;
@@ -170,10 +175,12 @@ html[data-theme='neomorphic'] {
 
   div.edit-mode-bottom-banner, .add-new-section {
     background: rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(50px);
     backdrop-filter: blur(50px);
   }
 
   .critical-error-wrap {
+    -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     background: #0f0528c4;
   }
