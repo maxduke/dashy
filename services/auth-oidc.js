@@ -12,6 +12,8 @@
  * A present-but-invalid token is always rejected.
  */
 
+const fs = require('fs');
+const yaml = require('js-yaml');
 const { createRemoteJWKSet, jwtVerify } = require('jose');
 
 /* Normalise the OIDC / Keycloak block from conf.yml into a unified shape.
@@ -133,8 +135,28 @@ function createOidcMiddleware(settings) {
   };
 }
 
+/* Prevent unauthenticated access to config, by making stripped version of conf.yml
+ * When auth is configured AND guest access disabled AND user not yet authenticated
+ * Otherwise, returns null, and the parent proceeds to use full config
+ * Has just enough info (the auth config) to initiate the auth process
+*/
+function maybeBootstrapConfig(filePath, opts) {
+  const { isRootConfig, isAuthenticated, guestAccessOn } = opts;
+  // Pass through, if already authenticated / auth not configured
+  if (!isRootConfig || isAuthenticated || guestAccessOn) return null;
+  const full = yaml.load(fs.readFileSync(filePath, 'utf8')) || {};
+  return yaml.dump({
+    appConfig: {
+      auth: full.appConfig?.auth || {},
+      enableServiceWorker: full.appConfig?.enableServiceWorker,
+    },
+    pageInfo: { title: `Login | ${full.pageInfo?.title || 'Dashy'}` },
+  });
+}
+
 module.exports = {
   loadOidcSettings,
   createOidcMiddleware,
   deriveIsAdmin,
+  maybeBootstrapConfig,
 };

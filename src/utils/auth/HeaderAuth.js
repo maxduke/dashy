@@ -32,16 +32,19 @@ class HeaderAuth {
           reject(response.data.errorMsg);
         } else {
           try {
-            this.users.forEach((user) => {
-              if (user.user.toLowerCase() === response.data.user.toLowerCase()) {
-                const strAndUpper = (input) => input.toString().toUpperCase();
-                const sha = strAndUpper(sha256(strAndUpper(user.user) + strAndUpper(user.hash)));
-                document.cookie = `${cookieKeys.AUTH_TOKEN}=${sha};`;
-                localStorage.setItem(localStorageKeys.USERNAME, user.user);
-                InfoHandler(`Successfully signed in as ${response.data.user}`, InfoKeys.AUTH);
-                resolve(response.data.user);
-              }
-            });
+            const match = this.users.find(
+              (user) => user.user.toLowerCase() === response.data.user.toLowerCase(),
+            );
+            if (!match) {
+              reject(Error(`User '${response.data.user}' from upstream proxy was not found in conf.yml. Add an entry under appConfig.auth.users.`));
+              return;
+            }
+            const strAndUpper = (input) => input.toString().toUpperCase();
+            const sha = strAndUpper(sha256(strAndUpper(match.user) + strAndUpper(match.hash)));
+            document.cookie = `${cookieKeys.AUTH_TOKEN}=${sha}; Path=/`;
+            localStorage.setItem(localStorageKeys.USERNAME, match.user);
+            InfoHandler(`Successfully signed in as ${response.data.user}`, InfoKeys.AUTH);
+            resolve(response.data.user);
           } catch (e) {
             ErrorHandler('Error while trying to login using header authentication', e);
             reject(e);

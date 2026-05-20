@@ -156,7 +156,8 @@ router.beforeEach(async (to, from, next) => {
       await store.dispatch(Keys.INITIALIZE_CONFIG, store.state.currentConfigInfo.confId);
       store.commit(Keys.SET_EDIT_MODE, false);
     }
-    if (to.name !== 'login' && !isAuthenticated() && !isOauthCallback()) {
+    if (to.name !== 'login'
+      && !isAuthenticated() && !isOauthCallback() && !isHeaderAuthEnabled()) {
       next({ name: 'login' });
     } else next();
   } catch (e) {

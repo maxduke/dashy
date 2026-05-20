@@ -48,6 +48,7 @@
     "error-no-user-configured": "Authentication is not enabled, or no users have been configured",
     "error-go-home-button": "Go Home",
     "logged-in-guest": "Logged in as Guest, Redirecting...",
+    "authenticated-redirecting": "Authenticated, Redirecting...",
     "error-guest-access": "Guest Access Not Allowed"
   },
   "app-info": {

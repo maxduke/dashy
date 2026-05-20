@@ -30,7 +30,8 @@ const systemInfo = require('./system-info'); // Basic system info, for resource 
 const sslServer = require('./ssl-server'); // TLS-enabled web server
 const corsProxy = require('./cors-proxy'); // Enables API requests to CORS-blocked services
 const getUser = require('./get-user'); // Enables server side user lookup
-const { loadOidcSettings, createOidcMiddleware } = require('./auth-oidc'); // Server-side OIDC/Keycloak token verification
+
+const { loadOidcSettings, createOidcMiddleware, maybeBootstrapConfig } = require('./auth-oidc');
 
 /* Service endpoint URL paths (see also serviceEndpoints in src/utils/config/defaults.js) */
 const ENDPOINTS = {
@@ -178,6 +179,7 @@ const authIsConfigured = Boolean(
   || (process.env.BASIC_AUTH_USERNAME && process.env.BASIC_AUTH_PASSWORD)
   || (initialAuthConfig.enableHeaderAuth && initialAuthConfig.headerAuth),
 );
+const guestAccessOn = Boolean(initialAuthConfig?.enableGuestAccess);
 
 /* Require an authenticated identity on this request. No-op for zero-auth deploys. */
 function requireAuth(req, res, next) {
@@ -276,9 +278,24 @@ const app = express()
     }
   }))
   // Middleware to serve any .yml files in USER_DATA_DIR with optional protection
+  // Note: returns stripped version if auth configured but not yet authenticated
   .get('/*.yml', protectConfig, (req, res) => {
     const ymlFile = req.path.split('/').pop();
     const filePath = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data', ymlFile);
+    if (authIsConfigured) {
+      res.set('Cache-Control', 'private, no-store').set('Vary', 'Authorization');
+      try {
+        const stripped = maybeBootstrapConfig(filePath, {
+          isRootConfig: ymlFile === 'conf.yml',
+          isAuthenticated: Boolean(req.auth),
+          guestAccessOn,
+        });
+        if (stripped) return res.type('text/yaml').send(stripped);
+      } catch (e) {
+        printWarning(`Failed to read or parse ${ymlFile}`, e);
+        return safeEnd(res, errBody('Could not read config'), 500);
+      }
+    }
     res.sendFile(filePath, (err) => {
       if (err) safeEnd(res, errBody(`Could not read ${ymlFile}`), 404);
     });

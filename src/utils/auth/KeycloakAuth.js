@@ -1,6 +1,9 @@
 import ConfigAccumulator from '@/utils/config/ConfigAccumalator';
 import { localStorageKeys } from '@/utils/config/defaults';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
+import getApiAuthHeader from '@/utils/auth/getApiAuthHeader';
+import i18n from '@/utils/i18n';
+import { toast } from '@/utils/Toast';
 
 const getAppConfig = () => {
   const Accumulator = new ConfigAccumulator();
@@ -37,11 +40,19 @@ class KeycloakAuth {
   }
 
   login() {
+    const hadValidToken = Boolean(getApiAuthHeader());
     return new Promise((resolve, reject) => {
       this.keycloakClient.init({ onLoad: 'check-sso', responseMode: 'query' })
         .then((auth) => {
           if (auth) {
             this.storeKeycloakInfo();
+            // We've returned back from Keycloak login, and a fresh token has landed
+            // Validate, then hard redirect home to fetch to (now fully readable) config
+            if (!hadValidToken && getApiAuthHeader()) {
+              toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
+              setTimeout(() => window.location.replace('/'), 500);
+              return undefined;
+            }
             return resolve();
           } else if (isKeycloakGuestAccessEnabled()) {
             // Don't redirect, allow guest access

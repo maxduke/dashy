@@ -2,6 +2,9 @@ import ConfigAccumulator from '@/utils/config/ConfigAccumalator';
 import { localStorageKeys } from '@/utils/config/defaults';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import { statusMsg, statusErrorMsg } from '@/utils/logging/CoolConsole';
+import getApiAuthHeader from '@/utils/auth/getApiAuthHeader';
+import i18n from '@/utils/i18n';
+import { toast } from '@/utils/Toast';
 
 // Session storage config for storing last sign-in attempt
 const SIGNIN_GUARD_KEY = 'dashy.oidc.signin-attempt';
@@ -61,6 +64,7 @@ class OidcAuth {
   }
 
   async login() {
+    const hadValidToken = Boolean(getApiAuthHeader());
     const url = new URL(window.location.href);
     const code = url.searchParams.get('code');
     const providerError = url.searchParams.get('error');
@@ -82,7 +86,8 @@ class OidcAuth {
         );
       }
       this.persistUserInfo(callbackUser);
-      window.location.href = '/';
+      toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
+      setTimeout(() => window.location.replace('/'), 600);
       return;
     }
 
@@ -103,6 +108,11 @@ class OidcAuth {
       }
     } else {
       this.persistUserInfo(user);
+      // Fresh token established this run: reload to refetch config with Bearer
+      if (!hadValidToken && getApiAuthHeader()) {
+        toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
+        setTimeout(() => window.location.replace('/'), 500);
+      }
     }
   }
 
