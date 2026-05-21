@@ -7,7 +7,10 @@
   "home": {
     "no-results": "No Search Results",
     "no-data": "No Data Configured",
-    "no-items-section": "No Items to Show Yet"
+    "no-items-section": "No Items to Show Yet",
+    "session-expired-line1": "Your session has expired",
+    "session-expired-line2": "Re-authenticate to access your dashboard",
+    "sign-in-again": "Sign In Again"
   },
   "search": {
     "search-label": "Search",

@@ -39,7 +39,14 @@
     </div>
     <!-- Show message when there's no data to show -->
     <div v-if="checkIfResults(filteredSections) && !isEditMode" class="no-data">
-      {{searchValue ? $t('home.no-results') : $t('home.no-data')}}
+      <template v-if="isBootstrap">
+        {{ $t('home.session-expired-line1') }}
+        <p class="hint">{{ $t('home.session-expired-line2') }}</p>
+        <Button :click="reAuth">{{ $t('home.sign-in-again') }}</Button>
+      </template>
+      <template v-else>
+        {{ searchValue ? $t('home.no-results') : $t('home.no-data') }}
+      </template>
     </div>
     <!-- Show banner at bottom of screen, for Saving config changes -->
     <EditModeSaveMenu v-if="isEditMode" />
@@ -54,6 +61,7 @@ import HomeMixin from '@/mixins/HomeMixin';
 import SettingsContainer from '@/components/Settings/SettingsContainer.vue';
 import Section from '@/components/LinkItems/Section.vue';
 import NotificationThing from '@/components/Settings/LocalConfigWarning.vue';
+import Button from '@/components/FormElements/Button';
 import {
   makePageName, makeRoutePath, resolveRouteIntent, viewFromPath,
 } from '@/utils/config/ConfigHelpers';
@@ -73,6 +81,7 @@ export default {
     NotificationThing,
     Section,
     BackIcon,
+    Button,
   },
   data: () => ({
     layout: '',
@@ -277,13 +286,20 @@ export default {
 
 /* Custom styles only applied when there is no sections in config */
 .no-data {
-    font-size: 2rem;
-    color: var(--background);
-    background: #ffffffeb;
+    background: var(--background-darker);
+    color: var(--primary);
     width: fit-content;
     margin: 2rem auto;
     padding: 0.5rem 1rem;
     border-radius: var(--curve-factor);
+    border: 1px solid var(--primary);
+    font-size: 1.8rem;
+    text-align: center;
+    .hint {
+      margin: 0.25rem auto;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
 }
 
 /* Settings section, includes search, config and user settings */

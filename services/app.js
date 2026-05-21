@@ -170,6 +170,9 @@ function getAuthMiddleware(authConfig, oidcSettings) {
 const initialAuthConfig = loadAuthConfig();
 const oidcSettings = loadOidcSettings(initialAuthConfig);
 const protectConfig = getAuthMiddleware(initialAuthConfig, oidcSettings);
+const bootstrapAuth = oidcSettings
+  ? createOidcMiddleware(oidcSettings, { permissive: true })
+  : protectConfig;
 
 /* True when any auth method is configured. Used to keep zero-auth deployments
    open (their original behaviour) while closing the gate for everyone else. */
@@ -279,7 +282,7 @@ const app = express()
   }))
   // Middleware to serve any .yml files in USER_DATA_DIR with optional protection
   // Note: returns stripped version if auth configured but not yet authenticated
-  .get('/*.yml', protectConfig, (req, res) => {
+  .get('/*.yml', bootstrapAuth, (req, res) => {
     const ymlFile = req.path.split('/').pop();
     const filePath = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data', ymlFile);
     if (authIsConfigured) {
@@ -294,6 +297,10 @@ const app = express()
       } catch (e) {
         printWarning(`Failed to read or parse ${ymlFile}`, e);
         return safeEnd(res, errBody('Could not read config'), 500);
+      }
+      // Not authenticated, not main conf.yml
+      if (!req.auth && !guestAccessOn) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
       }
     }
     res.sendFile(filePath, (err) => {

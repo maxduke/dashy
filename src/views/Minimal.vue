@@ -56,7 +56,14 @@
         {{searchValue ? $t('home.no-results') : $t('home.no-data')}}
       </div>
     </div>
-    <div v-else class="no-data"> {{ $t('home.no-data') }} </div>
+    <div v-else class="no-data">
+      <template v-if="isBootstrap">
+        {{ $t('home.session-expired-line1') }}
+        <p class="hint">{{ $t('home.session-expired-line2') }}</p>
+        <Button :click="reAuth">{{ $t('home.sign-in-again') }}</Button>
+      </template>
+      <template v-else>{{ $t('home.no-data') }}</template>
+    </div>
   </div>
   <!-- Interactive editor save options bottom banner  -->
   <EditModeSaveMenu v-if="isEditMode" />
@@ -69,6 +76,7 @@ import MinimalHeading from '@/components/MinimalView/MinimalHeading.vue';
 import MinimalSearch from '@/components/MinimalView/MinimalSearch.vue';
 import ConfigLauncher from '@/components/Settings/ConfigLauncher';
 import EditModeSaveMenu from '@/components/InteractiveEditor/EditModeSaveMenu.vue';
+import Button from '@/components/FormElements/Button';
 import { makePageName, resolveRouteIntent } from '@/utils/config/ConfigHelpers';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 
@@ -81,6 +89,7 @@ export default {
     MinimalSearch,
     ConfigLauncher,
     EditModeSaveMenu,
+    Button,
   },
   data: () => ({
     layout: '',

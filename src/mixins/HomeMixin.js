@@ -28,6 +28,10 @@ const HomeMixin = {
     pageId() {
       return this.$store.state.currentConfigInfo?.confId || 'home';
     },
+    /* True when the server returned a stripped bootstrap config (e.g. expired token) */
+    isBootstrap() {
+      return this.$store.state.rootConfig?._bootstrap?.authenticated === false;
+    },
   },
   data: () => ({
     searchValue: '',
@@ -41,6 +45,10 @@ const HomeMixin = {
     this.loadUpConfig();
   },
   methods: {
+    /* Reload to restart the auth flow, when OIDC/Keycloak get bootstrap marker */
+    reAuth() {
+      window.location.reload();
+    },
     /* When page loaded / sub-page changed, initiate config fetch.
      * For ROOT / LEGACY_SECTION intent the store loads the root config
      * for KNOWN the store loads the matching sub-config

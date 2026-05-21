@@ -5,6 +5,7 @@ import { statusMsg, statusErrorMsg } from '@/utils/logging/CoolConsole';
 import getApiAuthHeader from '@/utils/auth/getApiAuthHeader';
 import i18n from '@/utils/i18n';
 import { toast } from '@/utils/Toast';
+import $store from '@/store';
 
 // Session storage config for storing last sign-in attempt
 const SIGNIN_GUARD_KEY = 'dashy.oidc.signin-attempt';
@@ -93,27 +94,40 @@ class OidcAuth {
 
     const user = await this.userManager.getUser();
     if (user === null) {
-      if (!isOidcGuestAccessEnabled()) {
-        // Bail with error, if we've literally just redirected. Prevents loop
-        const lastAttempt = Number(sessionStorage.getItem(SIGNIN_GUARD_KEY)) || 0;
-        if (Date.now() - lastAttempt < SIGNIN_GUARD_THRESHOLD_MS) {
-          sessionStorage.removeItem(SIGNIN_GUARD_KEY);
-          throw new Error(
-            'OIDC sign-in redirect loop detected. Check provider redirect URIs '
-            + 'and that id_token claims include a username.',
-          );
-        }
-        sessionStorage.setItem(SIGNIN_GUARD_KEY, String(Date.now()));
-        await this.userManager.signinRedirect();
-      }
-    } else {
-      this.persistUserInfo(user);
-      // Fresh token established this run: reload to refetch config with Bearer
-      if (!hadValidToken && getApiAuthHeader()) {
-        toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
-        setTimeout(() => window.location.replace('/'), 500);
-      }
+      if (!isOidcGuestAccessEnabled()) await this.redirectToIdp();
+      return;
     }
+
+    // Server returned an unauthenticated bootstrap config
+    // Cached id_token is expired / invalid, wipe it and re-authenticate
+    if ($store.state.rootConfig?._bootstrap?.authenticated === false) {
+      await this.userManager.removeUser();
+      localStorage.removeItem(localStorageKeys.ID_TOKEN);
+      await this.redirectToIdp();
+      return;
+    }
+
+    this.persistUserInfo(user);
+    // Fresh token established this run: reload to refetch config with Bearer
+    if (!hadValidToken && getApiAuthHeader()) {
+      toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
+      setTimeout(() => window.location.replace('/'), 500);
+    }
+  }
+
+  /* Redirect to the IdP for interactive sign-in
+   * If we just tried this, bail with error to prevent loops */
+  async redirectToIdp() {
+    const lastAttempt = Number(sessionStorage.getItem(SIGNIN_GUARD_KEY)) || 0;
+    if (Date.now() - lastAttempt < SIGNIN_GUARD_THRESHOLD_MS) {
+      sessionStorage.removeItem(SIGNIN_GUARD_KEY);
+      throw new Error(
+        'OIDC sign-in redirect loop detected. Check provider redirect URIs '
+        + 'and that id_token claims include a username.',
+      );
+    }
+    sessionStorage.setItem(SIGNIN_GUARD_KEY, String(Date.now()));
+    await this.userManager.signinRedirect();
   }
 
   /* Mirror the OIDC user into the localStorage keys other parts of Dashy read */
