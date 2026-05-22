@@ -37,13 +37,13 @@
       </div>
       <!-- Section item groups -->
       <MinimalSection
-        v-for="(section, index) in sections"
+        v-for="(section, index) in filteredSections"
         :key="makeSectionId(section)"
         :index="index"
         :title="section.name"
         :icon="section.icon || undefined"
         :groupId="makeSectionId(section)"
-        :items="filterTiles(section.items)"
+        :items="section.filteredItems"
         :widgets="section.widgets"
         :displayData="section.displayData || {}"
         :selected="selectedSection === index"
@@ -52,7 +52,7 @@
         @itemClicked="finishedSearching()"
         @change-modal-visibility="updateModalVisibility"
       />
-      <div v-if="checkIfResults()" class="no-data">
+      <div v-if="checkIfResults(filteredSections)" class="no-data">
         {{searchValue ? $t('home.no-results') : $t('home.no-data')}}
       </div>
     </div>
@@ -100,6 +100,16 @@ export default {
     canScrollRight: false,
     tabResizeObserver: null,
   }),
+  computed: {
+    /* Just the items to display, filtered by search term */
+    filteredSections() {
+      const showHidden = this.isEditMode || !!this.searchValue;
+      return (this.sections || []).map((section) => ({
+        ...section,
+        filteredItems: this.filterTiles(section.items, section.name, { showHidden }),
+      }));
+    },
+  },
   watch: {
     searchValue() {
       this.tabbedView = !this.searchValue || this.searchValue.length === 0;
@@ -127,19 +137,6 @@ export default {
     /* Clears input field, once a searched item is opened */
     finishedSearching() {
       if (this.$refs.filterComp) this.$refs.filterComp.clearMinFilterInput();
-    },
-    /* Returns true if there is more than 1 sub-result visible during searching */
-    checkIfResults() {
-      if (!this.sections) return false;
-      else {
-        let itemsFound = true;
-        this.sections.forEach((section) => {
-          if (section.widgets || this.filterTiles(section.items).length > 0) {
-            itemsFound = false;
-          }
-        });
-        return itemsFound;
-      }
     },
     /* Make CSS styles to apply the users custom background image */
     getBackgroundImage() {

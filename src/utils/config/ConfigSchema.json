@@ -412,11 +412,12 @@
               "examples": [
                 "duckduckgo",
                 "google",
-                "whoogle",
+                "brave",
+                "kagi",
+                "perplexity",
+                "uruky",
                 "qwant",
                 "startpage",
-                "searx-bar",
-                "searx-info",
                 "ecosia",
                 "metager",
                 "wikipedia",
@@ -1105,6 +1106,12 @@
                       "type": "boolean",
                       "default": false,
                       "description": "If set to true, item will be visible in the default view but not in the Workspace view sidebar"
+                    },
+                    "hideFromHomepage": {
+                      "title": "Hide from Homepage",
+                      "type": "boolean",
+                      "default": false,
+                      "description": "If set to true, item is hidden from the home and minimal views until matched by a search. Still visible in workspace, edit mode and single-section view"
                     }
                   }
                 },

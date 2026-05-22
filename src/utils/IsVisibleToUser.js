@@ -25,9 +25,9 @@ const determineIntersection = (source = [], target = []) => {
 };
 
 /* Returns false if the displayData of a section/item
-    should not be rendered for the current user/ guest */
-export const isVisibleToUser = (displayData, currentUser) => {
-  const isGuest = isLoggedInAsGuest(); // Check if current user is a guest
+ * says it should not be rendered for current user/guest */
+export const isVisibleToUser = (displayData, currentUser, isGuest) => {
+  if (isGuest === undefined) isGuest = isLoggedInAsGuest();
 
   // Checks if user explicitly has access to a certain section
   const checkVisibility = () => {

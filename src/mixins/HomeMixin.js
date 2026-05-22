@@ -5,7 +5,8 @@
 import Defaults, { localStorageKeys, iconCdns } from '@/utils/config/defaults';
 import Keys from '@/utils/StoreMutations';
 import { searchTiles } from '@/utils/Search';
-import { checkItemVisibility } from '@/utils/CheckItemVisibility';
+import { getCurrentUser, isLoggedInAsGuest } from '@/utils/auth/Auth';
+import { isVisibleToUser } from '@/utils/IsVisibleToUser';
 import { resolveRouteIntent, PAGE_STATUS } from '@/utils/config/ConfigHelpers';
 
 const HomeMixin = {
@@ -87,12 +88,16 @@ const HomeMixin = {
       return (sections && sections.length >= 1) || (localSections && localSections.length >= 1);
     },
     /* Returns only the tiles that match the users search query */
-    filterTiles(allTiles) {
-      if (!allTiles) {
-        return [];
-      }
-      const visibleTiles = allTiles.filter((tile) => checkItemVisibility(tile));
-      return searchTiles(visibleTiles, this.searchValue);
+    filterTiles(allTiles, sectionName, opts = {}) {
+      if (!allTiles) return [];
+      const currentUser = getCurrentUser();
+      const isGuest = isLoggedInAsGuest();
+      const showHidden = !!opts.showHidden;
+      const visibleTiles = allTiles.filter(
+        (tile) => isVisibleToUser(tile.displayData || {}, currentUser, isGuest)
+          && (showHidden || !tile.displayData?.hideFromHomepage),
+      );
+      return searchTiles(visibleTiles, this.searchValue, sectionName || '');
     },
     /* Checks if any sections or items use icons from a given CDN */
     checkIfIconLibraryNeeded(prefix) {
@@ -159,13 +164,6 @@ const HomeMixin = {
         return `background: url('${this.appConfig.backgroundImg}') no-repeat center fixed;background-size:cover;`;
       }
       return '';
-    },
-    /* Extracts the site name from domain, used for the searching functionality */
-    getDomainFromUrl(url) {
-      if (!url) return '';
-      const urlPattern = /^(?:https?:\/\/)?(?:w{3}\.)?([a-z\d.-]+)\.(?:[a-z.]{2,10})(?:[/\w.-]*)*/;
-      const domainPattern = url.match(urlPattern);
-      return domainPattern ? domainPattern[1] : '';
     },
   },
 };

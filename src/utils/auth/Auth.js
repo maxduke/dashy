@@ -8,8 +8,7 @@ import { isOidcEnabled } from '@/utils/auth/OidcAuth';
 /* Uses config accumulator to get and return app config */
 const getAppConfig = () => {
   const Accumulator = new ConfigAccumulator();
-  const config = Accumulator.config();
-  return config.appConfig || {};
+  return Accumulator.appConfig() || {};
 };
 
 /**

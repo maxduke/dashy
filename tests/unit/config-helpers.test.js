@@ -384,4 +384,19 @@ describe('ConfigHelpers - getCustomKeyShortcuts', () => {
     const result = getCustomKeyShortcuts(sections);
     expect(result).toHaveLength(2);
   });
+
+  it('skips sections that have no items array (widgets-only)', () => {
+    const sections = [
+      { name: 'Widgets Only', widgets: [{ type: 'embed' }] },
+      { items: [{ hotkey: 1, url: 'https://a.com' }] },
+    ];
+    expect(getCustomKeyShortcuts(sections)).toEqual([
+      { hotkey: 1, url: 'https://a.com' },
+    ]);
+  });
+
+  it('returns an empty array for null or undefined input', () => {
+    expect(getCustomKeyShortcuts(null)).toEqual([]);
+    expect(getCustomKeyShortcuts(undefined)).toEqual([]);
+  });
 });

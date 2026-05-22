@@ -25,7 +25,6 @@
           :groupId="makeSectionId(section)"
           :items="section.filteredItems"
           :widgets="section.widgets"
-          :searchTerm="searchValue"
           :itemSize="itemSizeBound"
           @itemClicked="finishedSearching()"
           @change-modal-visibility="updateModalVisibility"
@@ -111,9 +110,10 @@ export default {
     /* Return sections with filtered items, that match users search term */
     filteredSections() {
       const sections = this.singleSectionView || this.sections;
+      const showHidden = this.isEditMode || !!this.searchValue || !!this.singleSectionView;
       return sections.map((section) => ({
         ...section,
-        filteredItems: this.filterTiles(section.items, this.searchValue),
+        filteredItems: this.filterTiles(section.items, section.name, { showHidden }),
       }));
     },
     /* Updates layout (when button clicked), and saves in local storage */

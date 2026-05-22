@@ -3,29 +3,31 @@
 /* Tile filtering utility */
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 
-/**
- * Extracts the site name from domain
- * @param {string} url The URL to process
- * @returns {string} The hostname from URL
- */
-const getDomainFromUrl = (url) => {
-  if (!url) return '';
-  const urlPattern = /^(?:https?:\/\/)?(?:w{3}\.)?([a-z\d.-]+)\.(?:[a-z.]{2,10})(?:[/\w.-]*)*/;
-  const domainPattern = urlPattern.exec(url);
-  return domainPattern ? domainPattern[1] : '';
+/* Normalize a string for case/punctuation-insensitive matching */
+const NORMALIZE_RE = /[^\w\s\p{Alpha}]/giu;
+const normalize = (input) => (input == null ? '' : input.toString().toLowerCase().replace(NORMALIZE_RE, ''));
+
+/* Per-tile cache of the concatenated searchable text */
+const haystackCache = new WeakMap();
+
+const buildHaystack = (tile) => {
+  const {
+    title, description, provider, url, tags, subItems,
+  } = tile;
+  const tagsStr = Array.isArray(tags) ? tags.join(' ') : (tags || '');
+  const subText = Array.isArray(subItems)
+    ? subItems.map((s) => `${s.title || ''} ${s.url || ''}`).join(' ')
+    : '';
+  return normalize(`${title || ''} ${provider || ''} ${description || ''} ${tagsStr} ${url || ''} ${subText}`);
 };
 
-/**
- * Compares search term to a given data attribute
- * Ignores case, special characters and order
- * @param {string or other} compareStr The value to compare to
- * @param {string} searchStr The users search term
- * @returns {boolean} true if a match, otherwise false
- */
-const filterHelper = (compareStr, searchStr) => {
-  if (!compareStr) return false;
-  const process = (input) => input?.toString().toLowerCase().replace(/[^\w\s\p{Alpha}]/giu, '');
-  return process(searchStr).split(/\s/).every(word => process(compareStr).includes(word));
+const getHaystack = (tile) => {
+  let h = haystackCache.get(tile);
+  if (h === undefined) {
+    h = buildHaystack(tile);
+    haystackCache.set(tile, h);
+  }
+  return h;
 };
 
 /**
@@ -36,26 +38,27 @@ const filterHelper = (compareStr, searchStr) => {
  * @param {string} searchTerm The users search term
  * @returns A filtered array of tiles
  */
-export const searchTiles = (allTiles, searchTerm) => {
-  if (!searchTerm) return allTiles; // If no search term, then return all
-  if (!allTiles) return []; // If no data, then skip
+export const searchTiles = (allTiles, searchTerm, extraHaystack = '') => {
+  if (!searchTerm) return allTiles;
+  if (!allTiles) return [];
+  const words = normalize(searchTerm).split(/\s+/).filter(Boolean);
+  if (!words.length) return allTiles;
+  const extra = normalize(extraHaystack);
   return allTiles.filter((tile) => {
-    const {
-      title, description, provider, url, tags,
-    } = tile;
-    return filterHelper(title, searchTerm)
-      || filterHelper(provider, searchTerm)
-      || filterHelper(description, searchTerm)
-      || filterHelper(tags, searchTerm)
-      || filterHelper(getDomainFromUrl(url), searchTerm);
+    const haystack = getHaystack(tile);
+    return words.every((word) => haystack.includes(word) || extra.includes(word));
   });
 };
 
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const sortedBangs = (bangList) => Object.keys(bangList || {}).sort((a, b) => b.length - a.length);
+const bangPattern = (bang, flags = '') => new RegExp(`(^|\\s)${escapeRegex(bang)}(?=\\s|$)`, flags);
+
 /* From a list of search bangs, return the URL associated with it */
 export const getSearchEngineFromBang = (searchQuery, bangList) => {
-  const bangNames = Object.keys(bangList);
-  const foundBang = bangNames.find((bang) => searchQuery.includes(bang));
-  return bangList[foundBang];
+  if (!bangList) return undefined;
+  const found = sortedBangs(bangList).find((bang) => bangPattern(bang).test(searchQuery));
+  return bangList[found];
 };
 
 /* For a given search engine key, return the corresponding URL, or throw error */
@@ -71,10 +74,17 @@ export const findUrlForSearchEngine = (searchEngine, availableSearchEngines) => 
   return undefined;
 };
 
-/* Removes all known bangs from a search query */
-export const stripBangs = (searchQuery, bangList) => {
-  const bangNames = Object.keys(bangList || {});
-  let q = searchQuery;
-  bangNames.forEach((bang) => { q = q.replace(bang, ''); });
-  return q.trim();
+/* Removes all known bangs from a search query, leaving the actual terms */
+export const stripBangs = (searchQuery, bangList) => sortedBangs(bangList)
+  .reduce((q, bang) => q.replace(bangPattern(bang, 'g'), '$1'), searchQuery)
+  .replace(/\s+/g, ' ')
+  .trim();
+
+/* Check if a given input looks like a URL (to open directly on enter, if configured) */
+export const isUrlLike = (input) => {
+  const s = (input || '').trim();
+  if (!s || /\s/.test(s)) return false;
+  if (/^https?:\/\//i.test(s)) return true;
+  if (/^localhost(:\d+)?(\/\S*)?$/i.test(s)) return true;
+  return /^[\w-]+(\.[\w-]+)*(:\d+)?(\/\S*)?$/.test(s) && /[.:/]/.test(s);
 };

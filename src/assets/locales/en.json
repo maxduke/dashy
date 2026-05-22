@@ -17,7 +17,8 @@
     "search-placeholder": "Start typing to filter",
     "clear-search-tooltip": "Clear Search",
     "enter-to-search-web": "Press enter to search the web",
-    "enter-to-open-url": "Press enter to open URL"
+    "enter-to-open-url": "Press enter to open URL",
+    "enter-to-launch-first": "Press enter to launch first match"
   },
   "splash-screen": {
     "loading": "Loading"

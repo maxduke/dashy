@@ -257,14 +257,14 @@ const defaults = {
     // Common
     duckduckgo: 'https://duckduckgo.com/?q=',
     google: 'https://google.com/search?q=',
-    whoogle: 'https://whoogle.sdf.org/search?q=',
+    brave: 'https://search.brave.com/search?q=',
+    kagi: 'https://kagi.com/search?q=',
     qwant: 'https://www.qwant.com/?q=',
     startpage: 'https://www.startpage.com/do/search?query=',
     // Niche
-    'searx-bar': 'https://searx.bar/search?q=',
-    'searx-info': 'https://searx.info/search?q=',
+    perplexity: 'https://www.perplexity.ai/search?q=',
+    uruky: 'https://uruky.com/search?q=',
     'searx-tiekoetter': 'https://searx.tiekoetter.com/search?q=',
-    'searx-bissisoft': 'https://searx.bissisoft.com/search?q=',
     ecosia: 'https://www.ecosia.org/search?q=',
     metager: 'https://metager.org/meta/meta.ger3?eingabe=',
     swisscows: 'https://swisscows.com/web?query=',

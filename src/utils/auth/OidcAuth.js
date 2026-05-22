@@ -13,8 +13,7 @@ const SIGNIN_GUARD_THRESHOLD_MS = 5 * 1000;
 
 const getAppConfig = () => {
   const Accumulator = new ConfigAccumulator();
-  const config = Accumulator.config();
-  return config.appConfig || {};
+  return Accumulator.appConfig() || {};
 };
 
 const isOidcGuestAccessEnabled = () => {

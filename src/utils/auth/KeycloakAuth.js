@@ -7,8 +7,7 @@ import { toast } from '@/utils/Toast';
 
 const getAppConfig = () => {
   const Accumulator = new ConfigAccumulator();
-  const config = Accumulator.config();
-  return config.appConfig || {};
+  return Accumulator.appConfig() || {};
 };
 
 const isKeycloakGuestAccessEnabled = () => {
