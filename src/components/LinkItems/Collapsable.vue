@@ -20,8 +20,9 @@
         v-tooltip="toggleTooltip()" :aria-label="$t('context-menus.section.expand-collapse')">
         <span class="arrow" aria-hidden="true"></span>
       </label>
-      <Icon v-if="icon" :icon="icon" size="small" :url="title" class="section-icon" />
-      <h3>{{ title }}</h3>
+      <Icon v-if="icon" :icon="icon" size="small" :url="title" class="section-icon"
+        @click="toggle" />
+      <h3 @click="toggle">{{ title }}</h3>
       <OpenIcon v-if="title" @click.prevent.stop="navigateToSection"
         v-tooltip="openTooltip()" class="header-action" />
       <EditModeIcon v-if="isEditMode" @click="openEditModal"
@@ -231,8 +232,8 @@ export default {
     padding: 0.25rem;
     color: var(--item-group-heading-text-color);
     border-radius: var(--curve-factor);
-    h3 { flex: 1; margin: 0; padding: 0; }
-    .section-icon { margin-right: 0.5rem; }
+    h3 { flex: 1; margin: 0; padding: 0; cursor: pointer; }
+    .section-icon { margin-right: 0.5rem; cursor: pointer; }
   }
 
   .collapse-toggle {
