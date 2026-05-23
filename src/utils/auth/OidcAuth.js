@@ -11,6 +11,17 @@ import $store from '@/store';
 const SIGNIN_GUARD_KEY = 'dashy.oidc.signin-attempt';
 const SIGNIN_GUARD_THRESHOLD_MS = 5 * 1000;
 
+/* Return a same-origin path to navigate back to after IdP, or just `/` */
+const safeReturnTo = (raw) => {
+  if (typeof raw !== 'string') return '/';
+  try {
+    const u = new URL(raw, window.location.origin);
+    return u.origin === window.location.origin ? u.pathname + u.search + u.hash : '/';
+  } catch {
+    return '/';
+  }
+};
+
 const getAppConfig = () => {
   const Accumulator = new ConfigAccumulator();
   return Accumulator.appConfig() || {};
@@ -61,6 +72,10 @@ class OidcAuth {
     this.userManager.events.addUserSignedOut(() => {
       statusMsg('OIDC', 'User signed out at provider');
     });
+    // Mirror token renewals into localStorage so Bearer attachment stays fresh
+    this.userManager.events.addUserLoaded((user) => {
+      if (user?.id_token) localStorage.setItem(localStorageKeys.ID_TOKEN, user.id_token);
+    });
   }
 
   async login() {
@@ -86,8 +101,9 @@ class OidcAuth {
         );
       }
       this.persistUserInfo(callbackUser);
+      const returnTo = safeReturnTo(callbackUser.state);
       toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
-      setTimeout(() => window.location.replace('/'), 600);
+      setTimeout(() => window.location.replace(returnTo), 600);
       return;
     }
 
@@ -110,7 +126,7 @@ class OidcAuth {
     // Fresh token established this run: reload to refetch config with Bearer
     if (!hadValidToken && getApiAuthHeader()) {
       toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
-      setTimeout(() => window.location.replace('/'), 500);
+      setTimeout(() => window.location.reload(), 500);
     }
   }
 
@@ -126,7 +142,8 @@ class OidcAuth {
       );
     }
     sessionStorage.setItem(SIGNIN_GUARD_KEY, String(Date.now()));
-    await this.userManager.signinRedirect();
+    const returnTo = window.location.pathname + window.location.search + window.location.hash;
+    await this.userManager.signinRedirect({ state: returnTo });
   }
 
   /* Mirror the OIDC user into the localStorage keys other parts of Dashy read */

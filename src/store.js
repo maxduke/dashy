@@ -58,6 +58,10 @@ const emptyConfig = {
   sections: [],
 };
 
+/* One-shot guard against reload loops when a sub-config 401 triggers re-auth.
+ * Set in sessionStorage before reloading, cleared on the next successful sub-config fetch */
+const SUB_CONFIG_RELOAD_KEY = 'dashy.sub-config-reload-attempt';
+
 /* Read + JSON-parse a raw localStorage slot, returning undefined on miss/fail. */
 const readLocal = (key) => {
   const raw = localStorage.getItem(key);
@@ -475,6 +479,7 @@ const store = createStore({
         // Set the state, and return data
         commit(SET_ROOT_CONFIG, data);
         commit(CRITICAL_ERROR_MSG, null);
+        if (!data._bootstrap) sessionStorage.removeItem(SUB_CONFIG_RELOAD_KEY);
         return data;
       } catch (fetchError) {
         if (fetchError.response) {
@@ -520,7 +525,18 @@ const store = createStore({
         let response;
         try {
           response = await request.get(subConfigPath, isRemote ? {} : makeBasicAuthHeaders());
+          sessionStorage.removeItem(SUB_CONFIG_RELOAD_KEY);
         } catch (fetchErr) {
+          const status = fetchErr.response?.status;
+          const auth = state.rootConfig?.appConfig?.auth || {};
+          const ssoActive = Boolean(auth.enableOidc || auth.enableKeycloak);
+          // Local 401 for OIDC caused by token expiration, trigger reload to re-auth
+          if (status === 401 && ssoActive && !isRemote && !sessionStorage.getItem(SUB_CONFIG_RELOAD_KEY)) {
+            sessionStorage.setItem(SUB_CONFIG_RELOAD_KEY, String(Date.now()));
+            ErrorHandler(`Sub-config '${subConfigPath}' returned 401, reauthentication needed`);
+            window.location.reload();
+            return { ...emptyConfig };
+          }
           commit(CRITICAL_ERROR_MSG, `Unable to load config from '${subConfigPath}'`);
           ErrorHandler(`Sub-config load failed: ${subConfigPath}`, fetchErr);
           return { ...emptyConfig };
