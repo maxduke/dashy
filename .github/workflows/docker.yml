@@ -202,14 +202,14 @@ jobs:
       LATEST_ENABLE: ${{ inputs.tag == '' }}
     steps:
       - name: 📥 Download digests
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ${{ runner.temp }}/digests
           pattern: digest-*
           merge-multiple: true
 
       - name: 📥 Download Trivy SARIFs
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           path: ${{ runner.temp }}/trivy
