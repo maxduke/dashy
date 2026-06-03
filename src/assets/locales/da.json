@@ -72,26 +72,26 @@
     "layout-auto": "Auto",
     "layout-horizontal": "Vandret",
     "layout-vertical": "Lodret",
-    "item-size-label": "Varestørrelse",
-    "item-size-small": "Small",
-    "item-size-medium": "Medium",
-    "item-size-large": "Large",
+    "item-size-label": "Label størrelse",
+    "item-size-small": "Lille",
+    "item-size-medium": "Mellem",
+    "item-size-large": "Stor",
     "config-launcher-label": "Konfiguration",
     "config-launcher-tooltip": "Opdater konfiguration",
     "sign-out-tooltip": "Log ud",
-    "sign-in-tooltip": "Log in",
+    "sign-in-tooltip": "Log ind",
     "sign-in-welcome": "Hej {username}!"
   },
   "updates": {
     "app-version-note": "Dashy version",
-    "up-to-date": "Opdatert",
+    "up-to-date": "Opdateret",
     "out-of-date": "Opdatering tilgængelig",
     "unsupported-version-l1": "Du bruger en ikke-understøttet version af Dashy",
     "unsupported-version-l2": "For den bedste oplevelse og de seneste sikkerhedsrettelser skal du opdatere til"
   },
   "language-switcher": {
     "title": "Skift applikationssprog",
-    "dropdown-label": "Valg en sprog",
+    "dropdown-label": "Vælg sprog",
     "save-button": "Gem",
     "success-msg": "Sprog opdateret til"
   },
@@ -155,7 +155,7 @@
       "open-section": "Åbn sektion",
       "edit-section": "Rediger",
       "expand-collapse": "Udvid / Skjul",
-      "remove-section": "Fjerne"
+      "remove-section": "Slet sektion"
     }
   },
   "interactive-editor": {
@@ -189,7 +189,7 @@
       "save-locally-warning": "Hvis du fortsætter, vil ændringer kun blive gemt i din browser. Du bør eksportere en kopi af din konfiguration til brug på andre maskiner. Vil du fortsætte?"
     },
     "edit-item": {
-      "missing-title-err": "En varetitel er påkrævet"
+      "missing-title-err": "En titel er påkrævet"
     },
     "edit-section": {
       "edit-section-title": "Rediger sektion",
@@ -225,9 +225,9 @@
       "down": "Offline"
     },
     "net-data": {
-      "cpu-chart-title": "CPU-historie",
+      "cpu-chart-title": "CPU-historik",
       "mem-chart-title": "Hukommelsesbrug",
-      "mem-breakdown-title": "Hukommelsesnedbrydning",
+      "mem-breakdown-title": "Udnyttelse af hukommelse",
       "load-chart-title": "Systemindlæsning"
     },
     "glances": {
@@ -240,7 +240,7 @@
       "system-load-desc": "Antal processer, der venter i køen, beregnet i gennemsnit på tværs af alle kerner"
     },
     "system-info": {
-      "uptime": "Uptime"
+      "uptime": "Oppetid"
     },
     "flight-data": {
       "arrivals": "Ankomster",
@@ -251,8 +251,8 @@
       "good-service-rest": "God service på alle andre linjer"
     },
     "synology-download": {
-      "downloaded": "Downloaded",
-      "uploaded": "Uploaded",
+      "downloaded": "Downloadet",
+      "uploaded": "Uploadet",
       "remaining": "Tilbage"
     },
     "gluetun-status": {
@@ -270,16 +270,16 @@
       "and": "og",
       "applications": "applikationer",
       "available": "ledig",
-      "away": "Væk",
+      "away": "væk",
       "cache-full": "CACHE FULL",
       "chat-room": "chattrum",
       "delete-all": "Slet alt",
       "delete-notification": "Slet notifikation",
       "disabled": "avaktivert",
-      "disk-quota": "Diskkvot",
-      "disk-space": "Diskudrymme",
+      "disk-quota": "Disk kvota",
+      "disk-space": "Disk-plads",
       "dnd": "Forstyr ikke",
-      "email": "email",
+      "email": "e-mail",
       "enabled": "aktiveret",
       "federated-shares-ucfirst": "Fødereret deler",
       "federated-shares": "fødereret deler",
@@ -287,7 +287,7 @@
       "free": "fri",
       "groups": "grupper",
       "hit-rate": "træffefrekvens",
-      "hits": "træffe",
+      "hits": "besøg",
       "home": "hjem",
       "in": "in",
       "keys": "keys",
