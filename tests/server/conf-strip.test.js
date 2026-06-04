@@ -32,6 +32,7 @@ beforeAll(() => {
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dashy-strip-test-'));
   fs.writeFileSync(path.join(tmpDir, 'conf.yml'), FULL_CONF);
   fs.writeFileSync(path.join(tmpDir, 'sub.yml'), 'pageInfo:\n  title: Sub\n');
+  fs.writeFileSync(path.join(tmpDir, 'sub.yaml'), 'pageInfo:\n  title: Sub\n');
   process.env.USER_DATA_DIR = tmpDir;
   delete require.cache[require.resolve('../../services/app')];
   delete require.cache[require.resolve('../../services/auth-oidc')];
@@ -69,6 +70,11 @@ describe('OIDC strip behaviour for /conf.yml', () => {
     const res = await request(app)
       .get('/sub.yml')
       .set('Authorization', 'Bearer not-a-real-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('requires valid auth for non-root yaml files (not bypassed via static)', async () => {
+    const res = await request(app).get('/sub.yaml');
     expect(res.status).toBe(401);
   });
 

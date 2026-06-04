@@ -280,9 +280,9 @@ const app = express()
       safeEnd(res, errBody(e));
     }
   }))
-  // Middleware to serve any .yml files in USER_DATA_DIR with optional protection
+  // Middleware to serve any .yml/.yaml files in USER_DATA_DIR with optional protection
   // Note: returns stripped version if auth configured but not yet authenticated
-  .get('/*.yml', bootstrapAuth, (req, res) => {
+  .get(/\.ya?ml$/i, bootstrapAuth, (req, res) => {
     const ymlFile = req.path.split('/').pop();
     const filePath = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data', ymlFile);
     if (authIsConfigured) {
