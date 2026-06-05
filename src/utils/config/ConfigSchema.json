@@ -756,6 +756,12 @@
           "default": false,
           "description": "If set to true, then service workers will be used to cache page contents"
         },
+        "enableAuthProxyCompat": {
+          "title": "Enable Auth Proxy Compatibility",
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, when an authentication proxy (e.g. Cloudflare Zero Trust, Authelia) redirects after session expiry, the service worker is unregistered and the page reloaded so the login redirect can proceed. Only relevant when enableServiceWorker is true"
+        },
         "disableContextMenu": {
           "title": "Disable Context Menus",
           "type": "boolean",

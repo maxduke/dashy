@@ -1,11 +1,14 @@
 import { load as yamlLoad } from 'js-yaml';
 import request from '@/utils/request';
 import i18n from '@/utils/i18n';
+import { serviceEndpoints } from '@/utils/config/defaults';
 import { statusMsg, statusErrorMsg } from '@/utils/logging/CoolConsole';
 import { toast } from '@/utils/Toast';
 
 const SW_LABEL = 'Service Worker Status';
 const UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000; // hourly
+const AUTH_PROXY_COMPAT_KEY = 'dashy-auth-proxy-compat'; // mirrors appConfig.enableAuthProxyCompat
+const AUTH_PROXY_RELOAD_KEY = 'dashy-auth-proxy-reloaded'; // one reload per tab, guards against loops
 
 /* Loads conf.yml and returns the parsed object, or null on failure */
 const loadAppConfig = async () => {
@@ -28,6 +31,44 @@ const unregisterAll = async () => {
   } catch { /* no-op */ }
 };
 
+/* Remember the opt-in so it's known on later loads even when conf.yml comes from cache or fails */
+const rememberAuthProxyCompat = (enabled) => {
+  try {
+    if (enabled) localStorage.setItem(AUTH_PROXY_COMPAT_KEY, '1');
+    else localStorage.removeItem(AUTH_PROXY_COMPAT_KEY);
+  } catch { /* storage unavailable */ }
+};
+
+const isReloadGuardSet = () => {
+  try { return !!sessionStorage.getItem(AUTH_PROXY_RELOAD_KEY); } catch { return true; }
+};
+const setReloadGuard = (on) => {
+  try {
+    if (on) sessionStorage.setItem(AUTH_PROXY_RELOAD_KEY, '1');
+    else sessionStorage.removeItem(AUTH_PROXY_RELOAD_KEY);
+  } catch { /* no-op */ }
+};
+
+/**
+ * If enabled (with appConfig.enableAuthProxyCompat), then check for expired sessions,
+ * and then drop the cached SW and trigger a reload so the proxy can re-authenticate user
+ */
+const recoverFromAuthProxy = async () => {
+  try { if (localStorage.getItem(AUTH_PROXY_COMPAT_KEY) !== '1') return false; } catch { return false; }
+  let res;
+  try {
+    res = await fetch(serviceEndpoints.getUser, { cache: 'no-store', redirect: 'manual' });
+  } catch { return false; } // network error / offline - keep SW for offline use
+  if (res.type !== 'opaqueredirect') { setReloadGuard(false); return false; } // valid session - re-arm
+  if (!navigator.serviceWorker.controller) return false; // no cached SW blocking the redirect
+  if (isReloadGuardSet()) return false; // already reloaded once - avoid repeat on false positives
+  setReloadGuard(true);
+  statusMsg(SW_LABEL, 'Auth proxy redirect detected - unregistering SW and reloading.');
+  await unregisterAll();
+  window.location.reload();
+  return true;
+};
+
 /* Sticky toast with a Refresh action that swaps in the new SW and reloads */
 const promptForUpdate = (updateSW) => {
   const t = i18n.global.t;
@@ -44,7 +85,14 @@ const initServiceWorker = async () => {
   if (!('serviceWorker' in navigator)) return;
 
   const conf = await loadAppConfig();
-  if (!conf) return; // network/parse failed — leave any existing SW alone
+  if (conf?.appConfig) {
+    rememberAuthProxyCompat(conf.appConfig.enableServiceWorker && conf.appConfig.enableAuthProxyCompat);
+  }
+
+  // Probe for an auth-proxy session expiry
+  if (await recoverFromAuthProxy()) return;
+
+  if (!conf) return; // network/parse failed - leave any existing SW alone
 
   if (!conf.appConfig?.enableServiceWorker) {
     await unregisterAll();

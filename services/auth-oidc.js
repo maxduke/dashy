@@ -156,6 +156,7 @@ function maybeBootstrapConfig(filePath, opts) {
     appConfig: {
       auth: full.appConfig?.auth || {},
       enableServiceWorker: full.appConfig?.enableServiceWorker,
+      enableAuthProxyCompat: full.appConfig?.enableAuthProxyCompat,
     },
     pageInfo: { title: `Login | ${full.pageInfo?.title || 'Dashy'}` },
   });
