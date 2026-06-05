@@ -133,6 +133,12 @@ export default {
       return classes;
     },
   },
+  watch: {
+    /* Re-read col count once after config loaded */
+    sections() {
+      this.$nextTick(this.readActiveColCount);
+    },
+  },
   methods: {
     /* Clears input field, once a searched item is opened */
     finishedSearching() {

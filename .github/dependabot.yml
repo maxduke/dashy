@@ -10,10 +10,10 @@ updates:
     labels:
       - "📦 Dependencies"
     assignees:
-      - Lissy93
+      - lissy93
     commit-message:
       prefix: "⬆️"
-      prefix-development: "⬆️"
+      prefix-development: "⬆️ "
       include: scope
     versioning-strategy: increase
     groups:
@@ -83,9 +83,9 @@ updates:
     labels:
       - "📦 Dependencies"
     assignees:
-      - Lissy93
+      - lissy93
     commit-message:
-      prefix: "⬆️"
+      prefix: "⬆️ "
       include: scope
 
   - package-ecosystem: docker
@@ -95,9 +95,9 @@ updates:
     labels:
       - "📦 Dependencies"
     assignees:
-      - Lissy93
+      - lissy93
     commit-message:
-      prefix: "⬆️"
+      prefix: "⬆️ "
       include: scope
     ignore:
       - dependency-name: "node"
@@ -110,7 +110,7 @@ updates:
     labels:
       - "📦 Dependencies"
     assignees:
-      - Lissy93
+      - lissy93
     commit-message:
-      prefix: "⬆️"
+      prefix: "⬆️ "
       include: scope

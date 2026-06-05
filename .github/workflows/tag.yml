@@ -276,6 +276,9 @@ jobs:
                   const sixMonthsAgo = new Date();
                   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
                   const isOld = new Date(issue.created_at) < sixMonthsAgo;
+                  const sevenDaysAgo = new Date();
+                  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                  const isNew = new Date(issue.created_at) > sevenDaysAgo;
                   const byLine = creditAuthor ? ` by @${prAuthor}` : '';
                   const parts = [
                     greeting,
@@ -283,6 +286,10 @@ jobs:
                     `and will be released shortly in ${version} 😇`,
                   ];
                   if (isOld) parts.push(`\n\nWe're sorry this one took so long 😔`);
+                  if (isNew) {
+                    parts.push(`\n\nIf you're enjoying Dashy, consider ` +
+                      `[sponsoring us](https://github.com/sponsors/lissy93) on GitHub to help with development 💖`);
+                  }
                   parts.push(`<!-- ${marker} -->`);
                   const body = parts.join(' ');
                   await github.rest.issues.createComment({
@@ -337,7 +344,7 @@ jobs:
           VERSION="${TAG_VERSION:-$(node -p "require('./package.json').version" 2>/dev/null || echo "unknown")}"
 
           {
-            echo "## 🔖 Auto Version & Tag"
+            echo "## Auto Version & Tag"
             echo ""
             echo "| Step | Result |"
             echo "|------|--------|"
