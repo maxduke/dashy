@@ -129,6 +129,15 @@ export default {
       if (interval < 1) interval = 0;
       return interval;
     },
+    getPingCheckInterval() {
+      let interval = this.item.pingCheckInterval;
+      if (!interval) interval = this.appConfig.pingCheckInterval;
+      if (!interval) return 0;
+      interval = Math.floor(interval);
+      if (interval < 0) interval = 0;
+      if (interval > 5) interval = 5;
+      return interval;
+    },
     /* Navigate to the section's single-section view page, staying within the current
      * view and loaded sub-page context */
     navigateToSection() {
