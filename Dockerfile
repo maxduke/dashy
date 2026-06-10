@@ -41,7 +41,8 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata tini iputils-ping \
+RUN apk upgrade --no-cache \
+ && apk add --no-cache tzdata tini iputils-ping \
  && apk add --no-cache --virtual .setcap libcap-setcap \
  && setcap cap_net_raw+ep "$(readlink -f "$(command -v ping)")" \
  && apk del .setcap

@@ -2,15 +2,15 @@
 #
 # Triggered by:
 # - On git tag push, publishes to :X.Y.Z, :X.Y, and :latest
-# - On manual dispatch from master, rebuilds and updates :latest
+# - On manual trigger, rebuilds and updates :latest or tag if specified
 # - On weekly cron, rebuilds :latest from master for upstream patches
 #
 # The workflow will:
 # - Builds multi-arch (amd64, arm64, armv7) in parallel on native runners
-# - Trivy scans + reports security issues, and fails on CRITICAL CVEs
+# - Trivy scans + reports security issues, and fails cron on CRITICAL CVEs
 # - Publishes to GHCR, and to Docker Hub if creds are configured
 # - Attests both the build provenance and SBOM and publishes to GHCR
-# - Uploads digest, SBOM and outputs as artifact, and shows MD summary
+# - Uploads per-arch digests as artifacts, and writes a pretty job summary
 
 name: 🐳 Docker
 
@@ -31,7 +31,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: read  # least-privilege default; jobs elevate as needed
 
 env:
   DH_IMAGE: ${{ vars.DOCKER_REPO || 'lissy93/dashy' }}
@@ -42,9 +42,9 @@ jobs:
     name: 🔨 Build (${{ matrix.arch }})
     timeout-minutes: 30
     permissions:
-      contents: read
-      packages: write
-      security-events: write
+      contents: read          # checkout
+      packages: write         # push image by digest to GHCR
+      security-events: write  # upload Trivy SARIF to code scanning
     env:
       DOCKER_BUILD_SUMMARY: "false"
       DOCKER_BUILD_RECORD_UPLOAD: "false"
@@ -84,6 +84,7 @@ jobs:
             v="latest"
           fi
           echo "value=$v" >> "$GITHUB_OUTPUT"
+          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: 🔧 Set up QEMU
         if: matrix.arch == 'armv7'
@@ -118,10 +119,11 @@ jobs:
           provenance: false
           build-args: |
             VERSION=${{ steps.version.outputs.value }}
-            REVISION=${{ github.sha }}
+            REVISION=${{ steps.version.outputs.revision }}
             CREATED=${{ steps.timestamp.outputs.iso }}
 
       - name: 🛡️ Trivy vulnerability scan
+        id: scan
         uses: aquasecurity/trivy-action@v0.36.0
         env:
           TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db:2
@@ -137,21 +139,29 @@ jobs:
           output: 'trivy-${{ matrix.arch }}.sarif'
           timeout: '10m'
 
+      # SARIF isn't human-readable, so on a gating failure re-print the CVEs as a table
+      - name: 📋 List blocking CVEs (on scan failure)
+        if: steps.scan.outcome == 'failure'
+        uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db:2
+          TRIVY_JAVA_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-java-db:1
+        with:
+          version: v0.70.0
+          image-ref: dashy-scan:${{ matrix.arch }}
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: '0'
+          vuln-type: 'os,library'
+          format: 'table'
+          timeout: '10m'
+
       - name: 📤 Upload Trivy SARIF
         if: always() && hashFiles(format('trivy-{0}.sarif', matrix.arch)) != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-${{ matrix.arch }}.sarif
           category: trivy-${{ matrix.arch }}
-
-      - name: 📤 Upload Trivy artifact
-        if: always() && hashFiles(format('trivy-{0}.sarif', matrix.arch)) != ''
-        uses: actions/upload-artifact@v7
-        with:
-          name: trivy-${{ matrix.arch }}
-          path: trivy-${{ matrix.arch }}.sarif
-          if-no-files-found: ignore
-          retention-days: 1
 
       - name: 🚀 Push by digest
         id: push
@@ -165,7 +175,7 @@ jobs:
           provenance: false
           build-args: |
             VERSION=${{ steps.version.outputs.value }}
-            REVISION=${{ github.sha }}
+            REVISION=${{ steps.version.outputs.revision }}
             CREATED=${{ steps.timestamp.outputs.iso }}
 
       - name: 🧬 Write digest
@@ -191,12 +201,12 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
-      id-token: write
-      attestations: write
+      contents: read       # least-privilege baseline
+      packages: write      # push manifest + attestations to GHCR
+      id-token: write      # OIDC token for keyless attestation signing
+      attestations: write  # write SBOM + provenance attestations
     env:
-      HAS_DH: ${{ secrets.DOCKER_USERNAME != '' && secrets.DOCKER_PASSWORD != '' }}
+      HAS_DH: ${{ vars.DOCKER_USERNAME != '' && secrets.DOCKER_PASSWORD != '' }}
       SEMVER_VALUE: ${{ inputs.tag || github.ref_name }}
       SEMVER_ENABLE: ${{ github.event_name == 'push' || inputs.tag != '' }}
       LATEST_ENABLE: ${{ inputs.tag == '' }}
@@ -206,14 +216,6 @@ jobs:
         with:
           path: ${{ runner.temp }}/digests
           pattern: digest-*
-          merge-multiple: true
-
-      - name: 📥 Download Trivy SARIFs
-        uses: actions/download-artifact@v8
-        continue-on-error: true
-        with:
-          path: ${{ runner.temp }}/trivy
-          pattern: trivy-*
           merge-multiple: true
 
       - name: 🔧 Set up Buildx
@@ -230,7 +232,7 @@ jobs:
         if: env.HAS_DH == 'true'
         uses: docker/login-action@v4
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: 🗂️ Generate tags
@@ -293,7 +295,7 @@ jobs:
           subject-digest: ${{ steps.manifest.outputs.digest }}
           push-to-registry: true
 
-      - name: 📋 Summary
+      - name: 📋 Job summary
         if: always()
         continue-on-error: true
         env:
@@ -301,100 +303,56 @@ jobs:
           SBOM_URL: ${{ steps.attest_sbom.outputs.attestation-url }}
           PROV_OUTCOME: ${{ steps.attest_provenance.outcome }}
           PROV_URL: ${{ steps.attest_provenance.outputs.attestation-url }}
-          DIGEST: ${{ steps.manifest.outputs.digest }}
+          MANIFEST: ${{ steps.manifest.outputs.digest }}
           PRIMARY: ${{ steps.manifest.outputs.primary_tag }}
           TAGS_JSON: ${{ steps.meta.outputs.json }}
           DIGESTS_DIR: ${{ runner.temp }}/digests
-          TRIVY_DIR: ${{ runner.temp }}/trivy
-        # Behold, some ugly bash, to produce a pretty output (don't read it, just trust)
         run: |
           set -euo pipefail
+          repo="${PRIMARY%%:*}"
 
-          attest_line() {
-            local label="$1" outcome="$2" url="$3"
-            case "$outcome" in
-              success)
-                if [ -n "$url" ]; then
-                  echo "- ✅ $label attested ([view]($url))"
-                else
-                  echo "- ✅ $label attested"
-                fi ;;
-              failure) echo "- ⚠️ $label attestation failed (image pushed without attest)" ;;
-              *)       echo "- ⏭️ $label attestation \`$outcome\`" ;;
+          attest() {
+            case "$2" in
+              success) [ -n "$3" ] && echo "- ✅ $1 attested ([view]($3))" || echo "- ✅ $1 attested" ;;
+              failure) echo "- ⚠️ $1 attestation failed" ;;
+              *) echo "- ⏭️ $1 attestation skipped" ;;
             esac
           }
 
-          trivy_section() {
-            local dir="$1"
-            [ -d "$dir" ] || return 0
-            local found=0
-            local lines=""
-            local arch f n
-            for arch in amd64 arm64 armv7; do
-              f="$dir/trivy-$arch.sarif"
-              [ -f "$f" ] || continue
-              found=1
-              n=$(jq '[.runs[]?.results[]?] | length' "$f" 2>/dev/null || echo 0)
-              [[ "$n" =~ ^[0-9]+$ ]] || n=0
-              if [ "$n" = "0" ]; then
-                lines+="- ✅ \`$arch\` — no fixable CRITICAL CVEs"$'\n'
-              else
-                lines+="- ⚠️ \`$arch\` — $n fixable CRITICAL CVE(s)"$'\n'
-              fi
-            done
-            [ "$found" = "1" ] || return 0
-            echo "## Security Scan"
-            echo ""
-            echo "Trivy (CRITICAL severity, fixable only):"
-            echo ""
-            printf '%s\n' "$lines"
-            echo "---"
-            echo ""
-          }
-
-          arch_section() {
-            local arch="$1"
-            local file="$DIGESTS_DIR/$arch"
-            [ -f "$file" ] || return 0
-            local digest manifest size count
-            digest=$(cat "$file")
-            manifest=$(docker buildx imagetools inspect "${PRIMARY%%:*}@$digest" --raw 2>/dev/null || echo '{}')
-            size=$(jq '[.layers[]?.size // 0] | add // 0' <<< "$manifest")
-            count=$(jq '.layers // [] | length' <<< "$manifest")
-            echo "#### Dashy \`$arch\`"
-            echo ""
-            echo "- **Digest:** \`$digest\`"
-            [ "$size" != "0" ] && echo "- **Size:** $(numfmt --to=iec --suffix=B "$size" 2>/dev/null || echo "$size B")"
-            [ "$count" != "0" ] && echo "- **Layers:** $count"
-            echo ""
-          }
-
-          # Clear auto-generated "Attestation Created" blocks from attest actions.
+          # Replace the attest actions' auto-added blocks with our own summary
           : > "$GITHUB_STEP_SUMMARY"
           {
-            if [ -n "$DIGEST" ]; then
-              echo "## Docker Image"
-              echo ""
-              echo "**Manifest:** \`$DIGEST\`"
-              echo ""
-              echo '```bash'
-              jq -r '.tags[] | "docker pull \(.)"' <<< "$TAGS_JSON"
-              echo '```'
-              echo ""
-              echo "---"
-              echo ""
-            fi
             echo "## Attestations"
-            echo ""
-            attest_line "SBOM" "$SBOM_OUTCOME" "$SBOM_URL"
-            attest_line "Build provenance" "$PROV_OUTCOME" "$PROV_URL"
-            echo ""
+            echo
+            attest "SBOM" "$SBOM_OUTCOME" "$SBOM_URL"
+            attest "Build provenance" "$PROV_OUTCOME" "$PROV_URL"
+            echo
             echo "---"
-            echo ""
-            trivy_section "$TRIVY_DIR"
+            echo
             echo "## Build Info"
-            echo ""
+            echo
+            echo "| Arch | Size | Layers | Digest |"
+            echo "|---|---|---|---|"
             for arch in amd64 arm64 armv7; do
-              arch_section "$arch"
+              f="$DIGESTS_DIR/$arch"
+              [ -f "$f" ] || continue
+              digest=$(cat "$f")
+              raw=$(docker buildx imagetools inspect "$repo@$digest" --raw 2>/dev/null || echo '{}')
+              bytes=$(jq '[.layers[]?.size // 0] | add // 0' <<< "$raw")
+              size=$(numfmt --to=iec --suffix=B "$bytes" 2>/dev/null || echo "${bytes}B")
+              layers=$(jq '.layers // [] | length' <<< "$raw")
+              echo "| \`$arch\` | $size | $layers | \`$digest\` |"
             done
+            echo
+            echo "---"
+            echo
+            echo "## Docker Image"
+            echo
+            echo "**Manifest:** \`$MANIFEST\`"
+            echo
+            echo "The following tags have been updated and published:"
+            echo
+            echo '```'
+            if [ -n "${TAGS_JSON:-}" ]; then jq -r '.tags[]?' <<< "$TAGS_JSON"; fi
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

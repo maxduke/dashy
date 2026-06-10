@@ -165,6 +165,17 @@ describe('CORS proxy error classification', () => {
     expect(res.body.error.type).toBe('upstream_error');
   });
 
+  it('blocks a redirect to a metadata host (does not follow it)', async () => {
+    handler = (req, res) => {
+      res.statusCode = 302;
+      res.setHeader('location', 'http://169.254.169.254/latest/meta-data/');
+      res.end();
+    };
+    const res = await request(app).get('/cors-proxy').set('Target-URL', targetUrl);
+    expect(res.body.error.code).toBe('EBLOCKED');
+    expect(res.body.error.message).toContain('blocked');
+  });
+
 });
 
 // Verify the request.js → cors-proxy timeout contract end-to-end. The proxy

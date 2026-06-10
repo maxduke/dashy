@@ -5,19 +5,7 @@
  */
 
 const request = require('./request');
-
-// List of hosts to disallow by default, for cloud instances
-// Covers AWS, Azure, GCP, DO, Hetzner, Oracle, etc on IPv4/6
-const BLOCKED_HOSTS = new Set([
-  '169.254.169.254',
-  '::ffff:a9fe:a9fe',
-  'fd00:ec2::254',
-  'metadata.google.internal',
-  '100.100.100.200',
-]);
-
-// Operator escape hatch, set this env var to bypass all proxy restrictions
-const restrictionsDisabled = !!process.env.DANGEROUSLY_DISABLE_PROXY_RESTRICTIONS;
+const { validateTargetUrl } = request;
 
 // If reference to env var is present, substitute for env var value if set
 const PLACEHOLDER_RE = /\b(?:DASHY_|VITE_APP_|VUE_APP_)\w+/g;
@@ -41,31 +29,6 @@ const substituteEnv = (val) => {
     return out;
   }
   return val;
-};
-
-// Validate the target URL against scheme and host policies
-// Returns { ok: true } on success, or { ok: false, status, error } on rejection
-const validateTargetUrl = (raw) => {
-  if (restrictionsDisabled) return { ok: true };
-  let url;
-  try { url = new URL(raw); } catch (e) {
-    return { ok: false, status: 400, error: 'Target-URL is not a valid URL' };
-  }
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    return { ok: false, status: 400, error: 'Target-URL must use http:// or https://' };
-  }
-  // url.hostname includes brackets for IPv6 (e.g. '[fd00:ec2::254]') - strip em
-  const host = url.hostname.toLowerCase().replace(/^\[|\]$/g, '');
-  if (BLOCKED_HOSTS.has(host)) {
-    return {
-      ok: false,
-      status: 403,
-      error: `Target-URL host '${host}' is blocked by the CORS proxy. `
-        + 'This address is reserved for cloud instance metadata services. '
-        + 'To bypass, set DANGEROUSLY_DISABLE_PROXY_RESTRICTIONS=true.',
-    };
-  }
-  return { ok: true };
 };
 
 const handler = (req, res) => {
@@ -115,6 +78,7 @@ const handler = (req, res) => {
     headers,
     timeout: 30000,
     maxResponseSize: 10 * 1024 * 1024, // 10 MB
+    validateUrl: validateTargetUrl,
   };
 
   // Make the request, and respond with result

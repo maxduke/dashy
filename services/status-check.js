@@ -4,6 +4,7 @@
  * endpoint, and then resolve the response status code, time taken, and short message
  */
 const request = require('./request');
+const { validateTargetUrl } = request;
 
 /* Determines if successful from the HTTP response code */
 const getResponseType = (code, validCodes) => {
@@ -39,6 +40,7 @@ const makeRequest = (url, options, render) => {
     maxRedirects,
     timeout: 10000,
     httpsAgent: { rejectUnauthorized: !enableInsecure },
+    validateUrl: validateTargetUrl,
   })
     .then((response) => {
       const statusCode = response.status;
