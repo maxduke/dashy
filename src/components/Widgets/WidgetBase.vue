@@ -66,6 +66,8 @@ const COMPAT = {
   'crypto-watch-list': 'CryptoWatchList',
   'custom-search': 'CustomSearch',
   'custom-list': 'CustomList',
+  customapi: 'CustomApi',
+  'custom-api': 'CustomApi',
   'cve-vulnerabilities': 'CveVulnerabilities',
   'domain-monitor': 'DomainMonitor',
   'drone-ci': 'DroneCi',

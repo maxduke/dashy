@@ -285,6 +285,7 @@ jobs:
           subject-digest: ${{ steps.manifest.outputs.digest }}
           sbom-path: sbom.spdx.json
           push-to-registry: true
+          show-summary: false
 
       - name: 🛡️ Attest build provenance
         id: attest_provenance
@@ -294,6 +295,7 @@ jobs:
           subject-name: ${{ env.GH_IMAGE }}
           subject-digest: ${{ steps.manifest.outputs.digest }}
           push-to-registry: true
+          show-summary: false
 
       - name: 📋 Job summary
         if: always()
@@ -319,8 +321,6 @@ jobs:
             esac
           }
 
-          # Replace the attest actions' auto-added blocks with our own summary
-          : > "$GITHUB_STEP_SUMMARY"
           {
             echo "## Attestations"
             echo

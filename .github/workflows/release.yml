@@ -86,12 +86,14 @@ jobs:
           CHECKSUM="${TARBALL}.sha256"
           sha256sum "$TARBALL" > "$CHECKSUM"
           echo "file=$CHECKSUM" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(cut -d' ' -f1 "$CHECKSUM")" >> "$GITHUB_OUTPUT"
 
       - name: 🪪 Generate build provenance attestation
         id: attest
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: ${{ steps.package.outputs.tarball }}
+          show-summary: false
 
       - name: 📤 Rename attestation bundle
         id: attest_asset
@@ -143,20 +145,24 @@ jobs:
           RELEASE_URL: ${{ steps.release.outputs.url }}
           TARBALL: ${{ steps.package.outputs.tarball }}
           SIZE: ${{ steps.package.outputs.size }}
+          SHA256: ${{ steps.checksum.outputs.sha256 }}
           ATTEST_URL: ${{ steps.attest.outputs.attestation-url }}
         run: |
           set -euo pipefail
           {
-            echo "## 🚀 Release Draft"
+            echo "## 🚀 Dashy Release ${TAG}"
             echo ""
             echo "| Item | Value |"
             echo "|------|-------|"
-            echo "| Tag | [\`${TAG}\`](${REPO_URL}/releases/tag/${TAG}) |"
+            echo "| New Tag | [\`${TAG}\`](${REPO_URL}/releases/tag/${TAG}) |"
             if [ -n "$PREV_TAG" ]; then
-              echo "| Notes since | [\`${PREV_TAG}\`](${REPO_URL}/releases/tag/${PREV_TAG}) |"
+              echo "| Previous Tag | [\`${PREV_TAG}\`](${REPO_URL}/releases/tag/${PREV_TAG}) |"
             fi
             if [ -n "$TARBALL" ]; then
               echo "| Tarball | \`${TARBALL}\` (${SIZE:-?}) |"
+            fi
+            if [ -n "$SHA256" ]; then
+              echo "| SHA256 | \`${SHA256}\` |"
             fi
             if [ -n "$ATTEST_URL" ]; then
               echo "| Attestation | ✅ [View](${ATTEST_URL}) |"
