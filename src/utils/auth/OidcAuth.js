@@ -148,7 +148,11 @@ class OidcAuth {
 
   /* Mirror the OIDC user into the localStorage keys other parts of Dashy read */
   persistUserInfo(user) {
-    const { roles = [], groups = [] } = user.profile;
+    const { roles = [] } = user.profile;
+    // GitLab puts groups in `groups_direct`, so merge both claim names
+    const groups = [...new Set(
+      [user.profile.groups, user.profile.groups_direct].filter(Array.isArray).flat(),
+    )];
     const info = { groups, roles };
     const isAdmin = (Array.isArray(groups) && groups.includes(this.adminGroup))
       || (Array.isArray(roles) && roles.includes(this.adminRole))

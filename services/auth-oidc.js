@@ -79,13 +79,13 @@ async function getIssuerContext(issuer) {
   return ctx;
 }
 
-/* Pure helper: true when the token's claims map to the configured admin group/role.
-   Handles standard OIDC top-level `groups`/`roles` claims plus Keycloak's nested
-   realm_access / resource_access role shapes (mirrors what KeycloakAuth.js does
-   client-side). */
+/* Helper is true when the token's claims map to the configured admin group/role.
+   Handles standard OIDC top-level `groups`/`roles` claims, GitLab's `groups_direct`
+   plus Keycloak's nested realm_access / resource_access role shapes */
 function deriveIsAdmin(claims, settings) {
   if (!claims) return false;
   const groups = Array.isArray(claims.groups) ? [...claims.groups] : [];
+  if (Array.isArray(claims.groups_direct)) groups.push(...claims.groups_direct);
   const roles = Array.isArray(claims.roles) ? [...claims.roles] : [];
 
   if (settings.kind === 'keycloak') {

@@ -59,9 +59,9 @@ export default {
       })
         .catch((error) => {
           this.saveSuccess = false;
-          this.responseText = error;
-          this.showToast(error, false);
-          ErrorHandler(`Failed to save config. ${error}`);
+          this.responseText = error.response?.data?.message || error.message || String(error);
+          this.showToast(this.$t('config-editor.error-msg-cannot-save'), false);
+          ErrorHandler(`Failed to save config. ${this.responseText}`);
           this.progress.end();
           return false;
         });
