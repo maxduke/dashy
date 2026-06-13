@@ -655,7 +655,13 @@
                     "title": "OIDC Scope",
                     "type": "string",
                     "description": "The scope(s) to request from the OIDC provider"
-                  }
+                  },
+                "enableSilentRenew": {
+                  "title": "Enable Silent Token Renewal",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If set to true, Dashy automatically renews your session in the background before it expires. Requires your OIDC provider to issue refresh tokens"
+                }
               }
             },
             "enableHeaderAuth": {

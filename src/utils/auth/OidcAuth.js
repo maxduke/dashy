@@ -11,6 +11,19 @@ import $store from '@/store';
 const SIGNIN_GUARD_KEY = 'dashy.oidc.signin-attempt';
 const SIGNIN_GUARD_THRESHOLD_MS = 5 * 1000;
 
+// Guard so a silently-refreshed but still-rejected token can't reload in a loop
+const SILENT_RENEW_GUARD_KEY = 'dashy.oidc.silent-attempt';
+const SILENT_RENEW_GUARD_THRESHOLD_MS = 30 * 1000;
+const recentlySilentRenewed = () => {
+  try {
+    const last = Number(sessionStorage.getItem(SILENT_RENEW_GUARD_KEY)) || 0;
+    return Date.now() - last < SILENT_RENEW_GUARD_THRESHOLD_MS;
+  } catch { return false; }
+};
+const markSilentRenewAttempt = () => {
+  try { sessionStorage.setItem(SILENT_RENEW_GUARD_KEY, String(Date.now())); } catch { /* ignore */ }
+};
+
 /* Return a same-origin path to navigate back to after IdP, or just `/` */
 const safeReturnTo = (raw) => {
   if (typeof raw !== 'string') return '/';
@@ -41,6 +54,7 @@ class OidcAuth {
       scope,
       adminGroup,
       adminRole,
+      enableSilentRenew,
     } = auth.oidc;
     if (typeof clientId === 'number' && !Number.isSafeInteger(clientId)) {
       ErrorHandler(
@@ -49,18 +63,24 @@ class OidcAuth {
         + 'Wrap it in quotes in your conf.yml (e.g. clientId: "12345") to force it be a string.',
       );
     }
+    const baseScope = scope || 'openid profile email roles groups';
+    // Get refresh token (needed for silent renewal)
+    const requestedScope = enableSilentRenew && !baseScope.split(' ').includes('offline_access')
+      ? `${baseScope} offline_access`
+      : baseScope;
     const settings = {
       userStore: new WebStorageStateStore({ store: window.localStorage }),
       authority: endpoint,
       client_id: String(clientId),
       redirect_uri: `${window.location.origin}`,
       response_type: 'code',
-      scope: scope || 'openid profile email roles groups',
+      scope: requestedScope,
       response_mode: 'query',
       filterProtocolClaims: true,
       loadUserInfo: true,
     };
 
+    this.silentRenewEnabled = Boolean(enableSilentRenew);
     this.adminGroup = adminGroup;
     this.adminRole = adminRole;
     this.userManager = new UserManager(settings);
@@ -78,6 +98,8 @@ class OidcAuth {
     });
   }
 
+  /* Returns true when a same-page reload is scheduled, signalling the caller
+   * to skip mounting the throwaway frame the reload would immediately discard. */
   async login() {
     const hadValidToken = Boolean(getApiAuthHeader());
     const url = new URL(window.location.href);
@@ -104,22 +126,30 @@ class OidcAuth {
       const returnTo = safeReturnTo(callbackUser.state);
       toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
       setTimeout(() => window.location.replace(returnTo), 600);
-      return;
+      return true;
     }
 
     const user = await this.userManager.getUser();
     if (user === null) {
-      if (!isOidcGuestAccessEnabled()) await this.redirectToIdp();
-      return;
+      if (isOidcGuestAccessEnabled()) return false;
+      await this.redirectToIdp();
+      return true;
     }
 
     // Server returned an unauthenticated bootstrap config
     // Cached id_token is expired / invalid, wipe it and re-authenticate
+    // Try a quiet refresh, else redirect user to their login form
     if ($store.state.rootConfig?._bootstrap?.authenticated === false) {
+      if (this.silentRenewEnabled && user.refresh_token
+        && !recentlySilentRenewed() && await this.trySilentRenew()) {
+        markSilentRenewAttempt();
+        setTimeout(() => window.location.reload(), 250);
+        return true;
+      }
       await this.userManager.removeUser();
       localStorage.removeItem(localStorageKeys.ID_TOKEN);
       await this.redirectToIdp();
-      return;
+      return true;
     }
 
     this.persistUserInfo(user);
@@ -127,7 +157,32 @@ class OidcAuth {
     if (!hadValidToken && getApiAuthHeader()) {
       toast(i18n.global.t('login.authenticated-redirecting'), { type: 'success' });
       setTimeout(() => window.location.reload(), 500);
+      return true;
     }
+    // Keep token fresh in the background, once session is valid
+    this.startBackgroundRenew(user);
+    return false;
+  }
+
+  /* Attempts to renew session with refresh token
+   * returns true on success, or false to trigger redirect to login page */
+  async trySilentRenew() {
+    try {
+      const previousToken = localStorage.getItem(localStorageKeys.ID_TOKEN);
+      const user = await this.userManager.signinSilent();
+      if (user?.id_token && user.id_token !== previousToken) {
+        this.persistUserInfo(user);
+        return true;
+      }
+    } catch (err) {
+      statusErrorMsg('OIDC', 'Silent token renewal failed, using interactive sign-in', err);
+    }
+    return false;
+  }
+
+  /* Start OIDC background renewal for confirmed sessions if enabled */
+  startBackgroundRenew(user) {
+    if (this.silentRenewEnabled && user?.refresh_token) this.userManager.startSilentRenew();
   }
 
   /* Redirect to the IdP for interactive sign-in
@@ -171,6 +226,7 @@ class OidcAuth {
   }
 
   async logout() {
+    this.userManager.stopSilentRenew();
     localStorage.removeItem(localStorageKeys.USERNAME);
     localStorage.removeItem(localStorageKeys.KEYCLOAK_INFO);
     localStorage.removeItem(localStorageKeys.ISADMIN);

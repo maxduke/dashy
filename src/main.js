@@ -67,7 +67,8 @@ const handleAuthFailure = (provider, err) => {
 
 router.isReady().then(() => {
   if (isOidcEnabled()) {
-    initOidcAuth().then(mount).catch((e) => handleAuthFailure('OIDC', e));
+    initOidcAuth().then((reloading) => { if (!reloading) mount(); })
+      .catch((e) => handleAuthFailure('OIDC', e));
   } else if (isKeycloakEnabled()) {
     initKeycloakAuth().then(mount).catch((e) => handleAuthFailure('Keycloak', e));
   } else if (isHeaderAuthEnabled()) {
