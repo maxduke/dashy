@@ -20,6 +20,7 @@ import WidgetView from '@/components/Workspace/WidgetView';
 import MultiTaskingWebComtent from '@/components/Workspace/MultiTaskingWebComtent';
 import Defaults from '@/utils/config/defaults';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
+import { sanitizeUrl } from '@/utils/Sanitizer';
 
 export default {
   name: 'Workspace',
@@ -80,7 +81,7 @@ export default {
     getInitialUrl() {
       const route = this.$route;
       if (route.query && route.query.url) {
-        return decodeURI(route.query.url);
+        return sanitizeUrl(decodeURI(route.query.url)) || undefined;
       } else if (this.appConfig.workspaceLandingUrl) {
         return this.appConfig.workspaceLandingUrl;
       }
