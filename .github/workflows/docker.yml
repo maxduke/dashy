@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Existing git tag to build. Empty = build current ref as :latest.'
+        description: 'Tag to build (empty = build current ref as :latest. tag must exist in git)'
         required: false
         default: ''
   push:
@@ -139,9 +139,9 @@ jobs:
           output: 'trivy-${{ matrix.arch }}.sarif'
           timeout: '10m'
 
-      # SARIF isn't human-readable, so on a gating failure re-print the CVEs as a table
+      # If CVEs found, print them in human readable table so i can read and address them
       - name: 📋 List blocking CVEs (on scan failure)
-        if: steps.scan.outcome == 'failure'
+        if: always() && steps.scan.outcome == 'failure'
         uses: aquasecurity/trivy-action@v0.36.0
         env:
           TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db:2

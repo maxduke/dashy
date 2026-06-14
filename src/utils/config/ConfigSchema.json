@@ -1061,6 +1061,23 @@
                   "type": "string",
                   "description": "The destination to navigate to when item is clicked, expressed as a valid URL, IP or hostname"
                 },
+                "localUrl": {
+                  "title": "Local URL",
+                  "type": "string",
+                  "description": "Optional alternative URL preferred when it is reachable from your browser (e.g. a LAN address)"
+                },
+                "localUrlTimeout": {
+                  "title": "Local URL Probe Timeout",
+                  "type": "number",
+                  "default": 1500,
+                  "description": "For local URLs, ms to wait for the Local URL reachability probe before falling back to normal URL"
+                },
+                "localUrlCheckInterval": {
+                  "title": "Local URL Re-check Interval",
+                  "type": "number",
+                  "default": 0,
+                  "description": "For local URLs, seconds between background re-checks of the Local URL. 0 = only check on page load"
+                },
                 "displayData": {
                   "title": "Display Data",
                   "type": "object",

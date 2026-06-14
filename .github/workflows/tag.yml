@@ -179,6 +179,7 @@ jobs:
             git commit -m "🔖 Bump version to $NEW_VERSION"
             git push
             echo "bumped=true" >> "$GITHUB_OUTPUT"
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
       - name: 🏷️ Create and push tag
@@ -285,9 +286,9 @@ jobs:
                     `this has now been implemented${byLine} in #${prNumber},`,
                     `and will be released shortly in ${version} 😇`,
                   ];
-                  if (isOld) parts.push(`\n\nWe're sorry this one took so long 😔`);
+                  if (isOld) parts.push(`\nWe're sorry this one took so long 😔`);
                   if (isNew) {
-                    parts.push(`\n\nIf you're enjoying Dashy, consider ` +
+                    parts.push(`\nIf you're enjoying Dashy, consider ` +
                       `[sponsoring us](https://github.com/sponsors/lissy93) on GitHub to help with development 💖`);
                   }
                   parts.push(`<!-- ${marker} -->`);
@@ -329,11 +330,13 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || '' }}
           PR_TITLE: ${{ github.event.pull_request.title || '' }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
           REPO_URL: ${{ github.server_url }}/${{ github.repository }}
           NEEDS_BUMP: ${{ steps.check_pr.outputs.needs_bump }}
           NEEDS_TAG: ${{ steps.check_pr.outputs.needs_tag }}
           ISSUES: ${{ steps.issues.outputs.numbers }}
           BUMPED: ${{ steps.bump.outputs.bumped }}
+          BUMP_SHA: ${{ steps.bump.outputs.sha }}
           TAG_OUTCOME: ${{ steps.tag.outcome }}
           TAG_RESULT: ${{ steps.tag.outputs.result }}
           TAG_VERSION: ${{ steps.tag.outputs.version }}
@@ -352,11 +355,18 @@ jobs:
             if [ "$IS_MANUAL" = "true" ]; then
               echo "| Trigger | Manual dispatch |"
             elif [ -n "$PR_NUMBER" ]; then
-              echo "| PR | [#${PR_NUMBER}](${REPO_URL}/pull/${PR_NUMBER}) — ${PR_TITLE} |"
+              echo "| PR | [#${PR_NUMBER}](${REPO_URL}/pull/${PR_NUMBER}): ${PR_TITLE} |"
+            fi
+            if [ -n "$PR_AUTHOR" ]; then
+              echo "| Author | [@${PR_AUTHOR}](${REPO_URL%/*/*}/${PR_AUTHOR}) |"
+            fi
+
+            if [ "$NEEDS_TAG" = "false" ]; then
+              echo "| Result | ⏭️ No code changes, nothing to do |"
             fi
 
             if [ "$BUMPED" = "true" ]; then
-              echo "| Version bump | ✅ \`${VERSION}\` |"
+              echo "| Version bump | ✅ \`${VERSION}\` ([\`${BUMP_SHA:0:7}\`](${REPO_URL}/commit/${BUMP_SHA})) |"
             else
               echo "| Version bump | ⏭️ Skipped |"
             fi

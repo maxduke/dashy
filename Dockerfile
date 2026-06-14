@@ -45,7 +45,8 @@ RUN apk upgrade --no-cache \
  && apk add --no-cache tzdata tini iputils-ping \
  && apk add --no-cache --virtual .setcap libcap-setcap \
  && setcap cap_net_raw+ep "$(readlink -f "$(command -v ping)")" \
- && apk del .setcap
+ && apk del .setcap \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 COPY --chown=node:node --from=deps  /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist

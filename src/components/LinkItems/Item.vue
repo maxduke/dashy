@@ -5,7 +5,7 @@
       @contextmenu.prevent
       @mouseup.right="openContextMenu"
       v-longPress="true"
-      :href="item.url"
+      :href="effectiveUrl"
       :target="anchorTarget"
       :class="`item ${makeClassList}`"
       v-tooltip="getTooltipOptions()"
