@@ -31,6 +31,7 @@ const systemInfo = require('./system-info'); // Basic system info, for resource 
 const sslServer = require('./ssl-server'); // TLS-enabled web server
 const corsProxy = require('./cors-proxy'); // Enables API requests to CORS-blocked services
 const getUser = require('./get-user'); // Enables server side user lookup
+const { apiEnabledGate, apiErrorHandler, createApiRouter } = require('./api'); // Opt-in REST API
 
 const { loadOidcSettings, createOidcMiddleware, maybeBootstrapConfig } = require('./auth-oidc');
 
@@ -44,6 +45,7 @@ const ENDPOINTS = {
   systemInfo: '/system-info',
   corsProxy: '/cors-proxy',
   getUser: '/get-user',
+  api: '/api',
 };
 
 /* Read package version once at startup, so healthcheck never touches the disk per-request */
@@ -298,6 +300,14 @@ const app = express()
       safeEnd(res, errBody(e));
     }
   }))
+  // REST API for reading / writing config files (no-op 404 unless ENABLE_API=true)
+  .use(ENDPOINTS.api, apiEnabledGate, createApiRouter({
+    protectConfig,
+    requireAdmin,
+    authIsConfigured,
+    onConfigSaved: (filename, newConf) => { if (filename === 'conf.yml') config = newConf; },
+  }))
+  .use(ENDPOINTS.api, apiErrorHandler)
   // Middleware to serve any .yml/.yaml files in USER_DATA_DIR with optional protection
   // Note: returns stripped version if auth configured but not yet authenticated
   .get(/\.ya?ml$/i, bootstrapAuth, (req, res) => {
