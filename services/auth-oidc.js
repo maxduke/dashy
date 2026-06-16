@@ -22,7 +22,9 @@ function loadOidcSettings(authConfig) {
   if (!authConfig || typeof authConfig !== 'object') return null;
 
   if (authConfig.enableOidc && authConfig.oidc) {
-    const { endpoint, clientId, adminGroup, adminRole } = authConfig.oidc;
+    const {
+      endpoint, clientId, adminGroup, adminRole, allowedIssuers,
+    } = authConfig.oidc;
     if (!endpoint || !clientId) return null;
     return {
       kind: 'oidc',
@@ -30,6 +32,8 @@ function loadOidcSettings(authConfig) {
       clientId: String(clientId),
       adminGroup: adminGroup || null,
       adminRole: adminRole || null,
+      allowedIssuers: Array.isArray(allowedIssuers) && allowedIssuers.length
+        ? allowedIssuers.map(String) : null,
     };
   }
 
@@ -116,7 +120,7 @@ function createOidcMiddleware(settings, { permissive = false } = {}) {
     try {
       const { canonicalIssuer, jwks } = await getIssuerContext(settings.issuer);
       const { payload } = await jwtVerify(token, jwks, {
-        issuer: canonicalIssuer,
+        issuer: settings.allowedIssuers || canonicalIssuer,
         audience: settings.clientId,
         clockTolerance: '30s',
       });

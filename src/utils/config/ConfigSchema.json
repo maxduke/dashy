@@ -661,6 +661,12 @@
                   "type": "boolean",
                   "default": false,
                   "description": "If set to true, Dashy automatically renews your session in the background before it expires. Requires your OIDC provider to issue refresh tokens"
+                },
+                "allowedIssuers": {
+                  "title": "Allowed Token Issuers",
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of issuer URLs to accept tokens from, overriding the issuer in the discovery document. Only needed for multi-tenant providers where the token issuer differs from the configured endpoint"
                 }
               }
             },

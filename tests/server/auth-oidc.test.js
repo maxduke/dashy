@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { deriveIsAdmin } from '../../services/auth-oidc';
+import { deriveIsAdmin, loadOidcSettings } from '../../services/auth-oidc';
 
 const oidc = { kind: 'oidc', clientId: 'dashy', adminGroup: 'admins', adminRole: null };
 const keycloak = { kind: 'keycloak', clientId: 'dashy', adminGroup: null, adminRole: 'admin' };
@@ -31,5 +31,23 @@ describe('deriveIsAdmin', () => {
     expect(deriveIsAdmin(null, oidc)).toBe(false);
     expect(deriveIsAdmin({}, oidc)).toBe(false);
     expect(deriveIsAdmin({ groups: ['admins'] }, { ...oidc, adminGroup: null })).toBe(false);
+  });
+});
+
+describe('loadOidcSettings allowedIssuers', () => {
+  const base = { enableOidc: true, oidc: { endpoint: 'https://idp.example.com', clientId: 'dashy' } };
+
+  it('defaults to null when not set', () => {
+    expect(loadOidcSettings(base).allowedIssuers).toBe(null);
+  });
+
+  it('keeps a non-empty list of issuers', () => {
+    const cfg = { ...base, oidc: { ...base.oidc, allowedIssuers: ['https://a.example.com', 'https://b.example.com'] } };
+    expect(loadOidcSettings(cfg).allowedIssuers).toEqual(['https://a.example.com', 'https://b.example.com']);
+  });
+
+  it('is null for an empty or non-array value', () => {
+    expect(loadOidcSettings({ ...base, oidc: { ...base.oidc, allowedIssuers: [] } }).allowedIssuers).toBe(null);
+    expect(loadOidcSettings({ ...base, oidc: { ...base.oidc, allowedIssuers: 'nope' } }).allowedIssuers).toBe(null);
   });
 });
