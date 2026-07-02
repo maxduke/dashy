@@ -1,11 +1,9 @@
 /**
- * Returns Authorization header for internal API requests when OIDC/KC configured
- * Uses the id_token which is already stored locally after successful login
+ * Auth for internal API requests when OIDC/Keycloak is configured.
+ * Uses the id_token stashed in localStorage after a successful login.
  *
- * Will return `null`, and cause the caller to fall through, when:
- *  - no token has been stashed
- *  - the stashed token can't be parsed
- *  - the token has already expired
+ * `getApiAuthHeader()` returns the Bearer header, or null when the token is unusable.
+ * `getApiAuthState()` returns { ok, reason, header? }, to say if/why token failed
  */
 
 import { localStorageKeys } from '@/utils/config/defaults';
@@ -17,27 +15,38 @@ function decodeBase64Url(input) {
   return atob(pad ? padded + '='.repeat(4 - pad) : padded);
 }
 
-/* Check JWT isn't expired, the server will handle the actual verification */
-function isExpired(token) {
-  try {
-    const [, payload] = token.split('.');
-    if (!payload) return true;
-    const claims = JSON.parse(decodeBase64Url(payload));
-    if (typeof claims.exp !== 'number') return false;
-    return claims.exp * 1000 <= Date.now();
-  } catch {
-    return true;
-  }
+const tokenParts = (token) => (typeof token === 'string' ? token.split('.') : []);
+
+function decodeClaims(token) {
+  const [, payload] = tokenParts(token);
+  if (!payload) throw new Error('Missing token payload');
+  return JSON.parse(decodeBase64Url(payload));
 }
 
-/* Returns { Authorization: 'Bearer …' } or null if no usable token is available */
-export default function getApiAuthHeader() {
+export function getApiAuthState() {
   let token;
   try {
     token = localStorage.getItem(localStorageKeys.ID_TOKEN);
   } catch {
-    return null;
+    return { ok: false, reason: 'storage' };
   }
-  if (!token || isExpired(token)) return null;
-  return { Authorization: `Bearer ${token}` };
+  if (!token) return { ok: false, reason: 'missing' };
+  if (tokenParts(token).length === 5) return { ok: false, reason: 'encrypted-jwe' };
+  if (tokenParts(token).length !== 3) return { ok: false, reason: 'malformed' };
+  let claims;
+  try {
+    claims = decodeClaims(token);
+    if (typeof claims.exp === 'number' && claims.exp * 1000 <= Date.now()) {
+      return { ok: false, reason: 'expired' };
+    }
+  } catch {
+    return { ok: false, reason: 'malformed' };
+  }
+  return { ok: true, reason: 'valid', header: { Authorization: `Bearer ${token}` } };
+}
+
+/* Returns { Authorization: 'Bearer...' } or null if no usable token */
+export default function getApiAuthHeader() {
+  const auth = getApiAuthState();
+  return auth.ok ? auth.header : null;
 }

@@ -72,6 +72,17 @@ class KeycloakAuth {
     this.keycloakClient.logout();
   }
 
+  async renewForApiRequest() {
+    try {
+      const refreshed = await this.keycloakClient.updateToken(30);
+      if (refreshed) this.storeKeycloakInfo();
+      return Boolean(getApiAuthHeader());
+    } catch (err) {
+      ErrorHandler('Keycloak token renewal failed', err);
+      return false;
+    }
+  }
+
   storeKeycloakInfo() {
     if (this.keycloakClient.tokenParsed && typeof this.keycloakClient.tokenParsed === 'object') {
       const {

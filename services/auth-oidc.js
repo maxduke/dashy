@@ -112,6 +112,9 @@ function deriveIsAdmin(claims, settings) {
 function createOidcMiddleware(settings, { permissive = false } = {}) {
   return async (req, res, next) => {
     const header = req.headers.authorization || '';
+    if (/^Basic\s+/i.test(header)) {
+      console.warn('[auth-oidc] expected Bearer token, received Basic auth header'); // eslint-disable-line no-console
+    }
     const match = header.match(/^Bearer\s+(.+)$/i);
     if (!match) return next(); // No token attached, let downstream gates decide
     const token = match[1].trim();

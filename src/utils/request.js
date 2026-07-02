@@ -8,7 +8,10 @@
  */
 
 import { makeBasicAuthHeaders } from '@/utils/auth/Auth';
-import getApiAuthHeader from '@/utils/auth/getApiAuthHeader';
+import { getApiAuthState } from '@/utils/auth/getApiAuthHeader';
+import { getOidcAuth, isOidcEnabled } from '@/utils/auth/OidcAuth';
+import { getKeycloakAuth, isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
+import { statusErrorMsg, statusMsg } from '@/utils/logging/CoolConsole';
 
 /** Check if a request URL targets the local Dashy server */
 function isLocalRequest(url) {
@@ -17,6 +20,33 @@ function isLocalRequest(url) {
   const { origin } = window.location;
   const domain = import.meta.env.VITE_APP_DOMAIN;
   return url.startsWith(origin) || (domain && url.startsWith(domain));
+}
+
+function hasAuthorization(headers) {
+  return Object.keys(headers).some((key) => key.toLowerCase() === 'authorization');
+}
+
+function ssoState() {
+  return { oidc: isOidcEnabled(), keycloak: isKeycloakEnabled() };
+}
+
+/* Convert string key from backend into human issue of why bearer token failed */
+function reportBearerIssue(reason) {
+  if (reason === 'missing') return;
+  const messages = {
+    expired: 'SSO token expired.',
+    malformed: 'SSO token is malformed; sign in again if renewal does not recover it.',
+    'encrypted-jwe': 'SSO token is encrypted. Dashy needs signed JWT tokens, not encrypted JWE tokens.',
+    storage: 'SSO token could not be read from browser storage.',
+  };
+  statusErrorMsg('SSO', messages[reason] || `SSO token is not usable (${reason}).`);
+}
+
+/* Triggers OIDC session renewal to enabled provider (called if get 401) */
+async function renewSsoSession({ oidc, keycloak }) {
+  if (oidc) return getOidcAuth()?.renewForApiRequest?.() || false;
+  if (keycloak) return getKeycloakAuth()?.renewForApiRequest?.() || false;
+  return false;
 }
 
 class RequestError extends Error {
@@ -35,7 +65,7 @@ class RequestError extends Error {
  * @param {Object} config - { method, url, headers, data, timeout, params }
  * @returns {Promise<{data, status, statusText, headers}>}
  */
-async function makeRequest(config) {
+async function makeRequest(config, retriedAfterRenew = false) {
   const {
     method = 'GET',
     url,
@@ -67,10 +97,15 @@ async function makeRequest(config) {
 
   // For local API requests, attach auth headers when configured
   // Bearer (OIDC / Keycloak id_token) takes precedence over basic-auth cookie header
-  if (isLocalRequest(fullUrl) && !fetchOptions.headers.Authorization) {
-    const bearer = getApiAuthHeader();
-    if (bearer) {
-      Object.assign(fetchOptions.headers, bearer);
+  const isLocal = isLocalRequest(fullUrl);
+  const sso = isLocal ? ssoState() : null;
+
+  if (isLocal && !hasAuthorization(fetchOptions.headers)) {
+    const bearer = getApiAuthState();
+    if (bearer.ok) {
+      Object.assign(fetchOptions.headers, bearer.header);
+    } else if (sso.oidc || sso.keycloak) {
+      reportBearerIssue(bearer.reason);
     } else {
       const authConfig = makeBasicAuthHeaders();
       if (authConfig.headers) {
@@ -111,6 +146,11 @@ async function makeRequest(config) {
 
     // Throw on non-2xx (matching axios behavior)
     if (!res.ok) {
+      if (res.status === 401 && isLocal && !retriedAfterRenew && (sso.oidc || sso.keycloak)) {
+        statusMsg('SSO', 'API request was unauthorized; attempting session renewal.');
+        if (await renewSsoSession(sso)) return makeRequest(config, true);
+        statusErrorMsg('SSO', 'Session renewal failed; reload or sign in again.');
+      }
       throw new RequestError(
         `Request failed with status ${res.status}`,
         { response },
