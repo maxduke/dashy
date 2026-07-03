@@ -251,7 +251,7 @@ The following icon types are supported:
 
 Dashy has two optional features to check if each app/service or host is up and responding, then display a small status indicator icon. Hovering over it will show additional stats like response time and status code.
 
-App/Service status is checked by calling an URL and analyzing its HTTP response code. Host status is checked by sending a real ping ICMP request to the host. Both checks can be done at the same time on the same item. In this cas, two status indicators will show up and behave independantly according to the global and item settings for each feature.
+App/Service status is checked by calling an URL and analyzing its HTTP response code. Host status is checked by sending a real ping ICMP request to the host. Both checks can be done at the same time on the same item. In this case, two status indicators will show up and behave independantly according to the global and item settings for each feature.
 
 Status indicators can be globally enabled by setting `appConfig.statusCheck: true` for app/service and  `appConfig.pingCheck: true` for hosts or enabled/disabled on a per-item basis. Statuses are checked on page load, but you can allow continuous polling by specifying a time interval between checks, in seconds under `appConfig.statusCheckInterval` and `appConfig.pingCheckInterval`. You can also use a different endpoint for app/service status checking, with `statusCheckUrl`, and if needed, pass in custom headers under `statusCheckHeaders`.
 
