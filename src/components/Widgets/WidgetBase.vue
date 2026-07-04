@@ -95,6 +95,7 @@ const COMPAT = {
   'gl-system-load': 'GlSystemLoad',
   'gl-uptime': 'GlancesUptime',
   'gl-cpu-temp': 'GlCpuTemp',
+  'gl-gpu': 'GlGpu',
   'gluetun-status': 'GluetunStatus',
   'health-checks': 'HealthChecks',
   'hackernews-trending': 'HackernewsTrending',

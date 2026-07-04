@@ -460,7 +460,12 @@
       "disk-file-system": "File System",
       "disk-io-read": "Read",
       "disk-io-write": "Write",
-      "system-load-desc": "Number of processes waiting in the run-queue, averaged across all cores"
+      "system-load-desc": "Number of processes waiting in the run-queue, averaged across all cores",
+      "gpu-usage": "Usage",
+      "gpu-memory": "Memory",
+      "gpu-temperature": "Temp",
+      "gpu-fan-speed": "Fan",
+      "gpu-none": "No GPU detected"
     },
     "system-info": {
       "uptime": "Uptime"
