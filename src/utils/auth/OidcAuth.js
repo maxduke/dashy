@@ -2,7 +2,7 @@ import ConfigAccumulator from '@/utils/config/ConfigAccumalator';
 import { localStorageKeys } from '@/utils/config/defaults';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import { statusMsg, statusErrorMsg } from '@/utils/logging/CoolConsole';
-import getApiAuthHeader from '@/utils/auth/getApiAuthHeader';
+import getApiAuthHeader, { getApiAuthState } from '@/utils/auth/getApiAuthHeader';
 import i18n from '@/utils/i18n';
 import { toast } from '@/utils/Toast';
 import $store from '@/store';
@@ -48,6 +48,9 @@ const isOidcGuestAccessEnabled = () => {
 class OidcAuth {
   constructor(UserManager, WebStorageStateStore) {
     const { auth } = getAppConfig();
+    if (!auth?.oidc?.endpoint || !auth?.oidc?.clientId) {
+      throw new Error('OIDC is enabled but not correctly configured, please check the docs');
+    }
     const {
       clientId,
       endpoint,
@@ -146,6 +149,13 @@ class OidcAuth {
         setTimeout(() => window.location.reload(), 250);
         return true;
       }
+      // But if the token is still good, so we don't refuse it
+      if (getApiAuthState().ok) {
+        throw new Error(
+          'OIDC login succeeded, but Dashy still received unauthenticated config. '
+          + 'Check server logs, proxy Authorization headers, and stale service worker/cache state.',
+        );
+      }
       await this.userManager.removeUser();
       localStorage.removeItem(localStorageKeys.ID_TOKEN);
       await this.redirectToIdp();
@@ -174,10 +184,10 @@ class OidcAuth {
         this.persistUserInfo(user);
         return true;
       }
-      statusErrorMsg('OIDC', 'Silent renewal completed but no fresh id_token was issued; '
+      ErrorHandler('OIDC silent renewal completed but no fresh id_token was issued; '
         + 'your provider may not reissue id_tokens on refresh.');
     } catch (err) {
-      statusErrorMsg('OIDC', 'Silent token renewal failed, using interactive sign-in', err);
+      ErrorHandler('OIDC silent token renewal failed, using interactive sign-in', err);
     }
     return false;
   }
@@ -259,7 +269,7 @@ class OidcAuth {
     try {
       await this.userManager.signoutRedirect();
     } catch (reason) {
-      statusErrorMsg('logout', 'could not log out. Redirecting to OIDC instead', reason);
+      ErrorHandler('OIDC logout failed, redirecting to provider instead', reason);
       window.location.href = this.userManager.settings.authority;
     }
   }
