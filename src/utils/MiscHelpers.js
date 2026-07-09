@@ -97,13 +97,33 @@ export const capitalize = (str) => {
   return words.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
 };
 
+/* Scales a value into the largest fitting unit from `sizes`, at base `k` */
+const convertToUnit = (value, k, sizes, decimals) => {
+  const magnitude = Math.floor(Math.log(Math.abs(value)) / Math.log(k));
+  const i = Math.min(Math.max(magnitude, 0), sizes.length - 1);
+  return `${parseFloat((value / (k ** i)).toFixed(decimals))} ${sizes[i]}`;
+};
+
 /* Given a mem size in bytes, will return it in appropriate unit */
-export const convertBytes = (bytes, decimals = 2) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / (k ** i)).toFixed(decimals))} ${sizes[i]}`;
+export const convertBytes = (bytes, decimals = 2) => (
+  convertToUnit(bytes, 1024, ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'], decimals)
+);
+
+/* Given a rate in bits per second, will return it in appropriate unit */
+export const convertBitrate = (bits, decimals = 2) => (
+  convertToUnit(bits, 1000, ['bps', 'Kbps', 'Mbps', 'Gbps', 'Tbps', 'Pbps'], decimals)
+);
+
+/* Given a number of seconds returns more human duration, like '6d 9h' or '4m 20s' */
+export const convertDuration = (seconds) => {
+  let rest = Math.round(Math.abs(seconds));
+  const parts = [];
+  [['d', 86400], ['h', 3600], ['m', 60], ['s', 1]].forEach(([unit, size]) => {
+    const amount = Math.floor(rest / size);
+    rest -= amount * size;
+    if (amount) parts.push(`${amount}${unit}`);
+  });
+  return parts.slice(0, 2).join(' ') || '0s';
 };
 
 /* Round a number to thousands, millions, billions or trillions and suffix

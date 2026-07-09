@@ -42,6 +42,10 @@ describe('CustomApiHelpers - formatValue', () => {
     expect(formatValue('abc', { format: 'number', locale: 'en-US' })).toBe('abc');
   });
 
+  it('float: is an alias of number', () => {
+    expect(formatValue(1234.5, { format: 'float', locale: 'en-US' })).toBe('1,234.5');
+  });
+
   it('percent: treats the value as an already-computed percentage', () => {
     expect(formatValue(42, { format: 'percent', locale: 'en-US' })).toBe('42%');
   });
@@ -61,6 +65,70 @@ describe('CustomApiHelpers - formatValue', () => {
 
   it('size: counts object keys', () => {
     expect(formatValue({ a: 1, b: 2 }, { format: 'size' }, { a: 1, b: 2 })).toBe('2');
+  });
+
+  it('bytes: auto-selects a readable unit', () => {
+    expect(formatValue(1073741824, { format: 'bytes' })).toBe('1 GB');
+  });
+
+  it('bytes: passes through non-numeric input', () => {
+    expect(formatValue('abc', { format: 'bytes' })).toBe('abc');
+  });
+
+  it('bytes: handles zero, fractional and negative values', () => {
+    expect(formatValue(0, { format: 'bytes' })).toBe('0 Bytes');
+    expect(formatValue(0.5, { format: 'bytes' })).toBe('0.5 Bytes');
+    expect(formatValue(-1073741824, { format: 'bytes' })).toBe('-1 GB');
+  });
+
+  it('bitrate: auto-selects a readable unit', () => {
+    expect(formatValue(2500000, { format: 'bitrate' })).toBe('2.5 Mbps');
+  });
+
+  it('duration: shows seconds as a compact time', () => {
+    expect(formatValue(93784, { format: 'duration' })).toBe('1d 2h');
+    expect(formatValue(330, { format: 'duration' })).toBe('5m 30s');
+    expect(formatValue(0, { format: 'duration' })).toBe('0s');
+  });
+
+  it('duration: passes through non-numeric input', () => {
+    expect(formatValue('abc', { format: 'duration' })).toBe('abc');
+  });
+
+  it('remap: swaps a matching value', () => {
+    const remap = [{ value: 0, to: 'Down' }, { value: 1, to: 'Up' }];
+    expect(formatValue(1, { format: 'text', remap })).toBe('Up');
+    expect(formatValue('1', { format: 'text', remap })).toBe('Up');
+  });
+
+  it('remap: `any` acts as a catch-all', () => {
+    const remap = [{ value: 0, to: 'Down' }, { any: true, to: 'Unknown' }];
+    expect(formatValue(7, { format: 'text', remap })).toBe('Unknown');
+  });
+
+  it('remap: leaves unmatched values alone', () => {
+    expect(formatValue(7, { format: 'text', remap: [{ value: 0, to: 'Down' }] })).toBe('7');
+  });
+
+  it('scale: multiplies by a numeric factor before formatting', () => {
+    expect(formatValue(2, { format: 'number', scale: 1024, locale: 'en-US' })).toBe('2,048');
+  });
+
+  it('scale: accepts a fraction string', () => {
+    expect(formatValue(32, { format: 'number', scale: '1/16', locale: 'en-US' })).toBe('2');
+  });
+
+  it('scale: ignores an invalid factor', () => {
+    expect(formatValue(5, { format: 'number', scale: 'abc', locale: 'en-US' })).toBe('5');
+    expect(formatValue(5, { format: 'number', scale: '1/0', locale: 'en-US' })).toBe('5');
+  });
+
+  it('prefix and suffix wrap the formatted value', () => {
+    expect(formatValue(42, { format: 'number', prefix: '$', suffix: ' USD', locale: 'en-US' })).toBe('$42 USD');
+  });
+
+  it('prefix/suffix are skipped when the value is empty', () => {
+    expect(formatValue(null, { format: 'text', suffix: ' TB' })).toBe('');
   });
 });
 

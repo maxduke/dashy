@@ -3346,7 +3346,11 @@ Each item in `mappings` accepts:
 --- | --- | --- | ---
 **`field`** | `string` | _Optional_ | Dot-path to the value, e.g. `path.to.key` or `items.0.name`. Omit to use the response root (useful with `size`)
 **`label`** | `string` | _Optional_ | Label shown beside the value
-**`format`** | `string` | _Optional_ | One of `text` (default), `number`, `percent`, `date`, `relativeDate` or `size`
+**`format`** | `string` | _Optional_ | One of `text` (default), `number`, `percent`, `bytes`, `bitrate`, `duration`, `date`, `relativeDate` or `size`
+**`scale`** | `number` or `string` | _Optional_ | Multiply the value before formatting. A number or fraction string, e.g. `1024` or `1/16`
+**`prefix`** | `string` | _Optional_ | Text prepended to the formatted value
+**`suffix`** | `string` | _Optional_ | Text appended to the formatted value
+**`remap`** | `array` | _Optional_ | Swap raw values for display text, e.g. `0` → `Down`. Each entry has `value` and `to`; an entry with `any: true` matches everything else
 **`locale`** | `string` | _Optional_ | Locale for `number`/`percent`/`date`/`relativeDate`, e.g. `nl`. Defaults to the browser locale
 **`dateStyle`** | `string` | _Optional_ | For `date` format. One of `full`, `long` (default), `medium`, `short`
 **`timeStyle`** | `string` | _Optional_ | For `date` format. One of `full`, `long`, `medium`, `short`
@@ -3356,6 +3360,9 @@ Each item in `mappings` accepts:
 
 Notes:
 - **`percent`** treats the value as an already-computed percentage, so `42` is shown as `42%`
+- **`bytes`** and **`bitrate`** auto-select a unit: `1073741824` → `1 GB`, `2500000` → `2.5 Mbps`
+- **`duration`** shows seconds as a compact time: `3665` → `1h 1m`
+- **`scale`** is applied before formatting, useful for unit conversions — e.g. for an API reporting kilobytes, `scale: 1024` with `format: bytes`
 - **`size`** returns the number of items in an array (or keys in an object) — pair it with an omitted `field` to count the response root
 - For APIs that don't send CORS headers (most self-hosted services), set the widget-level `useProxy: true` to route the request through Dashy's server-side proxy
 
@@ -3376,6 +3383,24 @@ Notes:
       - field: pushed_at
         label: Last Push
         format: relativeDate
+```
+
+Or, human-readable disk usage from a [Glances](https://nicolargo.github.io/glances/) instance:
+
+```yaml
+- type: customapi
+  useProxy: true
+  options:
+    url: http://192.168.0.1:61208/api/4/fs
+    mappings:
+      - field: 0.mnt_point
+        label: Mount
+      - field: 0.used
+        label: Used
+        format: bytes
+      - field: 0.percent
+        label: Used %
+        format: percent
 ```
 
 #### Info

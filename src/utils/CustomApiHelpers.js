@@ -1,4 +1,5 @@
 /* Field resolution and value formatting for the CustomApi widget */
+import { convertBytes, convertBitrate, convertDuration } from '@/utils/MiscHelpers';
 
 /* Get a nested value from an object by dot-path, e.g. 'a.b.0.c'. Empty path returns the root */
 export const resolveField = (obj, path) => {
@@ -40,8 +41,24 @@ const formatRelativeDate = (raw, mapping, locale) => {
   return rtf.format(Math.round(diffSecs / period.secs), period.unit);
 };
 
+/* Multiply a numeric value by a mapping's `scale` — a number or fraction string like '1/16' */
+const applyScale = (raw, scale) => {
+  if (!scale) return raw;
+  const n = Number(raw);
+  const [top, bottom = 1] = String(scale).split('/').map(Number);
+  const factor = top / bottom;
+  return (Number.isNaN(n) || !Number.isFinite(factor)) ? raw : n * factor;
+};
+
+/* Swap a value for a matching remap entry's `to`, e.g. 0 → 'Down'. `any: true` matches all */
+const applyRemap = (raw, remaps) => {
+  if (!Array.isArray(remaps)) return raw;
+  const match = remaps.find((r) => r && r.to !== undefined && (r.any || String(r.value) === String(raw)));
+  return match ? match.to : raw;
+};
+
 /* Format a raw value per a mapping's `format`. `root` is the full response, used by `size` */
-export const formatValue = (raw, mapping = {}, root) => {
+const applyFormat = (raw, mapping, root) => {
   const format = mapping.format || 'text';
   const locale = mapping.locale || navigator.language;
 
@@ -54,27 +71,45 @@ export const formatValue = (raw, mapping = {}, root) => {
   }
 
   if (raw == null) return '';
+  const value = applyScale(applyRemap(raw, mapping.remap), mapping.scale);
 
   switch (format) {
-    case 'number': {
-      const n = Number(raw);
-      return Number.isNaN(n) ? String(raw) : new Intl.NumberFormat(locale).format(n);
+    case 'number':
+    case 'float': {
+      const n = Number(value);
+      return Number.isNaN(n) ? String(value) : new Intl.NumberFormat(locale).format(n);
     }
     case 'percent': {
-      const n = Number(raw);
-      return Number.isNaN(n) ? String(raw)
+      const n = Number(value);
+      return Number.isNaN(n) ? String(value)
         : new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 2 }).format(n / 100);
     }
+    case 'bytes':
+    case 'bitrate': {
+      const n = Number(value);
+      if (Number.isNaN(n)) return String(value);
+      return format === 'bytes' ? convertBytes(n) : convertBitrate(n);
+    }
+    case 'duration': {
+      const n = Number(value);
+      return Number.isNaN(n) ? String(value) : convertDuration(n);
+    }
     case 'date': {
-      const date = new Date(raw);
-      if (Number.isNaN(date.getTime())) return String(raw);
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
       const opts = { dateStyle: mapping.dateStyle || 'long' };
       if (mapping.timeStyle) opts.timeStyle = mapping.timeStyle;
       return new Intl.DateTimeFormat(locale, opts).format(date);
     }
     case 'relativeDate':
-      return formatRelativeDate(raw, mapping, locale);
+      return formatRelativeDate(value, mapping, locale);
     default:
-      return String(raw);
+      return String(value);
   }
+};
+
+/* Formatted value, wrapped with any `prefix`/`suffix` */
+export const formatValue = (raw, mapping = {}, root) => {
+  const out = applyFormat(raw, mapping, root);
+  return out === '' ? out : `${mapping.prefix || ''}${out}${mapping.suffix || ''}`;
 };
