@@ -29,6 +29,7 @@ appConfig:
       adminRole: dashy-admin             # Or grant admin by role instead
       enableSilentRenew: true            # Refresh the session in the background before it expires
       # allowedIssuers: []               # Only for multi-tenant providers to override discovery document
+      # disableServerSideCheck: false    # Leave as false / unset. Setting to true makes auth just client-side
 ```
 
 Because Dashy is a SPA, a [public client](https://datatracker.ietf.org/doc/html/rfc6749#section-2.1) registration with PKCE is needed.
@@ -69,11 +70,22 @@ Set `enableGuestAccess: true` to let people view the dashboard read-only without
 
 If you turn on the service worker for offline use (`enableServiceWorker: true`), turn on `enableAuthProxyCompat: true` as well. Without it, when your session expires the cached app can keep showing the old page instead of letting the login redirect through. With it on, Dashy spots the expired session on load, drops the service worker, and reloads so you can sign in again.
 
+
+
 ## How server-side enforcement works
 
 Dashy's server reads `auth.oidc` from `conf.yml` at boot, lazily fetches the OIDC discovery doc + JWKS from your `endpoint`, then verifies the `id_token` the SPA attaches to every API call as `Authorization: Bearer <id_token>`. Tokens that fail signature / issuer / audience / expiry verification are rejected with `401`. Write endpoints (`POST /config-manager/save`) additionally require the `adminGroup` (or `adminRole`) to be present in the token's `groups` / `roles` claims, and non-admins receive `403`. Unauthenticated requests for `/conf.yml` get a stripped response containing only the `auth` block plus a minimal `pageInfo`, just enough for the SPA to bootstrap the login flow. The full config is only served to authenticated users.
 
 Your IdP must include `groups` / `roles` in the id_token, not only the access token, for the admin check to work (most IdPs do this when the `groups` scope is requested).
+
+### Opting out of server-side enforcement
+
+> [!CAUTION]
+> This is not recommended (on untrusted networks), as it allows users to bypass all the server-side protection.
+
+Set `disableServerSideCheck: true` under `auth.oidc` to turn off the server-side enforcement. 
+This should only be done in a trusted environment, or where you've got your own protections in place or for when server-side verification isn't supported by your provider. It makes OIDC become a purely client-side login page.
+
 
 ## Silent token renewal
 

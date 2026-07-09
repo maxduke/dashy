@@ -672,6 +672,12 @@
                   "type": "array",
                   "items": { "type": "string" },
                   "description": "List of issuer URLs to accept tokens from, overriding the issuer in the discovery document. Only needed for multi-tenant providers where the token issuer differs from the configured endpoint"
+                },
+                "disableServerSideCheck": {
+                  "title": "Disable Server-Side Check",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If set to true, the server skips token verification and endpoint protection, making OIDC client-side only. Not recommended"
                 }
               }
             },

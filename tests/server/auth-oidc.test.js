@@ -50,4 +50,8 @@ describe('loadOidcSettings allowedIssuers', () => {
     expect(loadOidcSettings({ ...base, oidc: { ...base.oidc, allowedIssuers: [] } }).allowedIssuers).toBe(null);
     expect(loadOidcSettings({ ...base, oidc: { ...base.oidc, allowedIssuers: 'nope' } }).allowedIssuers).toBe(null);
   });
+
+  it('returns null when disableServerSideCheck is set', () => {
+    expect(loadOidcSettings({ ...base, oidc: { ...base.oidc, disableServerSideCheck: true } })).toBe(null);
+  });
 });

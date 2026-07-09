@@ -214,6 +214,7 @@ For more info, see the **[Authentication Docs](/docs/authentication.md)**
 **`scope`** | `string` | Required | The scope(s) to request from the OIDC provider
 **`enableSilentRenew`** | `boolean` | _Optional_ | If set to `true`, your session is silently renewed in the background before it expires (only works for providers which support the `offline_access` scope)
 **`allowedIssuers`** | `array` | _Optional_ | List of issuer URLs to accept tokens from. Needed for multi-tenant providers (e.g. Microsoft Entra) where the token issuer differs from the configured `endpoint`. If unset, the issuer from the discovery document is used
+**`disableServerSideCheck`** | `boolean` | _Optional_ | If `true`, the server skips token verification and endpoint protection, so OIDC is client-side only. Not recommended. Defaults to `false`
 
 **[⬆️ Back to Top](#configuring)**
 
