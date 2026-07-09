@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs'); // For opening + reading files
+const path = require('path'); // For resolving the config file path
 const yaml = require('js-yaml'); // For parsing YAML
 const Ajv = require('ajv'); // For validating with schema
 
@@ -101,7 +102,8 @@ const printFileReadError = (e) => {
 let config = {};
 
 try { // Try to open and parse the YAML file
-  config = yaml.load(fs.readFileSync(`./${process.env.USER_DATA_DIR || 'user-data'}/conf.yml`, 'utf8'));
+  const confPath = path.resolve(__dirname, '..', process.env.USER_DATA_DIR || 'user-data', 'conf.yml');
+  config = yaml.load(fs.readFileSync(confPath, 'utf8'));
   validate(config);
 } catch (e) { // Something went very wrong...
   setIsValidVariable(false);

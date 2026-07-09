@@ -156,14 +156,6 @@ For more info, see the[Multi-Page docs](/docs/pages-and-sections.md#multi-page-s
 
 ## `appConfig.auth` _(optional)_
 
-> [!NOTE]
-> Since the auth is initiated in the main app entry point (for security), a rebuild is required to apply changes to the auth configuration.
-> Run `yarn build` in the root directory, then restart the server.
-
-> [!WARNING]
-> Built-in auth should **not be used** for security-critical applications, or if your Dashy instance is publicly accessible.
-> For these, it is recommended to use an [alternate authentication method](/docs/authentication.md#alternative-authentication-methods).
-
 **Field** | **Type** | **Required**| **Description**
 --- | --- | --- | ---
 **`users`** | `array` | _Optional_ | An array of objects containing usernames and hashed passwords. If this is not provided, then authentication will be off by default, and you will not need any credentials to access the app. See [`appConfig.auth.users`](#appconfigauthusers-optional). <br>**Note** this method of authentication is handled on the client side, so for security critical situations, it is recommended to use an [alternate authentication method](/docs/authentication.md#alternative-authentication-methods).
@@ -174,6 +166,7 @@ For more info, see the[Multi-Page docs](/docs/pages-and-sections.md#multi-page-s
 **`enableOidc`** | `boolean` | _Optional_ | If set to `true`, then authentication using OIDC will be enabled. Note that you need to have a configured OIDC server and configure it with `auth.oidc`. Defaults to `false`
 **`oidc`** | `object` | _Optional_ | Config options to point Dash to your OIDC configuration. Request `enableOidc: true`. See [`auth.oidc`](#appconfigauthoidc-optional) for more info
 **`enableGuestAccess`** | `boolean` | _Optional_ | When set to `true`, an unauthenticated user will be able to access the dashboard, with read-only access, without having to login. Requires `auth.users` to be configured. Defaults to `false`.
+**`logoutRedirectUrl`** | `string` | _Optional_ | URL to redirect the user to after logging out (useful with [header auth](/docs/authentication/header-auth.md#logging-out), where you also need to end the session on your auth proxy)
 
 For more info, see the **[Authentication Docs](/docs/authentication.md)**
 

@@ -573,6 +573,11 @@
               "default": false,
               "description": "If set to true, an unauthenticated user will be able to have read-only access to dashboard, without needing to login. Requires auth to be configured."
             },
+            "logoutRedirectUrl": {
+              "title": "Logout Redirect URL",
+              "type": "string",
+              "description": "If set, the logout button will redirect here after logging out. Useful with header auth / to end auth proxy session"
+            },
             "users": {
               "title": "Users",
               "type": "array",

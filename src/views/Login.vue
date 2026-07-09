@@ -84,6 +84,7 @@ import {
   isLoggedIn,
   logout,
   isGuestAccessEnabled,
+  getLogoutRedirectUrl,
 } from '@/utils/auth/Auth';
 
 export default {
@@ -183,7 +184,12 @@ export default {
       logout();
       this.status = 'success';
       this.message = 'Logging out...';
-      this.refreshPage();
+      const redirectUrl = getLogoutRedirectUrl();
+      if (redirectUrl) {
+        setTimeout(() => { window.location.href = redirectUrl; }, 250);
+      } else {
+        this.refreshPage();
+      }
     },
     /* Logged in user redirects to home page */
     stayLoggedIn() {

@@ -24,7 +24,7 @@
 <script>
 import router from '@/router';
 import Keys from '@/utils/StoreMutations';
-import { logout as registerLogout } from '@/utils/auth/Auth';
+import { logout as registerLogout, getLogoutRedirectUrl } from '@/utils/auth/Auth';
 import { getKeycloakAuth, isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
 import { getOidcAuth, isOidcEnabled } from '@/utils/auth/OidcAuth';
 import { localStorageKeys, userStateEnum } from '@/utils/config/defaults';
@@ -72,7 +72,11 @@ export default {
       registerLogout();
       this.$store.commit(Keys.AUTH_CHANGED);
       this.$toast(this.$t('login.logout-message'));
-      setTimeout(() => router.push({ path: '/login' }), 500);
+      const redirectUrl = getLogoutRedirectUrl();
+      setTimeout(() => {
+        if (redirectUrl) window.location.href = redirectUrl;
+        else router.push({ path: '/login' });
+      }, 500);
     },
     keycloakLogout() {
       const keycloak = getKeycloakAuth();
