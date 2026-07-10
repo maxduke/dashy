@@ -33,6 +33,7 @@
 
 ## Misc
 
-- [Privacy & Security](/docs/privacy.md) - List of requests, potential issues, and security resources
+- [Privacy](/docs/privacy.md) - List of all network requests and data storage
+- [Security](/docs/security.md) - Security features, threat model, and hardening resources
 - [License](/LICENSE) - Copy of the MIT License
 - [Code of Conduct](/.github/CODE_OF_CONDUCT.md) - Contributor Covenant Code of Conduct

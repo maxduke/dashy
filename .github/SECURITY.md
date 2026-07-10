@@ -1,35 +1,46 @@
+# Security Policy
 
-Security is taken very seriously
+Thanks for helping keep Dashy and the people who use it safe. If you've found something that could put users at risk, I really appreciate you taking the time to let me know.
 
-## Supported Versions
-The current versions, and previous minor versions and / or the past 5 versions are supported. Releases either older than 5 versions, or from the last major version are no longer maintained or monitored, and hence the security of which cannot be guaranteed.
+## Reporting a security issue
+If you think you've found a security problem, please securely reach-out, either:
+- Open a [security advisory](https://github.com/lissy93/dashy/security/advisories/new) here on GitHub
+- Or email me at `security@as93.net` (PGP: [`E10EE533A8E5D6F6E231BBCD4C8DEAFFCE3B8D03`](https://keys.openpgp.org/vks/v1/by-fingerprint/E10EE533A8E5D6F6E231BBCD4C8DEAFFCE3B8D03))
 
-## Keeping your Instance of Dashy Secure
-See [Docs: Management - Security](/docs/management.md#securing)
+> [!IMPORTANT]
+> Please do not report active security issues via public means, without first giving us 30 days to fix it.
 
-## Reporting a Security Issue
-If you think you've found a critical issue, please send an email to `security@as93.net`, to encrypt it, you can use [`E10EE533A8E5D6F6E231BBCD4C8DEAFFCE3B8D03`](https://keys.openpgp.org/vks/v1/by-fingerprint/E10EE533A8E5D6F6E231BBCD4C8DEAFFCE3B8D03). You should receive a response within 48 hours.
+Please write in English only.<br>
+I'll usually get back to you within 48 hours, and give you a timeline for a fix (if applicable) - typically <30 days<br>
+Once it's confirmed and fixed, I'm happy to credit you in the release notes if you'd like.
 
-All non-critical issues can be raised as a ticket.
+## What to include
+To help me track it down quickly, it helps if you can include:
+- What kind of issue it is (for example XSS, SQL injection, and so on)
+- The source files or code involved, with a tag, branch or commit if you have one
+- Any config needed to reproduce it
+- Steps to reproduce
+- A proof of concept, if you have one
+- What an attacker could actually do with it
 
-Please include the following information:
-- Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
-- Full paths of source file(s) related to the manifestation of the issue
-- The location of the affected source code (tag/branch/commit or direct URL)
-- Any special configuration required to reproduce the issue
-- Step-by-step instructions to reproduce the issue
-- Proof-of-concept or exploit code (if possible)
-- Impact of the issue, including how an attacker might exploit the issue
+## Supported versions
+The latest minor and patch versions are supported. Previous major versions (e.g. 3.x.x and below) don't receive official security updates.
 
-This info will help with finding and fixing the issue.
+## Keeping your own instance secure
+Dashy's security posture and features are outlined in our [security docs](https://dashy.to/docs/security).
+A lot of security comes down to how and where you deploy Dashy, so we've also documented some self-hosting best practices in the [management guide](https://dashy.to/docs/management/).
 
-Please use only English.
+## Safe harbor
+If you research and report in good faith, following this policy, I won't pursue legal action against you.
+Just keep your testing to your own instance, don't access or disrupt anyone else's data, and give us time to fix things before going public.
 
-## Issues That Should Not Be Raised
-Please do not raise issues in this repo which relate to Vue or Vue CLI, we're already using the latest versions of these dependencies, so any issues here to be taken up with Vue. The same applies to other dev dependencies that are at the latest version.
+## What not to report here
+We get a LOT of false positives security reports, usually from AI scans. Be sure to verify your findings.
 
-## Known Issues
+Please don't report issues which:
+- Are not security issues (these can be raised as issue instead)
+- Already have an open security advisory
+- Are only vulnerable due to insecure deployment
+- Are documented as known-limitations or false positives
 
-> **01/09/2021** - [Inefficient Regular Expression Complexity](https://www.huntr.dev/bounties/1e8f07fc-c384-4ff9-8498-0690de2e8c31/) in Axios (Re: [CWE-1333](https://cwe.mitre.org/data/definitions/1333.html)).
-
-This ReDos vuln, was raised and fixed by @ready-research in Axios in August 2021. The issue was resolved in [`5b45711`](https://github.com/axios/axios/commit/5b457116e31db0e88fede6c428e969e87f290929), but Snyk sometime just takes a while to show updates. Dashy is using the latest version of Axios, and so is not affected by this issue.
+Please don't over-state findings (like attaching an inflated CVS score). If a report is too many inaccurate or exaggerated findings, but still has valid findings, then I then need to go and create a fresh, valid report to publish (instead of publishing yours). This is inconvenient for both of us.
