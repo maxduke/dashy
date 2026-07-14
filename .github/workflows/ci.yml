@@ -213,7 +213,7 @@ jobs:
           fetch-depth: 0
 
       - name: Scan PR Diff for Secrets
-        uses: trufflesecurity/trufflehog@v3.95.5
+        uses: trufflesecurity/trufflehog@v3.95.7
         with:
           base: ${{ github.event.pull_request.base.sha }}
           head: ${{ github.event.pull_request.head.sha }}
@@ -234,7 +234,7 @@ jobs:
           fail-on-error: true
 
       - name: Run Zizmor
-        uses: zizmorcore/zizmor-action@v0.5.6
+        uses: zizmorcore/zizmor-action@v0.5.7
         with:
           inputs: .github/workflows/
           advanced-security: false
