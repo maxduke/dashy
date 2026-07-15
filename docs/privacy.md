@@ -229,7 +229,7 @@ Dashy supports [Widgets](/docs/widgets.md) for displaying dynamic content. Below
 | [Flight Data](/docs/widgets.md#flight-data) | `https://aerodatabox.p.rapidapi.com` | [AeroDataBox Privacy Policy](https://www.aerodatabox.com/#h.p_CXtIYZWF_WQd) |
 | [Astronomy Picture of the Day](/docs/widgets.md#astronomy-picture-of-the-day) | `https://apod.as93.net` | [NASA's Privacy Policy](https://www.nasa.gov/privacy/) (via a proxy run by Dashy's author) |
 | [GitHub Trending](/docs/widgets.md#github-trending) | `https://trend.doforce.xyz` | No Policy Available |
-| [GitHub Profile Stats](/docs/widgets.md#github-profile-stats) | `https://github-readme-stats.vercel.app` | [GitHub's Privacy Policy](https://docs.github.com/en/github/site-policy/github-privacy-statement) |
+| [GitHub Profile Stats](/docs/widgets.md#github-profile-stats) | `https://api.github.com` | [GitHub's Privacy Policy](https://docs.github.com/en/github/site-policy/github-privacy-statement) |
 | [Healthchecks Status](/docs/widgets.md#healthchecks-status) | `https://healthchecks.io` | [Health-Checks Privacy Policy](https://healthchecks.io/privacy/) |
 | [Hacker News Trending](/docs/widgets.md#hackernews-trending) | `https://hacker-news.firebaseio.com` | [Y Combinator Privacy Policy](https://www.ycombinator.com/legal#privacy) |
 | [Minecraft Server Status](/docs/widgets.md#minecraft-server) | `https://api.mcsrvstat.us` | No Policy Available |

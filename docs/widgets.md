@@ -1189,38 +1189,52 @@ Displays currently trending projects on GitHub. Optionally specify a language an
 
 ### GitHub Profile Stats
 
-Display stats from your GitHub profile, using embedded cards from [anuraghazra/github-readme-stats](https://github.com/anuraghazra/github-readme-stats)
+Shows GitHub user stats (if `username`) and repos stats (for each repo in `repos`). Fetched from the GitHub API.
 
-<p align="center"><img width="380" src="https://pixelflare.cc/alicia/dashy/github-stats" /></p>
+<p align="center"><img width="600" src="https://pixelflare.cc/alicia/dashy/github-stats-widget" /></p>
 
 #### Options
 
 **Field** | **Type** | **Required** | **Description**
 --- | --- | --- | ---
-**`username`** | `string` |  Required | The GitHub username to fetch info for. E.g. `lissy93`. (Not required if `hideProfileCard` and `hideLanguagesCard` are both set to `true`)
-**`hideProfileCard`** | `boolean` |  _Optional_ | If set to `true`, the users profile card will not be shown. Defaults to `false`
-**`hideLanguagesCard`** | `boolean` |  _Optional_ | If set to `true`, the users top languages card will not be shown. Defaults to `false`
-**`repos`** | `array` |  _Optional_ | If you'd like to also display stats for some GitHub repositories, then add an array or repo names here. Specified as `[username]/[repo-name]`, e.g. `lissy93/dashy`
+**`username`** | `string` |  _Optional_ | A GitHub username, e.g. `lissy93`. If this is set, a profile card is shown, if it's unset the card isn't shown
+**`repos`** | `array` |  _Optional_ | A list of repositories to show stats for, each specified as `[owner]/[repo]`, e.g. `lissy93/dashy`
+**`token`** | `string` |  _Optional_ | An optional [GitHub token](https://github.com/settings/tokens). Used to raise the API rate limit from 60 to 5,000 requests per hour (can be set directly, or as an environment variable)
 
 #### Example
 
 ```yaml
 - type: github-profile-stats
   options:
-    username: Lissy93
-    hideLanguagesCard: true
+    username: lissy93
     repos:
     - lissy93/dashy
-    - lissy93/personal-security-checklist
-    - lissy93/twitter-sentiment-visualisation
+    - lissy93/portainer-templates
+    - lissy93/web-check
 ```
+
+Or just show the user's profile card:
+```yaml
+- type: github-profile-stats
+  options:
+    username: octocat
+```
+
+Or just show repo(s)
+```yaml
+- type: github-profile-stats
+  options:
+    repos:
+    - lissy93/dashy
+```
+
 
 #### Info
 
 - **CORS**: 🟢 Enabled
-- **Auth**: 🟢 Not Required
+- **Auth**: 🟡 Optional (a `token` raises the rate limit)
 - **Price**: 🟢 Free
-- **Host**: Managed Instance or Self-Hosted (see [anuraghazra/github-readme-stats](https://github.com/anuraghazra/github-readme-stats))
+- **Host**: GitHub ([docs.github.com/en/rest](https://docs.github.com/en/rest))
 - **Privacy**: _See [GitHub's Privacy Policy](https://docs.github.com/en/github/site-policy/github-privacy-statement)_
 
 ---

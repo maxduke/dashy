@@ -440,6 +440,14 @@
       "show-less": "Show Less",
       "open-link": "Continue Reading"
     },
+    "github-profile": {
+      "repos": "Repos",
+      "followers": "Followers",
+      "following": "Following",
+      "stars": "Stars",
+      "forks": "Forks",
+      "issues": "Issues"
+    },
     "pi-hole": {
       "status-heading": "Status"
     },
