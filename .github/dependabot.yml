@@ -12,7 +12,7 @@ updates:
     assignees:
       - lissy93
     commit-message:
-      prefix: "⬆️"
+      prefix: "⬆️ "
       prefix-development: "⬆️ "
       include: scope
     versioning-strategy: increase
@@ -21,20 +21,12 @@ updates:
         patterns:
           - "vue*"
           - "@vue/*"
-          - "v-*"
-        update-types:
-          - minor
-          - patch
-      babel:
-        patterns:
-          - "@babel/*"
         update-types:
           - minor
           - patch
       eslint:
         patterns:
           - "eslint*"
-          - "@vue/eslint-*"
         update-types:
           - minor
           - patch
@@ -51,15 +43,17 @@ updates:
         update-types:
           - minor
           - patch
+      codemirror:
+        patterns:
+          - "@codemirror/*"
+          - "@lezer/*"
+      jsonforms:
+        patterns:
+          - "@jsonforms/*"
       minor-and-patch:
         update-types:
           - minor
           - patch
-      npm-major:
-        patterns:
-          - "*"
-        update-types:
-          - major
     ignore:
       - dependency-name: "vite"
         update-types: ["version-update:semver-major"]
@@ -87,6 +81,10 @@ updates:
     commit-message:
       prefix: "⬆️ "
       include: scope
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: docker
     directory: /

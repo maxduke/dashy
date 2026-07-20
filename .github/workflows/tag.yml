@@ -70,7 +70,7 @@ jobs:
       - name: 📂 Check PR for code changes and version bump
         id: check_pr
         if: env.IS_MANUAL != 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -135,9 +135,15 @@ jobs:
       - name: 🔍 Extract referenced issues
         id: issues
         if: env.IS_MANUAL != 'true' && steps.check_pr.outputs.needs_tag == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
+            const author = context.payload.pull_request.user?.login || '';
+            if (author.startsWith('dependabot')) {
+              core.info('Dependabot PR, skipping issue references');
+              core.setOutput('numbers', '');
+              return;
+            }
             const body = context.payload.pull_request.body || '';
             const prNumber = String(context.payload.pull_request.number);
             const matches = body.match(/#(\d+)(?![a-fA-F0-9])/g);
@@ -228,7 +234,7 @@ jobs:
           && steps.check_pr.outputs.needs_tag == 'true'
           && steps.issues.outputs.numbers != ''
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           ISSUES: ${{ steps.issues.outputs.numbers }}
         with:
