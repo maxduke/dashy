@@ -122,7 +122,7 @@ First boot runs database migrations and takes a minute or two. Once the `server`
 
 ### Create the groups scope
 
-Authentik doesn't expose group membership in the id_token by default. Dashy needs it for the `adminGroup` check and for the `showForKeycloakUsers` / `hideForKeycloakUsers` visibility rules.
+Authentik doesn't expose group membership in the id_token by default. Dashy needs it for the `adminGroup` check and for the `showForGroups` / `hideForGroups` visibility rules.
 
 1. Go to **Customization > Property Mappings**
 2. Click **Create > Scope Mapping**
@@ -256,32 +256,28 @@ When you load Dashy, you'll be redirected to Authentik's login page. After signi
 
 ## 4. Groups and Visibility
 
-Once group membership is in the id_token, you can use it to hide or show pages, sections and items in Dashy. The property name is `hideForKeycloakUsers` / `showForKeycloakUsers` (the name is historical; it works for any OIDC provider, including Authentik).
+Once group membership is in the id_token, you can use it to hide or show pages, sections and items in Dashy, with `showForGroups` and `hideForGroups` under `displayData`.
 
 To make an Admin section visible only to members of `dashy-admins`:
 
 ```yaml
 displayData:
-  showForKeycloakUsers:
-    groups:
-      - dashy-admins
+  showForGroups:
+    - dashy-admins
 ```
 
-Both `showForKeycloakUsers` and `hideForKeycloakUsers` accept lists of `groups` and `roles`. If a user matches an entry they're allowed or excluded as defined.
+Both `showForGroups` and `hideForGroups` accept a list of group names (`showForRoles` / `hideForRoles` do the same for a `roles` claim). If a user matches an entry they're allowed or excluded as defined.
 
 ```yaml
 sections:
   - name: Internal Tools
     displayData:
-      showForKeycloakUsers:
-        groups: ['dashy-admins']
-      hideForKeycloakUsers:
-        groups: ['guests']
+      showForGroups: ['dashy-admins']
+      hideForGroups: ['guests']
     items:
       - title: Hidden from interns
         displayData:
-          hideForKeycloakUsers:
-            groups: ['interns']
+          hideForGroups: ['interns']
 ```
 
 

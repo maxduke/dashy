@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <div class="context-menu" v-if="show && !isMenuDisabled"
+    <div class="context-menu" v-if="show"
       :style="posX && posY ? calcPosition() : ''">
       <!-- Open Options -->
       <ul class="menu-section">
@@ -50,9 +50,6 @@ export default {
   },
   emits: ['navigateToSection', 'openEditSection', 'expandCollapseSection', 'removeSection'],
   computed: {
-    isMenuDisabled() {
-      return !!this.$store.getters.appConfig.disableContextMenu;
-    },
     isEditMode() {
       return this.$store.state.editMode;
     },

@@ -350,6 +350,7 @@ export default {
     },
     /* Open custom context menu, and set position */
     openContextMenu(e) {
+      if (this.appConfig.disableContextMenu) return; // Right-click menu disabled in config
       this.contextMenuOpen = !this.contextMenuOpen;
       if (e && window) {
         // Calculate placement based on cursor and scroll position
@@ -362,6 +363,10 @@ export default {
     /* Closes the context menu, called when user clicks literally anywhere */
     closeContextMenu() {
       this.contextMenuOpen = false;
+    },
+    /* Suppress the native right-click menu, unless the custom menu is disabled */
+    preventNativeContextMenu(e) {
+      if (!this.appConfig.disableContextMenu) e.preventDefault();
     },
     /* Copies a string to the users clipboard / shows error if not possible  */
     copyToClipboard(content) {

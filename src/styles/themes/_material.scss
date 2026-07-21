@@ -206,9 +206,6 @@ html[data-theme='material'], html[data-theme='material-dark'] {
     div {
       transition: all 0.2s linear 0s;
     }
-    .overflow-dots {
-      display: none;
-    }
     &:before {
       content: "\f054";
       font-family: FontAwesome;

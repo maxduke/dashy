@@ -39,12 +39,12 @@ The following file provides a reference of all supported configuration options.
     - [`headerAuth`](#appconfigauthheaderauth-optional) - Auth config for HeaderAuth
 - [**`sections`**](#section) - List of sections
   - [`displayData`](#sectiondisplaydata-optional) - Section display settings
-    - [`show/hideForKeycloakUsers`](#sectiondisplaydatahideforkeycloakusers-sectiondisplaydatashowforkeycloakusers-itemdisplaydatahideforkeycloakusers-and-itemdisplaydatashowforkeycloakusers) - Set user controls
+    - [`show/hideForGroups` and `show/hideForRoles`](#showforgroups-hideforgroups-showforroles-and-hideforroles) - Set group/role controls
   - [`icon`](#sectionicon-and-sectionitemicon) - Icon for a section
   - [`items`](#sectionitem) - List of items
     - [`icon`](#sectionicon-and-sectionitemicon) - Icon for an item
     - [`displayData`](#itemdisplaydata-optional) - Item display settings
-      - [`show/hideForKeycloakUsers`](#sectiondisplaydatahideforkeycloakusers-sectiondisplaydatashowforkeycloakusers-itemdisplaydatahideforkeycloakusers-and-itemdisplaydatashowforkeycloakusers) - Set user controls
+      - [`show/hideForGroups` and `show/hideForRoles`](#showforgroups-hideforgroups-showforroles-and-hideforroles) - Set group/role controls
   - [`widgets`](#sectionwidget-optional) - List of widgets
 - [**Notes**](#notes)
   - [Editing Config through the UI](#editing-config-through-the-ui)
@@ -295,8 +295,10 @@ For more info, see the **[Authentication Docs](/docs/authentication.md)**
 **`hideForUsers`** | `string[]` | _Optional_ | Current item will be visible to all users, except for those specified in this list
 **`showForUsers`** | `string[]` | _Optional_ | Current item will be hidden from all users, except for those specified in this list
 **`hideForGuests`** | `boolean` | _Optional_ | Current item will be visible for logged in users, but not for guests (see `appConfig.enableGuestAccess`). Defaults to `false`
-**`hideForKeycloakUsers`** | `object`  | _Optional_ | Current item will be visible to all keycloak users, except for those configured via these groups and roles. See `hideForKeycloakUsers`
-**`showForKeycloakUsers`** | `object`  | _Optional_ | Current item will be hidden from all keycloak users, except for those configured via these groups and roles. See `showForKeycloakUsers`
+**`hideForGroups`** | `string[]` | _Optional_ | Current item will be visible to all users, except for those in any of these SSO groups. See [Group and Role Controls](#showforgroups-hideforgroups-showforroles-and-hideforroles)
+**`showForGroups`** | `string[]` | _Optional_ | Current item will be hidden from all users, except for those in one or more of these SSO groups
+**`hideForRoles`** | `string[]` | _Optional_ | Current item will be visible to all users, except for those with any of these SSO roles
+**`showForRoles`** | `string[]` | _Optional_ | Current item will be hidden from all users, except for those with one or more of these SSO roles
 **`hideFromWorkspace`** | `boolean` | _Optional_ | Current item will be visible in the default view but not in the Workspace view sidebar. Defaults to `false`
 **`hideFromHomepage`** | `boolean` | _Optional_ | If `true`, item is hidden from the home and minimal views until matched by a search. Still visible in workspace, edit mode and single-section view. Defaults to `false`
 
@@ -334,8 +336,10 @@ For more info, see the **[Authentication Docs](/docs/authentication.md)**
 **`hideForUsers`** | `string[]` | _Optional_ | Current section will be visible to all users, except for those specified in this list
 **`showForUsers`** | `string[]` | _Optional_ | Current section will be hidden from all users, except for those specified in this list
 **`hideForGuests`** | `boolean` | _Optional_ | Current section will be visible for logged in users, but not for guests (see `appConfig.enableGuestAccess`). Defaults to `false`
-**`hideForKeycloakUsers`** | `object`  | _Optional_ | Current section will be visible to all keycloak users, except for those configured via these groups and roles. See `hideForKeycloakUsers`
-**`showForKeycloakUsers`** | `object`  | _Optional_ | Current section will be hidden from all keycloak users, except for those configured via these groups and roles. See `showForKeycloakUsers`
+**`hideForGroups`** | `string[]` | _Optional_ | Current section will be visible to all users, except for those in any of these SSO groups. See [Group and Role Controls](#showforgroups-hideforgroups-showforroles-and-hideforroles)
+**`showForGroups`** | `string[]` | _Optional_ | Current section will be hidden from all users, except for those in one or more of these SSO groups
+**`hideForRoles`** | `string[]` | _Optional_ | Current section will be visible to all users, except for those with any of these SSO roles
+**`showForRoles`** | `string[]` | _Optional_ | Current section will be hidden from all users, except for those with one or more of these SSO roles
 **`hideFromWorkspace`** | `boolean` | _Optional_ | Current section will be visible in the default view but not in the Workspace view sidebar. Defaults to `false`
 
 **[⬆️ Back to Top](#configuring)**
@@ -348,12 +352,29 @@ For more info, see the **[Authentication Docs](/docs/authentication.md)**
 
 **[⬆️ Back to Top](#configuring)**
 
-## `section.displayData.hideForKeycloakUsers`, `section.displayData.showForKeycloakUsers`, `item.displayData.hideForKeycloakUsers` and `item.displayData.showForKeycloakUsers`
+## `showForGroups`, `hideForGroups`, `showForRoles` and `hideForRoles`
+
+When using an SSO provider (Keycloak, or any OIDC provider that includes `groups` / `roles` claims in the id_token), pages, sections and items can be shown or hidden based on the user's groups and roles. Set any of these under the `displayData` of a page, section or item:
 
 **Field** | **Type**   | **Required**| **Description**
 --- |------------| --- | ---
-**`groups`** | `string[]` | _Optional_ | Current Section or Item will be hidden or shown based on the user having any of the groups in this list
-**`roles`** | `string[]` | _Optional_ | Current Section or Item will be hidden or shown based on the user having any of the roles in this list
+**`showForGroups`** | `string[]` | _Optional_ | Hidden from all users, except those in one or more of these groups
+**`hideForGroups`** | `string[]` | _Optional_ | Hidden from users in any of these groups
+**`showForRoles`** | `string[]` | _Optional_ | Hidden from all users, except those with one or more of these roles
+**`hideForRoles`** | `string[]` | _Optional_ | Hidden from users with any of these roles
+
+For example:
+
+```yaml
+sections:
+  - name: Admin Tools
+    displayData:
+      showForGroups: [admins]
+    items:
+      - title: Hidden from interns
+        displayData:
+          hideForGroups: [interns]
+```
 
 **[⬆️ Back to Top](#configuring)**
 

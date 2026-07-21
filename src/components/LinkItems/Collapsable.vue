@@ -14,8 +14,8 @@
       tabIndex="-1"
     >
     <div class="section-header"
-      @mouseup.right="openContextMenu" @contextmenu.prevent
-      @long-press="openContextMenu" v-longPress="500">
+      @mouseup.right="openRightClickMenu" @contextmenu="preventNativeContextMenu"
+      @long-press="openRightClickMenu" v-longPress="500">
       <label :for="sectionKey" class="collapse-toggle"
         v-tooltip="toggleTooltip()" :aria-label="$t('context-menus.section.expand-collapse')">
         <span class="arrow" aria-hidden="true"></span>
@@ -27,7 +27,7 @@
         v-tooltip="openTooltip()" class="header-action" />
       <EditModeIcon v-if="isEditMode" @click="openEditModal"
         v-tooltip="editTooltip()" class="header-action" />
-      <EllipseIcon @click.prevent.stop="openContextMenu" @contextmenu.prevent
+      <EllipseIcon @click.prevent.stop="openContextMenu" @contextmenu="preventNativeContextMenu"
         v-tooltip="optionsTooltip()" class="header-action" />
     </div>
     <div class="collapsible-content">
@@ -74,6 +74,9 @@ export default {
   computed: {
     isEditMode() {
       return this.$store.state.editMode;
+    },
+    disableContextMenu() {
+      return this.$store.getters.appConfig.disableContextMenu;
     },
     sectionKey() {
       return `collapsible-${this.uniqueKey}`;
@@ -168,6 +171,15 @@ export default {
     },
     openContextMenu(e) {
       this.$emit('openContextMenu', e);
+    },
+    /* Right-click / long-press is skipped when disabled by user */
+    openRightClickMenu(e) {
+      if (this.disableContextMenu) return;
+      this.openContextMenu(e);
+    },
+    /* Prevent the native right-click menu, unless user disabled custom context menus */
+    preventNativeContextMenu(e) {
+      if (!this.disableContextMenu) e.preventDefault();
     },
     navigateToSection() {
       this.$emit('navigateToSection');

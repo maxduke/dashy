@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <div class="context-menu" v-if="show && !isMenuDisabled"
+    <div class="context-menu" v-if="show"
       :style="posX && posY ? `top:${posY}px;left:${posX}px;` : ''">
       <!-- Open Options -->
       <ul class="menu-section">
@@ -87,9 +87,6 @@ export default {
   },
   emits: ['launchItem', 'openItemSettings', 'openMoveItemMenu', 'openDeleteItem'],
   computed: {
-    isMenuDisabled() {
-      return !!this.$store.getters.appConfig.disableContextMenu;
-    },
     isEditMode() {
       return this.$store.state.editMode;
     },

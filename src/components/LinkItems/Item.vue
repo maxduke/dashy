@@ -2,8 +2,12 @@
   <div :class="`item-wrapper wrap-size-${size} span-${makeColumnCount}`" >
     <a @click="itemClicked"
       @long-press="openContextMenu"
-      @contextmenu.prevent
+      @contextmenu="preventNativeContextMenu"
       @mouseup.right="openContextMenu"
+      @mouseenter="startTitleScroll"
+      @mouseleave="endTitleScroll"
+      @focus="startTitleScroll"
+      @blur="endTitleScroll"
       v-longPress="true"
       :href="effectiveUrl"
       :target="anchorTarget"
@@ -15,8 +19,8 @@
       :style="customStyle"
     >
       <!-- Item Text -->
-      <div :class="`tile-title  ${!itemIcon? 'bounce no-icon': ''}`" :id="`tile-${item.id}`" >
-        <span class="text">{{ item.title }}</span>
+      <div :id="`tile-${item.id}`" :class="`tile-title ${!itemIcon? 'bounce no-icon': ''}`">
+        <span ref="titleText" class="text">{{ item.title }}</span>
         <p class="description">{{ item.description }}</p>
       </div>
       <!-- Item Icon -->
@@ -140,7 +144,14 @@ export default {
   data() {
     return {
       editMenuOpen: false,
+      titleTruncated: false,
     };
+  },
+  watch: {
+    /* Watch for when item gets rename, to re-measure it's length check for truncation */
+    'item.title': function titleChanged() {
+      this.$nextTick(this.checkTitleTruncation);
+    },
   },
   methods: {
     shortUrl(value) {
@@ -163,20 +174,71 @@ export default {
     },
     /* Returns configuration object for the tooltip */
     getTooltipOptions() {
-      if (!this.item.description && !this.item.provider) return {}; // If no description, then skip
-      const description = this.item.description || '';
-      const providerText = this.item.provider ? `<b>Provider</b>: ${this.item.provider}` : '';
-      const lb1 = description && providerText ? '<br>' : '';
-      const hotkeyText = this.item.hotkey ? `<br>Press '${this.item.hotkey}' to launch` : '';
-      const tooltipText = providerText + lb1 + description + hotkeyText;
+      const {
+        title, description, provider, hotkey,
+      } = this.item;
+      if (!description && !provider && !this.titleTruncated) return {}; // Nothing to show
+      const parts = [];
+      if (this.titleTruncated) parts.push(`<b>${title}</b>`);
+      if (provider) parts.push(`<b>Provider</b>: ${provider}`);
+      if (description) parts.push(description);
+      if (hotkey) parts.push(`Press '${hotkey}' to launch`);
       const editText = this.$t('interactive-editor.edit-section.edit-tooltip');
       return {
-        content: (this.isEditMode ? editText : tooltipText),
+        content: (this.isEditMode ? editText : parts.join('<br>')),
         html: true,
         placement: this.statusResponse || this.pingResponse ? 'left' : 'auto',
         delay: { show: 600, hide: 200 },
         popperClass: `item-description-tooltip tooltip-is-${this.size}`,
       };
+    },
+    /* Measure whether the title is truncated in its tile */
+    checkTitleTruncation() {
+      const title = this.$refs.titleText;
+      this.titleTruncated = !!title && title.scrollWidth > title.clientWidth;
+    },
+    /* Slowly scroll truncated titles into view, while hovered or focused */
+    startTitleScroll() {
+      const TITLE_SCROLL_SPEED = 90; // Pixels per second for item scroll
+      clearTimeout(this.titleScrollTimer);
+      cancelAnimationFrame(this.titleScrollRaf);
+      if (!this.titleTruncated || !window.matchMedia('(hover: hover)').matches) return;
+      this.titleScrollTimer = setTimeout(() => {
+        const title = this.$refs.titleText;
+        if (!title) return;
+        const target = title.scrollWidth - title.clientWidth;
+        if (target <= title.scrollLeft) return;
+        if (this.reducedMotion()) {
+          title.scrollLeft = target;
+          return;
+        }
+        let start; let from; let duration;
+        const step = (now) => {
+          if (!start) {
+            start = now;
+            from = title.scrollLeft;
+            duration = ((target - from) / TITLE_SCROLL_SPEED) * 1000;
+          }
+          const progress = Math.min((now - start) / duration, 1);
+          title.scrollLeft = from + (target - from) * progress;
+          if (progress < 1) this.titleScrollRaf = requestAnimationFrame(step);
+        };
+        this.titleScrollRaf = requestAnimationFrame(step);
+      }, 300);
+    },
+    /* Scroll the title back, unless the item is still hovered or focused */
+    endTitleScroll(event) {
+      const link = event?.currentTarget;
+      if (link && (link.matches(':hover') || link === document.activeElement)) return;
+      clearTimeout(this.titleScrollTimer);
+      cancelAnimationFrame(this.titleScrollRaf);
+      const title = this.$refs.titleText;
+      if (title && title.scrollLeft > 0) {
+        title.scrollTo({ left: 0, behavior: this.reducedMotion() ? 'auto' : 'smooth' });
+      }
+    },
+    reducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     },
     openItemSettings() {
       this.editMenuOpen = true;
@@ -202,6 +264,12 @@ export default {
     },
   },
   mounted() {
+    // Watch for size changes, to know when title no longer fits
+    if (typeof ResizeObserver !== 'undefined') {
+      this.titleObserver = new ResizeObserver(this.checkTitleTruncation);
+      this.titleObserver.observe(this.$refs.titleText);
+    }
+    if (document.fonts) document.fonts.ready.then(this.checkTitleTruncation);
     // If ping checking is enabled, then check ping status
     if (this.isPingCheckEnabled) {
       this.checkPingStatus();
@@ -223,6 +291,9 @@ export default {
     // Stop periodic ping-check and status-check when item is destroyed (e.g. navigating in multi-page setup)
     if (this.pingIntervalId) clearInterval(this.pingIntervalId);
     if (this.intervalId) clearInterval(this.intervalId);
+    if (this.titleObserver) this.titleObserver.disconnect();
+    clearTimeout(this.titleScrollTimer);
+    cancelAnimationFrame(this.titleScrollRaf);
   },
 };
 </script>
@@ -330,14 +401,9 @@ export default {
     display: block;
   }
 
-  /* Trigger text-marquee for text that doesn't fit */
-  .tile-title.is-overflowing{
-    .overflow-dots {
-      opacity: 0;
-    }
-    span.text {
-      transform: translateX(calc(100px - 100%));
-    }
+  /* Hide the ellipsis while a truncated title is scrolled into view */
+  .tile-title span.text {
+    text-overflow: clip;
   }
 
   /* Apply transformation of icons on hover */

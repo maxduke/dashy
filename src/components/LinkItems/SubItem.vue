@@ -1,7 +1,7 @@
 <template ref="container">
   <div class="sub-item-wrapper">
     <a @click="itemClicked"
-      @contextmenu.prevent
+      @contextmenu="preventNativeContextMenu"
       @long-press="openContextMenu"
       @mouseup.right="openContextMenu"
       v-longPress="true"

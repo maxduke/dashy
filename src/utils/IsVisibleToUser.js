@@ -1,6 +1,7 @@
 /**
  * A helper function that filters all the sections or an item based on current users permissions
  * Checks each sections displayData for hideForUsers, showForUsers and hideForGuests
+ * as well as the SSO group/role rules: show/hideForGroups and show/hideForRoles
  * Returns an array of sections that the current logged in user has permissions for
  */
 
@@ -44,27 +45,31 @@ export const isVisibleToUser = (displayData, currentUser, isGuest) => {
     if (showForUsers.length < 1) return true;
     return determineVisibility(showForUsers, cUsername);
   };
-  const getKeycloakInfo = () => {
+  const getUserInfo = () => {
     try { return JSON.parse(localStorage.getItem(localStorageKeys.KEYCLOAK_INFO) || '{}'); }
     catch { return {}; }
   };
-  const checkKeycloakVisibility = () => {
-    if (!displayData.hideForKeycloakUsers) return true;
+  /* show/hideForKeycloakUsers are the legacy names for these rules, still silently supported */
+  const pickRule = (newList, legacyList) => (
+    (newList && newList.length > 0) ? newList : (legacyList || [])
+  );
+  const checkGroupRoleVisibility = () => {
+    const legacy = displayData.hideForKeycloakUsers || {};
+    const hideForGroups = pickRule(displayData.hideForGroups, legacy.groups);
+    const hideForRoles = pickRule(displayData.hideForRoles, legacy.roles);
+    if (hideForGroups.length < 1 && hideForRoles.length < 1) return true;
 
-    const { groups, roles } = getKeycloakInfo();
-    const hideForGroups = displayData.hideForKeycloakUsers.groups || [];
-    const hideForRoles = displayData.hideForKeycloakUsers.roles || [];
-
+    const { groups, roles } = getUserInfo();
     return !(determineIntersection(hideForRoles, roles)
       || determineIntersection(hideForGroups, groups));
   };
-  const checkKeycloakHiddenability = () => {
-    if (!displayData.showForKeycloakUsers) return true;
+  const checkGroupRoleHiddenability = () => {
+    const legacy = displayData.showForKeycloakUsers;
+    const showForGroups = pickRule(displayData.showForGroups, legacy && legacy.groups);
+    const showForRoles = pickRule(displayData.showForRoles, legacy && legacy.roles);
+    if (!legacy && showForGroups.length < 1 && showForRoles.length < 1) return true;
 
-    const { groups, roles } = getKeycloakInfo();
-    const showForGroups = displayData.showForKeycloakUsers.groups || [];
-    const showForRoles = displayData.showForKeycloakUsers.roles || [];
-
+    const { groups, roles } = getUserInfo();
     return determineIntersection(showForRoles, roles)
       || determineIntersection(showForGroups, groups);
   };
@@ -76,8 +81,8 @@ export const isVisibleToUser = (displayData, currentUser, isGuest) => {
   return checkVisibility()
     && checkHiddenability()
     && checkIfHideForGuest()
-    && checkKeycloakVisibility()
-    && checkKeycloakHiddenability();
+    && checkGroupRoleVisibility()
+    && checkGroupRoleHiddenability();
 };
 
 export default isVisibleToUser;
