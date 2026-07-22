@@ -103,6 +103,7 @@ const COMPAT = {
   image: 'ImageWidget',
   joke: 'Jokes',
   linkding: 'Linkding',
+  'live-tennis': 'LiveTennis',
   'minecraft-status': 'MinecraftStatus',
   'mullvad-status': 'MullvadStatus',
   mvg: 'Mvg',

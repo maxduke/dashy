@@ -229,6 +229,7 @@ const defaults = {
     healthChecks: 'https://healthchecks.io/api/v1/checks',
     holidays: 'https://kayaposoft.com/enrico/json/v2.0/?action=getHolidaysForDateRange',
     jokes: 'https://v2.jokeapi.dev/joke/',
+    liveTennis: 'https://api.livetennisapi.com/api/public/v1',
     news: 'https://api.currentsapi.services/v1/latest-news',
     minecraftPlayerIcon: 'https://mc-heads.net/avatar/',
     minecraftPlayerLink: 'https://minecraftuuid.com/?search=',

@@ -24,6 +24,7 @@ Dashy has support for displaying dynamic content in the form of widgets. There a
   - [Public Holidays](#public-holidays)
   - [Covid-19 Status](#covid-19-status)
   - [Sports Scores](#sports-scores)
+  - [Live Tennis](#live-tennis)
   - [News Headlines](#news-headlines)
   - [TFL Status](#tfl-status)
   - [Stock Price History](#stock-price-history)
@@ -857,6 +858,53 @@ Show recent scores and upcoming matches from your favorite sports team. Data is 
 - **Price**: 🟠 Free plan (up to 30 requests / minute, limited endpoints)
 - **Host**: Managed Instance Only
 - **Privacy**: ⚫ No Policy Available
+
+---
+
+### Live Tennis
+
+Live tennis scores from the ATP and WTA tours, updating in place. Each match shows both players with their per-set game scores, the current game points, and a marker against whoever is serving. Set the `status` option to show upcoming or recently finished matches instead. Data is from [LiveTennisAPI](https://livetennisapi.com/).
+
+<p align="center"><img width="400" src="https://pixelflare.cc/alicia/dashy/tennis-scores" /></p>
+
+#### Options
+
+**Field** | **Type** | **Required** | **Description**
+--- | --- | --- | ---
+**`apiKey`** | `string` | Required | Your LiveTennisAPI key. The [free plan](https://livetennisapi.com/subscribe/free) needs no card, and is enough for this widget
+**`status`** | `string` | _Optional_ | Which matches to show: `live`, `upcoming` or `completed`. Defaults to `live`
+**`limit`** | `number` | _Optional_ | Maximum number of matches to show, defaults to `5`
+**`hideRankings`** | `boolean` | _Optional_ | Set to `true` to hide each player's world ranking, defaults to `false`
+**`hideTournament`** | `boolean` | _Optional_ | Set to `true` to hide the tournament name, defaults to `false`
+
+#### Example
+
+```yaml
+- type: live-tennis
+  options:
+    apiKey: twjp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    limit: 5
+```
+
+Showing the next matches due on court, instead of those in play:
+
+```yaml
+- type: live-tennis
+  options:
+    apiKey: twjp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    status: upcoming
+    hideRankings: true
+```
+
+#### Info
+
+- **CORS**: 🟢 Enabled (no proxy needed)
+- **Auth**: 🔴 Required
+- **Price**: 🟠 Free plan (30 requests / minute)
+- **Host**: Managed Instance Only
+- **Privacy**: [LiveTennisAPI Privacy Policy](https://livetennisapi.com/privacy)
+
+The widget refreshes every 60 seconds by default, which sits comfortably inside the free plan's rate limit. You can change this with the standard `updateInterval` option, but note that several widgets sharing one key all count against the same limit.
 
 ---
 
