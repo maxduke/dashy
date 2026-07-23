@@ -4,7 +4,7 @@ import request from 'supertest';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 
 // Isolate writes to a temp dir so the real user-data/conf.yml is never touched
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dashy-api-'));

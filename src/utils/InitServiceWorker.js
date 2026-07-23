@@ -1,4 +1,4 @@
-import { load as yamlLoad } from 'js-yaml';
+import { load as yamlLoad } from '@/utils/yaml';
 import request from '@/utils/request';
 import i18n from '@/utils/i18n';
 import { serviceEndpoints } from '@/utils/config/defaults';

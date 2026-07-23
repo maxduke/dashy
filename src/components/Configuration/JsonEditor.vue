@@ -118,7 +118,6 @@
 
 <script>
 import { shallowRef, markRaw } from 'vue';
-import { load as yamlLoad, dump as yamlDump } from 'js-yaml';
 import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from '@codemirror/view';
 import { EditorState, Compartment } from '@codemirror/state';
 import { yaml } from '@codemirror/lang-yaml';
@@ -130,6 +129,7 @@ import {
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { tags as t } from '@lezer/highlight';
+import { load as yamlLoad, dump as yamlDump } from '@/utils/yaml';
 import { schemaLinter } from '@/utils/config/schemaLinter';
 import { schemaHover } from '@/utils/config/schemaHover';
 import ConfigSavingMixin from '@/mixins/ConfigSaving';

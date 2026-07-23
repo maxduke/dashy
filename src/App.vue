@@ -24,6 +24,7 @@ import { viewFromPath } from '@/utils/config/ConfigHelpers';
 import { applyTheme } from '@/utils/Theming';
 import Keys from '@/utils/StoreMutations';
 import { loadLocale } from '@/utils/languages';
+import i18n from '@/utils/i18n';
 import {
   localStorageKeys,
   splashScreenTime,
@@ -218,7 +219,7 @@ export default {
       const language = this.getLanguage();
       try {
         const msg = await loadLocale(language);
-        this.$i18n.setLocaleMessage(language, msg);
+        i18n.global.setLocaleMessage(language, msg);
       } catch (e) {
         ErrorHandler(`Failed to load locale '${language}'`, e);
       }

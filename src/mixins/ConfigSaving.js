@@ -1,5 +1,5 @@
-import { dump as yamlDump } from 'js-yaml';
 import { Progress } from 'rsup-progress';
+import { dump as yamlDump } from '@/utils/yaml';
 import request from '@/utils/request';
 import ErrorHandler, { InfoHandler } from '@/utils/logging/ErrorHandler';
 import { localStorageKeys, serviceEndpoints } from '@/utils/config/defaults';

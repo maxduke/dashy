@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { load as yamlLoad, dump as yamlDump } from 'js-yaml';
+import { load as yamlLoad, dump as yamlDump } from '@/utils/yaml';
 import Button from '@/components/FormElements/Button';
 import AccessError from '@/components/Configuration/AccessError';
 import DownloadConfigIcon from '@/assets/interface-icons/config-download-file.svg';

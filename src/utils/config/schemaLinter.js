@@ -5,10 +5,10 @@
  * 1. YAML syntax checker, vie js-yaml
  * 2. Ajv schema validator using our ConfigSchema.json
  */
-import { load as yamlLoad } from 'js-yaml';
 import { parseDocument } from 'yaml';
 import { compiledValidator as validate, formatIssue } from './validateConfig';
 import { pointerToPath, yamlNodeAt, pairRange } from './schemaPath';
+import { load as yamlLoad } from '@/utils/yaml';
 
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 

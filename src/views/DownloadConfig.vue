@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { dump as yamlDump } from 'js-yaml';
+import { dump as yamlDump } from '@/utils/yaml';
 import AccessError from '@/components/Configuration/AccessError';
 
 export default {

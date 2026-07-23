@@ -10,7 +10,8 @@ languages.forEach(({ code }) => {
 });
 
 const i18n = createI18n({
-  legacy: true,
+  legacy: false,
+  globalInjection: true,
   locale: defaultLanguage,
   fallbackLocale: defaultLanguage,
   messages: registered,

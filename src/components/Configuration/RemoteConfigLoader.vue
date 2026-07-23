@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { load as yamlLoad } from 'js-yaml';
+import { load as yamlLoad } from '@/utils/yaml';
 import request from '@/utils/request';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import StoreKeys from '@/utils/StoreMutations';

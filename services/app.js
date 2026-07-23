@@ -12,7 +12,7 @@ const crypto = require('crypto');
 const rootDir = path.join(__dirname, '..');
 
 /* Import NPM dependencies */
-const yaml = require('js-yaml');
+const yaml = require('./yaml');
 
 /* Import Express + middleware functions */
 const express = require('express');
@@ -234,6 +234,7 @@ const app = express()
   .use(sslServer.middleware)
   // Load middlewares for parsing JSON, and supporting HTML5 history routing
   .use(express.json({ limit: '1mb' }))
+  .use((req, res, next) => { if (req.body === undefined) req.body = {}; next(); })
   // GET endpoint to run status of a given URL with GET request
   .use(ENDPOINTS.statusCheck, proxyEndpointsGate, protectConfig, requireAuth, method('GET', (req, res) => {
     try {
@@ -326,7 +327,8 @@ const app = express()
   // Note: returns stripped version if auth configured but not yet authenticated
   .get(/\.ya?ml$/i, bootstrapAuth, (req, res) => {
     const ymlFile = req.path.split('/').pop();
-    const filePath = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data', ymlFile);
+    const userDataDir = path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data');
+    const filePath = path.resolve(userDataDir, ymlFile);
     if (authIsConfigured) {
       res.set('Cache-Control', 'private, no-store').set('Vary', 'Authorization');
       try {
@@ -345,7 +347,7 @@ const app = express()
         return res.status(401).json({ success: false, message: 'Unauthorized' });
       }
     }
-    res.sendFile(filePath, (err) => {
+    res.sendFile(ymlFile, { root: userDataDir }, (err) => {
       if (err) safeEnd(res, errBody(`Could not read ${ymlFile}`), 404);
     });
   })
@@ -355,7 +357,7 @@ const app = express()
   .use(express.static(path.join(rootDir, 'public'), { index: 'initialization.html' }))
   // If no other route is matched, serve up the index.html with a 404 status
   .use((req, res) => {
-    res.status(404).sendFile(path.join(rootDir, 'dist', 'index.html'), (err) => {
+    res.status(404).sendFile('index.html', { root: path.join(rootDir, 'dist') }, (err) => {
       if (err) safeEnd(res, errBody('Not Found'));
     });
   });

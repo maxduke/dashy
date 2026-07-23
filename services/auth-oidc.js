@@ -13,7 +13,7 @@
  */
 
 const fs = require('fs');
-const yaml = require('js-yaml');
+const yaml = require('./yaml');
 const { createRemoteJWKSet, jwtVerify } = require('jose');
 
 /* Normalise the OIDC / Keycloak block from conf.yml into a unified shape.

@@ -34,6 +34,7 @@ import SaveConfigIcon from '@/assets/interface-icons/save-config.svg';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import Keys from '@/utils/StoreMutations';
 import { languages, loadLocale } from '@/utils/languages';
+import i18n from '@/utils/i18n';
 import { getUsersLanguage } from '@/utils/config/ConfigHelpers';
 import { localStorageKeys, modalNames } from '@/utils/config/defaults';
 
@@ -102,7 +103,7 @@ export default {
       }
       try {
         const msg = await loadLocale(selectedLanguage.code);
-        this.$i18n.setLocaleMessage(selectedLanguage.code, msg);
+        i18n.global.setLocaleMessage(selectedLanguage.code, msg);
       } catch (e) {
         this.$toast.error('Unable to update language');
         ErrorHandler(`Failed to load locale '${selectedLanguage.code}'`, e);

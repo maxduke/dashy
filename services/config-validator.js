@@ -5,7 +5,7 @@
 
 const fs = require('fs'); // For opening + reading files
 const path = require('path'); // For resolving the config file path
-const yaml = require('js-yaml'); // For parsing YAML
+const yaml = require('./yaml'); // For parsing YAML
 const Ajv = require('ajv'); // For validating with schema
 
 const schema = require('../src/utils/config/ConfigSchema.json');

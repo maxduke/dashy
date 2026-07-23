@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { load as yamlLoad } from 'js-yaml';
+import { load as yamlLoad } from '@/utils/yaml';
 import request from '@/utils/request';
 import Keys from '@/utils/StoreMutations';
 import {

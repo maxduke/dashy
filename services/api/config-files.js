@@ -4,7 +4,7 @@
  */
 const fsPromises = require('fs').promises;
 const path = require('path');
-const yaml = require('js-yaml');
+const yaml = require('../yaml');
 const Ajv = require('ajv');
 
 const saveConfig = require('../save-config');

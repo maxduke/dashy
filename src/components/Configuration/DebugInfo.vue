@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { dump as yamlDump } from 'js-yaml';
+import { dump as yamlDump } from '@/utils/yaml';
 import AppVersion from '@/components/Configuration/AppVersion';
 import { sessionStorageKeys } from '@/utils/config/defaults';
 import { ErrorHandler } from '@/utils/logging/ErrorHandler';
