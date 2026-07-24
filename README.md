@@ -147,7 +147,7 @@ It can also hold sub-config files, item icons, fonts, custom CSS, or anything el
 Dashy is distributed both on [DockerHub](https://hub.docker.com/r/lissy93/dashy) (`lissy93/dashy`) and [GHCR](https://github.com/lissy93/dashy/pkgs/container/dashy) (`ghcr.io/lissy93/dashy`).
 
 You can either use `:latest` or pin to specific versions (like `4.0.0`).
-All images are multi-arch (works on amd64, arm64, and arm/v7).
+All images are multi-arch (works on amd64 and arm64).
 
 > Once you've got Dashy running, see [the docs](https://dashy.to/docs/) for configuration references and usage guides.
 
