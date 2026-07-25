@@ -15,10 +15,10 @@
     </div>
     <!-- Main content, section for each group of items -->
     <div v-if="checkTheresData(sections) || isEditMode" :class="computedClass"
-      ref="sectionsContainer">
-      <template v-for="(section, index) in filteredSections" :key="makeSectionId(section)">
+      ref="sectionsContainer" v-drag-sort="sectionDragConfig">
+      <template v-for="section in filteredSections" :key="makeSectionId(section)">
         <Section
-          :index="index"
+          :index="section.configIndex"
           :title="section.name"
           :icon="section.icon || undefined"
           :displayData="getDisplayData(section)"
@@ -65,6 +65,8 @@ import {
   makePageName, makeRoutePath, resolveRouteIntent, viewFromPath,
 } from '@/utils/config/ConfigHelpers';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
+import StoreKeys from '@/utils/StoreMutations';
+import { reorder } from '@/directives/DragSort';
 import BackIcon from '@/assets/interface-icons/back-arrow.svg';
 
 const EditModeSaveMenu = defineAsyncComponent(() => import('@/components/InteractiveEditor/EditModeSaveMenu.vue'));
@@ -107,12 +109,16 @@ export default {
       if (colCount > 8) colCount = 8;
       return colCount;
     },
-    /* Return sections with filtered items, that match users search term */
+    /* Return sections with filtered items, that match users search term.
+     * Each is tagged with its index in the raw config, since the rendered
+     * list may be filtered (e.g. sections hidden for the current user) */
     filteredSections() {
+      const rawSections = this.$store.state.config.sections || [];
       const sections = this.singleSectionView || this.sections;
       const showHidden = this.isEditMode || !!this.searchValue || !!this.singleSectionView;
       return sections.map((section) => ({
         ...section,
+        configIndex: rawSections.indexOf(section),
         filteredItems: this.filterTiles(section.items, section.name, { showHidden }),
       }));
     },
@@ -131,6 +137,17 @@ export default {
       if (this.singleSectionView) classes += ' single-section-view';
       if (this.colCount) classes += ` col-count-${this.colCount}`;
       return classes;
+    },
+    /* Config for drag-and-drop. Is disabled if sections don't match stored config */
+    sectionDragConfig() {
+      const storedSections = this.$store.state.config.sections || [];
+      return {
+        enabled: this.isEditMode && !this.singleSectionView
+          && this.sections.length === storedSections.length,
+        handle: '.section-header',
+        draggable: '.collapsable',
+        onSorted: this.handleSectionMoved,
+      };
     },
   },
   watch: {
@@ -157,6 +174,11 @@ export default {
       const match = allSections.find((s) => makePageName(s.name || '') === target);
       if (!match) ErrorHandler(`No section named '${sectionTitle}' was found`);
       return match ? [match] : undefined;
+    },
+    /* Commits the new section order, after a drag-and-drop */
+    handleSectionMoved({ oldIndex, newIndex }) {
+      const { sections } = this.$store.state.config;
+      this.$store.commit(StoreKeys.SET_SECTIONS, reorder(sections || [], oldIndex, newIndex));
     },
     readActiveColCount() {
       const { sectionsContainer } = this.$refs;
@@ -270,6 +292,25 @@ export default {
   /* Additional spacing when in edit mode */
   &.edit-mode {
     margin-bottom: 12rem;
+  }
+
+  /* Drag-and-drop things, when section sorting is enabled */
+  &.drag-sort-active {
+    :deep(.collapsable .section-header) {
+      cursor: grab;
+    }
+    // for empty drop slot
+    :deep(.collapsable.drag-sort-ghost) {
+      opacity: 0.4;
+      outline: 2px dashed var(--primary);
+      outline-offset: -2px;
+      transition: none !important;
+      transform: none !important;
+      > * {
+        visibility: hidden;
+        transition: none !important;
+      }
+    }
   }
 
   /* When in single-section view mode */

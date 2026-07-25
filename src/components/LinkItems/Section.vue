@@ -22,7 +22,7 @@
     <!-- Item Container -->
     <div v-if="hasItems"
       :class="`there-are-items ${isGridLayout? 'item-group-grid': ''} inner-size-${itemSize}`"
-      :style="gridStyle" :id="`section-${groupId}`"
+      :style="gridStyle" :id="`section-${groupId}`" v-drag-sort="itemDragConfig"
     > <!-- Show for each item -->
       <template v-for="(item) in sortedItems" :key="item.id">
         <SubItemGroup
@@ -62,10 +62,10 @@
     </div>
     <div
       v-if="hasWidgets || isEditMode"
-      :class="`widget-list ${isWide? 'wide' : ''}`">
+      :class="`widget-list ${isWide? 'wide' : ''}`" v-drag-sort="widgetDragConfig">
       <WidgetBase
         v-for="(widget, widgetIndx) in widgets"
-        :key="widgetIndx"
+        :key="widget.id"
         :widget="widget"
         :index="index"
         @editWidget="openEditWidget(widgetIndx)"
@@ -140,9 +140,13 @@ const EditSection = defineAsyncComponent(() => import('@/components/InteractiveE
 const EditWidget = defineAsyncComponent(() => import('@/components/InteractiveEditor/EditWidget.vue'));
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import sortItems from '@/utils/SortItems';
+import { reorder } from '@/directives/DragSort';
 import { makeRoutePath, viewFromPath } from '@/utils/config/ConfigHelpers';
 import StoreKeys from '@/utils/StoreMutations';
 import { sortOrder as defaultSortOrder } from '@/utils/config/defaults';
+
+/* True if both lists contain the same elements, in the same order (compared by runtime id) */
+const sameIdOrder = (a, b) => a.length === b.length && a.every((el, i) => el.id === b[i].id);
 
 export default {
   name: 'Section',
@@ -236,6 +240,30 @@ export default {
       if (!cols) return cols;
       return Math.min(this.activeColCount, cols);
     },
+    /* The section from the config, for the source of truth for drag-sorting
+     * Rendered list needs to match exact (not filtered/sorted/etc) for drag to work */
+    storeSection() {
+      return this.$store.getters.getSectionByIndex(this.index) || {};
+    },
+    itemDragConfig() {
+      return {
+        enabled: this.isEditMode && sameIdOrder(this.storeSection.items || [], this.sortedItems),
+        group: 'section-items',
+        draggable: '.item-wrapper:not(.add-new-item), .sub-items-group',
+        meta: { sectionIndex: this.index },
+        onSorted: (e) => this.handleMoved('items', e),
+      };
+    },
+    widgetDragConfig() {
+      return {
+        enabled: this.isEditMode && sameIdOrder(this.storeSection.widgets || [], this.widgets),
+        group: 'section-widgets',
+        draggable: '.widget-base',
+        filter: 'a, button, input, textarea, select',
+        meta: { sectionIndex: this.index },
+        onSorted: (e) => this.handleMoved('widgets', e),
+      };
+    },
   },
   methods: {
     /* Opens the iframe modal */
@@ -323,6 +351,32 @@ export default {
         widgetIndex: this.pendingRemoveWidgetIndex,
       });
       this.pendingRemoveWidgetIndex = -1;
+    },
+    /* Commits a drag-and-drop move of items or widgets, within or between sections */
+    handleMoved(key, { oldIndex, newIndex, from, to }) {
+      const { sections } = this.$store.state.config;
+      const fromSection = sections[from?.sectionIndex];
+      const toSection = sections[to?.sectionIndex];
+      if (!fromSection || !toSection) {
+        ErrorHandler('Unable to move, section not found');
+        return;
+      }
+      if (fromSection === toSection) {
+        this.$store.commit(StoreKeys.UPDATE_SECTION, {
+          sectionIndex: from.sectionIndex,
+          sectionData: { ...fromSection, [key]: reorder(fromSection[key] || [], oldIndex, newIndex) },
+        });
+        return;
+      }
+      const fromEntries = [...(fromSection[key] || [])];
+      const [moved] = fromEntries.splice(oldIndex, 1);
+      const toEntries = [...(toSection[key] || [])];
+      toEntries.splice(newIndex, 0, moved);
+      this.$store.commit(StoreKeys.SET_SECTIONS, sections.map((section, i) => {
+        if (i === from.sectionIndex) return { ...section, [key]: fromEntries };
+        if (i === to.sectionIndex) return { ...section, [key]: toEntries };
+        return section;
+      }));
     },
     /* Calculate width of section, used to dynamically set number of columns */
     calculateSectionWidth() {
@@ -413,6 +467,29 @@ export default {
   display: flex;
   a {
     border-style: dashed;
+  }
+}
+
+/* Drag-and-drop things for when sorting is enabled, for drop slot */
+.drag-sort-active {
+  :deep(.item), :deep(.sub-items-group), :deep(.widget-base) {
+    cursor: grab;
+  }
+  :deep(.drag-sort-ghost) {
+    opacity: 0.4;
+    outline: 2px dashed var(--primary);
+    outline-offset: -2px;
+    border-radius: var(--curve-factor);
+    background: var(--item-background);
+    transition: none !important;
+    transform: none !important;
+    > * {
+      visibility: hidden;
+      transition: none !important;
+    }
+  }
+  :deep(.sortable-fallback) {
+    min-width: 0 !important;
   }
 }
 

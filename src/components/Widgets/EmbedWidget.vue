@@ -78,7 +78,7 @@ export default {
 <style scoped lang="scss">
 .html-widget {
   width: 100%;
-  min-height: 240px;
+  min-height: 120px;
 }
 
 </style>

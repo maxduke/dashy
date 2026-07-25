@@ -16,6 +16,7 @@ import i18n from '@/utils/i18n';                      // i18n instance (exported
 import ErrorReporting from '@/utils/logging/ErrorReporting';  // Error reporting initializer (off)
 import clickOutside from '@/directives/ClickOutside'; // Directive for closing popups, modals, etc
 import tooltip from '@/directives/Tooltip';           // Custom tooltip directive
+import dragSort from '@/directives/DragSort';         // Drag-and-drop list sorting directive
 import { initKeycloakAuth, isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
 import { initHeaderAuth, isHeaderAuthEnabled } from '@/utils/auth/HeaderAuth';
 import { initOidcAuth, isOidcEnabled } from '@/utils/auth/OidcAuth';
@@ -38,6 +39,7 @@ app.component('modal', Modal);
 app.component('v-select', VSelect);
 app.directive('clickOutside', clickOutside);
 app.directive('tooltip', tooltip);
+app.directive('dragSort', dragSort);
 
 app.config.errorHandler = (err, instance, info) => {
   ErrorHandler(`Vue error in ${info}`, err);

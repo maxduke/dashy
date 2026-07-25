@@ -5,7 +5,7 @@ import Keys from '@/utils/StoreMutations';
 import {
   makePageName, formatConfigPath, componentVisibility, configScope, stripRootOwnedFields,
 } from '@/utils/config/ConfigHelpers';
-import { applyItemId } from '@/utils/config/SectionHelpers';
+import { applyItemId, stripItemIds } from '@/utils/config/SectionHelpers';
 import filterUserSections from '@/utils/CheckSectionVisibility';
 import ErrorHandler, { InfoHandler, InfoKeys } from '@/utils/logging/ErrorHandler';
 import {
@@ -77,9 +77,9 @@ const readLocal = (key) => {
  * Item/widget `id`s are runtime-only — applied to `config` for rendering,
  * kept out of `configSource` so they never land in persisted YAML. */
 const commitConfigField = (state, field, value) => {
-  const runtime = field === 'sections' ? applyItemId(value) : value;
-  state.config = { ...state.config, [field]: runtime };
-  state.configSource = { ...state.configSource, [field]: value };
+  const isSections = field === 'sections';
+  state.config = { ...state.config, [field]: isSections ? applyItemId(value) : value };
+  state.configSource = { ...state.configSource, [field]: isSections ? stripItemIds(value) : value };
 };
 
 /* Patch a single appConfig key. Optionally persists to a localStorage slot
@@ -252,9 +252,8 @@ const store = createStore({
       return getUserState();
     },
 
-    getSectionByIndex: (state, getters) => (index) => {
-      return getters.sections[index];
-    },
+    /* Index is the section's position in the raw config, not the filtered view */
+    getSectionByIndex: (state) => (index) => (state.config.sections || [])[index],
     getItemById: (state, getters) => (id) => {
       if (!id) return undefined;
       let item;
