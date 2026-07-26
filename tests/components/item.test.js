@@ -5,7 +5,7 @@ import { shallowMount } from '@vue/test-utils';
 import { createStore } from 'vuex';
 import Item from '@/components/LinkItems/Item.vue';
 import router from '@/router';
-import pingCheck from '../../services/ping-check';
+import pingCheck from '../../services/endpoints/ping-check';
 
 vi.mock('@/utils/request', () => {
   const fn = vi.fn(() => Promise.resolve({ data: {} }));
@@ -261,13 +261,13 @@ describe('Computed: statusCheckInterval', () => {
     expect(wrapper.vm.statusCheckInterval).toBe(15);
   });
 
-  it('clamps to max 60', () => {
+  it('clamps to a 5 minute maximum', () => {
     const { wrapper } = mountItem({
       item: {
-        id: '1', title: 'X', url: '#', statusCheckInterval: 120,
+        id: '1', title: 'X', url: '#', statusCheckInterval: 600,
       },
     });
-    expect(wrapper.vm.statusCheckInterval).toBe(60);
+    expect(wrapper.vm.statusCheckInterval).toBe(300);
   });
 
   it('clamps values less than 1 to 0', () => {
@@ -284,36 +284,66 @@ describe('Computed: pingCheckInterval', () => {
   it('reads from item', () => {
     const { wrapper } = mountItem({
       item: {
-        id: '1', title: 'X', url: '#', pingCheckInterval: 3,
+        id: '1', title: 'X', url: '#', pingCheckInterval: 8,
       },
     });
-    expect(wrapper.vm.pingCheckInterval).toBe(3);
+    expect(wrapper.vm.pingCheckInterval).toBe(8);
   });
 
   it('falls back to appConfig', () => {
     const { wrapper } = mountItem({
       item: { id: '1', title: 'X', url: '#' },
-      appConfig: { pingCheckInterval: 4 },
+      appConfig: { pingCheckInterval: 20 },
     });
-    expect(wrapper.vm.pingCheckInterval).toBe(4);
+    expect(wrapper.vm.pingCheckInterval).toBe(20);
   });
 
-  it('clamps to max 5', () => {
+  it('does not cap large intervals', () => {
     const { wrapper } = mountItem({
       item: {
-        id: '1', title: 'X', url: '#', pingCheckInterval: 15,
+        id: '1', title: 'X', url: '#', pingCheckInterval: 60,
+      },
+    });
+    expect(wrapper.vm.pingCheckInterval).toBe(60);
+  });
+
+  it('clamps to a minimum of 5', () => {
+    const { wrapper } = mountItem({
+      item: {
+        id: '1', title: 'X', url: '#', pingCheckInterval: 3,
       },
     });
     expect(wrapper.vm.pingCheckInterval).toBe(5);
   });
 
-  it('clamps values less than 1 to 0', () => {
+  it('treats values below 1 as only-on-load (0)', () => {
     const { wrapper } = mountItem({
       item: {
         id: '1', title: 'X', url: '#', pingCheckInterval: 0.5,
       },
     });
     expect(wrapper.vm.pingCheckInterval).toBe(0);
+  });
+});
+
+describe('Computed: pingCheckTimeout', () => {
+  it('caps the interval-derived default at pingCheckCount * 1000', () => {
+    const { wrapper } = mountItem({
+      item: {
+        id: '1', title: 'X', url: '#', pingCheckInterval: 60,
+      },
+    });
+    // count defaults to 3, so the default timeout is capped at 3000ms, not 60000ms
+    expect(wrapper.vm.pingCheckTimeout).toBe(3000);
+  });
+
+  it('clamps an explicit timeout to pingCheckCount * 1000', () => {
+    const { wrapper } = mountItem({
+      item: {
+        id: '1', title: 'X', url: '#', pingCheckCount: 2, pingCheckTimeout: 99000,
+      },
+    });
+    expect(wrapper.vm.pingCheckTimeout).toBe(2000);
   });
 });
 

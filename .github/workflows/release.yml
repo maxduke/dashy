@@ -50,7 +50,7 @@ jobs:
         run: yarn install --frozen-lockfile --ignore-engines --network-timeout 300000
 
       - name: 🏗️ Build app
-        run: NODE_OPTIONS=--openssl-legacy-provider yarn build --mode production
+        run: yarn build --mode production
 
       - name: 📦 Package release tarball
         id: package

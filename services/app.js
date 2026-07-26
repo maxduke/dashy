@@ -12,28 +12,28 @@ const crypto = require('crypto');
 const rootDir = path.join(__dirname, '..');
 
 /* Import NPM dependencies */
-const yaml = require('./yaml');
+const yaml = require('./utils/yaml');
 
 /* Import Express + middleware functions */
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 
 /* Kick of some basic checks */
-require('./update-checker'); // Checks if there are any updates available, prints message
+require('./utils/update-checker'); // Checks if there are any updates available, prints message
 
-let config = require('./config-validator'); // Validate config file and load result
+let config = require('./utils/config-validator'); // Validate config file and load result
 
 /* Include route handlers for API endpoints */
-const statusCheck = require('./status-check'); // Used by the status check feature, uses GET
-const pingCheck = require('./ping-check'); // Used by the ping check feature, uses GET
-const saveConfig = require('./save-config'); // Saves users new conf.yml to file-system
-const systemInfo = require('./system-info'); // Basic system info, for resource widget
-const sslServer = require('./ssl-server'); // TLS-enabled web server
-const corsProxy = require('./cors-proxy'); // Enables API requests to CORS-blocked services
-const getUser = require('./get-user'); // Enables server side user lookup
-const { apiEnabledGate, apiErrorHandler, createApiRouter } = require('./api'); // Opt-in REST API
+const statusCheck = require('./endpoints/status-check'); // Used by the status check feature, uses GET
+const pingCheck = require('./endpoints/ping-check'); // Used by the ping check feature, uses GET
+const saveConfig = require('./endpoints/save-config'); // Saves users new conf.yml to file-system
+const systemInfo = require('./endpoints/system-info'); // Basic system info, for resource widget
+const sslServer = require('./utils/ssl-server'); // TLS-enabled web server
+const corsProxy = require('./endpoints/cors-proxy'); // Enables API requests to CORS-blocked services
+const getUser = require('./endpoints/get-user'); // Enables server side user lookup
+const { apiEnabledGate, apiErrorHandler, createApiRouter } = require('./endpoints/api'); // Opt-in REST API
 
-const { loadOidcSettings, createOidcMiddleware, maybeBootstrapConfig } = require('./auth-oidc');
+const { loadOidcSettings, createOidcMiddleware, maybeBootstrapConfig } = require('./utils/auth-oidc');
 
 /* Service endpoint URL paths (see also serviceEndpoints in src/utils/config/defaults.js) */
 const ENDPOINTS = {

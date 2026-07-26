@@ -23,6 +23,7 @@ import { modalNames } from '@/utils/config/defaults';
 import ErrorHandler, { InfoHandler, InfoKeys } from '@/utils/logging/ErrorHandler';
 import safeClone from '@/utils/safeClone';
 import pruneSchemaDefaults from '@/utils/config/pruneSchemaDefaults';
+import { makePageName } from '@/utils/config/ConfigHelpers';
 import SaveCancelButtons from '@/components/InteractiveEditor/SaveCancelButtons';
 import AccessError from '@/components/Configuration/AccessError';
 
@@ -57,7 +58,7 @@ export default {
   name: 'EditSection',
   components: { SaveCancelButtons, AccessError, SchemaForm },
   props: {
-    sectionIndex: { type: Number, default: -1 },
+    sectionName: { type: String, default: '' },
     isAddNew: Boolean,
   },
   emits: ['closeEditSection'],
@@ -72,7 +73,7 @@ export default {
     allowViewConfig() { return this.$store.getters.permissions.allowViewConfig; },
   },
   mounted() {
-    const live = this.isAddNew ? null : this.$store.getters.getSectionByIndex(this.sectionIndex);
+    const live = this.isAddNew ? null : this.$store.getters.getSectionByName(this.sectionName);
     this.sectionData = safeClone(live, {});
     this.$modal.show(this.modalName);
   },
@@ -81,14 +82,27 @@ export default {
       this.$store.commit(StoreKeys.SET_MODAL_OPEN, false);
       this.$emit('closeEditSection');
     },
+    /* Section names used as id, so need to be present and unique  */
+    validateName(name) {
+      if (!name || !name.trim()) return this.$t('interactive-editor.edit-section.missing-name-err');
+      const slug = makePageName(name);
+      const others = (this.$store.state.config.sections || [])
+        .filter((section) => this.isAddNew || (section.name || '') !== this.sectionName);
+      if (others.some((section) => makePageName(section.name) === slug)) {
+        return this.$t('interactive-editor.edit-section.duplicate-name-err', { name });
+      }
+      return null;
+    },
     saveSection() {
       try {
         /* Form only edits metadata, so preserve the live section's items array. */
         const payload = pruneSchemaDefaults(this.sectionData, this.customSchema);
+        const nameError = this.validateName(payload.name);
+        if (nameError) { this.$toast.error(nameError); return; }
         if (!this.isAddNew) {
-          const live = this.$store.getters.getSectionByIndex(this.sectionIndex);
+          const live = this.$store.getters.getSectionByName(this.sectionName);
           if (live?.items) payload.items = live.items;
-          this.$store.commit(StoreKeys.UPDATE_SECTION, { sectionIndex: this.sectionIndex, sectionData: payload });
+          this.$store.commit(StoreKeys.UPDATE_SECTION, { sectionName: this.sectionName, sectionData: payload });
         } else {
           this.$store.commit(StoreKeys.INSERT_SECTION, payload);
         }

@@ -8,7 +8,7 @@ const path = require('path'); // For resolving the config file path
 const yaml = require('./yaml'); // For parsing YAML
 const Ajv = require('ajv'); // For validating with schema
 
-const schema = require('../src/utils/config/ConfigSchema.json');
+const schema = require('../../src/utils/config/ConfigSchema.json');
 
 /* Tell AJV to use strict mode, and report all errors */
 const validatorOptions = {
@@ -102,7 +102,7 @@ const printFileReadError = (e) => {
 let config = {};
 
 try { // Try to open and parse the YAML file
-  const confPath = path.resolve(__dirname, '..', process.env.USER_DATA_DIR || 'user-data', 'conf.yml');
+  const confPath = path.resolve(__dirname, '..', '..', process.env.USER_DATA_DIR || 'user-data', 'conf.yml');
   config = yaml.load(fs.readFileSync(confPath, 'utf8'));
   validate(config);
 } catch (e) { // Something went very wrong...

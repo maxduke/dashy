@@ -109,7 +109,7 @@ export default {
     Input, Radio, AddIcon, BinIcon, AccessError, SaveCancelButtons,
   },
   props: {
-    sectionIndex: { type: Number, required: true },
+    sectionName: { type: String, required: true },
     widgetIndex: { type: Number, default: -1 },
     isAddNew: Boolean,
   },
@@ -131,7 +131,7 @@ export default {
   /* Populate form before children render so Radio's `initialOption` is set on its first creation. */
   created() {
     if (this.isAddNew) return;
-    const live = this.$store.getters.getSectionByIndex(this.sectionIndex);
+    const live = this.$store.getters.getSectionByName(this.sectionName);
     const widget = safeClone(live?.widgets?.[this.widgetIndex], {});
     this.form = {
       type: widget.type || '',
@@ -186,10 +186,10 @@ export default {
       try {
         const widget = this.buildWidget();
         if (this.isAddNew) {
-          this.$store.commit(StoreKeys.INSERT_WIDGET, { sectionIndex: this.sectionIndex, widget });
+          this.$store.commit(StoreKeys.INSERT_WIDGET, { sectionName: this.sectionName, widget });
         } else {
           this.$store.commit(StoreKeys.UPDATE_WIDGET, {
-            sectionIndex: this.sectionIndex,
+            sectionName: this.sectionName,
             widgetIndex: this.widgetIndex,
             widget,
           });

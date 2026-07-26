@@ -3,7 +3,8 @@
  * It accepts a single url parameter, and will make an empty GET request to that
  * endpoint, and then resolve the response status code, time taken, and short message
  */
-const request = require('./request');
+const request = require('../utils/request');
+
 const { validateTargetUrl } = request;
 
 /* Determines if successful from the HTTP response code */
@@ -22,7 +23,7 @@ const makeMessageText = (data) => `${data.successStatus ? '✅' : '⚠️'} `
 
 /* Makes human-readable response text for failed check */
 const makeErrorMessage = (data) => `❌ Service Unavailable: ${data.hostname || 'Server'} `
-  + `resulted in ${data.code || 'a fatal error'} ${data.errno ? `(${data.errno})` : ''}`;
+  + `resulted in ${data.code || data.message || 'a fatal error'} ${data.errno ? `(${data.errno})` : ''}`;
 
 const makeErrorMessage2 = (data) => '❌ Service Error - '
   + `${data.status} - ${data.statusText}`;
@@ -81,11 +82,10 @@ const makeRequest = (url, options, render) => {
 
 const decodeHeaders = (maybeHeaders) => {
   if (!maybeHeaders) return {};
-  const decodedHeaders = decodeURIComponent(maybeHeaders);
   let parsedHeaders = {};
   try {
-    parsedHeaders = JSON.parse(decodedHeaders);
-  } catch (e) { /* Not valid JSON, will just return false */ }
+    parsedHeaders = JSON.parse(maybeHeaders);
+  } catch (e) { /* Not valid JSON, will just return an empty object */ }
   return parsedHeaders;
 };
 
@@ -102,11 +102,11 @@ module.exports = (paramStr, render) => {
   if (!paramStr || !paramStr.includes('=')) {
     immediateError(render);
   } else {
-    // Prepare the parameters, which are got from the URL
-    const params = new URLSearchParams(paramStr);
-    const url = decodeURIComponent(params.get('url'));
-    const acceptCodes = decodeURIComponent(params.get('acceptCodes'));
-    const maxRedirects = decodeURIComponent(params.get('maxRedirects')) || 0;
+    // Read the query params from req.url, ignoring its leading path and '?'
+    const params = new URLSearchParams(paramStr.slice(paramStr.indexOf('?') + 1));
+    const url = params.get('url') || '';
+    const acceptCodes = params.get('acceptCodes');
+    const maxRedirects = Number(params.get('maxRedirects')) || 5;
     const headers = decodeHeaders(params.get('headers'));
     const enableInsecure = !!params.get('enableInsecure');
     if (!url || url === 'undefined') {

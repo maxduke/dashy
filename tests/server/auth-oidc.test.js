@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { deriveIsAdmin, loadOidcSettings } from '../../services/auth-oidc';
+import { deriveIsAdmin, loadOidcSettings } from '../../services/utils/auth-oidc';
 
 const oidc = { kind: 'oidc', clientId: 'dashy', adminGroup: 'admins', adminRole: null };
 const keycloak = { kind: 'keycloak', clientId: 'dashy', adminGroup: null, adminRole: 'admin' };

@@ -10,8 +10,8 @@ const os = require('os');
 const http = require('http');
 
 const app = require('./services/app');
-const sslServer = require('./services/ssl-server');
-const printMessage = require('./services/print-message');
+const sslServer = require('./services/utils/ssl-server');
+const printMessage = require('./services/utils/print-message');
 
 /* Checks if app is running within a container, from env var */
 const isDocker = !!process.env.IS_DOCKER;

@@ -885,7 +885,7 @@
           "name": {
             "title": "Section Name",
             "type": "string",
-            "description": "Title/ heading for a section"
+            "description": "Title/ heading for a section. Required and must be unique"
           },
           "icon": {
             "title": "Section Icon",
@@ -1335,6 +1335,12 @@
                   "type": "number",
                   "default": 0,
                   "description": "If your service redirects to another page, and you would like status checks to follow redirects, then specify the maximum number of redirects here"
+                },
+                "statusCheckInterval": {
+                  "title": "Item Status Check Interval",
+                  "type": "number",
+                  "default": 0,
+                  "description": "How often (in seconds) to recheck this item's status. If set to 0, status is only checked on page load. Limited to a 5 minute maximum. Will override appConfig.statusCheckInterval."
                 },
                 "pingCheckEnabled": {
                   "title": "Item Ping Check Enabling",

@@ -1,6 +1,6 @@
 const request = require('./request');
 
-const currentVersion = require('../package.json').version;
+const currentVersion = require('../../package.json').version;
 
 const packageUrl = 'https://raw.githubusercontent.com/Lissy93/dashy/master/package.json';
 
@@ -50,4 +50,7 @@ const runCheck = async () => {
   }
 };
 
-runCheck().catch(() => { /* never propagate — module-load must not throw */ });
+// Skip version check when running tests
+if (process.env.NODE_ENV !== 'test') {
+  runCheck().catch(() => { /* just chillin */ });
+}

@@ -8,6 +8,9 @@
 
 import { localStorageKeys } from '@/utils/config/defaults';
 
+// Grace period on token expiry, 30 seconds
+const CLOCK_TOLERANCE_MS = 30 * 1000;
+
 /* Base64URL → utf-8 string decode */
 function decodeBase64Url(input) {
   const padded = input.replace(/-/g, '+').replace(/_/g, '/');
@@ -36,7 +39,7 @@ export function getApiAuthState() {
   let claims;
   try {
     claims = decodeClaims(token);
-    if (typeof claims.exp === 'number' && claims.exp * 1000 <= Date.now()) {
+    if (typeof claims.exp === 'number' && claims.exp * 1000 + CLOCK_TOLERANCE_MS <= Date.now()) {
       return { ok: false, reason: 'expired' };
     }
   } catch {

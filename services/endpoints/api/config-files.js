@@ -4,13 +4,13 @@
  */
 const fsPromises = require('fs').promises;
 const path = require('path');
-const yaml = require('../yaml');
+const yaml = require('../../utils/yaml');
 const Ajv = require('ajv');
 
 const saveConfig = require('../save-config');
-const schema = require('../../src/utils/config/ConfigSchema.json');
+const schema = require('../../../src/utils/config/ConfigSchema.json');
 
-const rootDir = path.join(__dirname, '..', '..');
+const rootDir = path.join(__dirname, '..', '..', '..');
 
 // Same rules as save-config.js: no path separators, control chars or ..
 const SAFE_FILENAME = /^(?!\.+$)[^\\/\0\r\n]+\.ya?ml$/i;

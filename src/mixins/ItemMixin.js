@@ -58,9 +58,9 @@ export default {
     },
     /* Determine how often to re-fire status checks */
     statusCheckInterval() {
-      let interval = this.item.statusCheckInterval || this.appConfig.statusCheckInterval;
+      let interval = this.item.statusCheckInterval ?? this.appConfig.statusCheckInterval;
       if (!interval) return 0;
-      if (interval > 60) interval = 60;
+      if (interval > 300) interval = 300;
       if (interval < 1) interval = 0;
       return interval;
     },
@@ -79,12 +79,11 @@ export default {
     },
     /* Determine how often to re-fire ping checks */
     pingCheckInterval() {
-      let interval = this.item.pingCheckInterval;
-      if (!interval) interval = this.appConfig.pingCheckInterval;
+      let interval = this.item.pingCheckInterval ?? this.appConfig.pingCheckInterval;
       if (!interval) return 0;
       interval = Math.floor(interval);
-      if (interval < 0) interval = 0;
-      if (interval > 5) interval = 5;
+      if (interval < 1) return 0;
+      if (interval < 5) interval = 5;
       return interval;
     },
     /* Determine the number of ping icmp packets to send per check */
@@ -99,10 +98,10 @@ export default {
     },
     /* Determine delay in milliseconds for a ping check to complete */
     pingCheckTimeout() {
+      const maxTimeout = this.pingCheckCount * 1000;
       let timeout = this.item.pingCheckTimeout;
       if (!timeout) timeout = this.appConfig.pingCheckTimeout;
-      if (!timeout) return this.pingCheckInterval * 1000;
-      let maxTimeout = this.pingCheckCount * 1000;
+      if (!timeout) return Math.min(this.pingCheckInterval * 1000, maxTimeout);
       if (timeout > maxTimeout) timeout = maxTimeout;
       if (timeout < 1) timeout = 0;
       return timeout;
@@ -207,12 +206,14 @@ export default {
       if (this.statusResponse) this.statusResponse.successStatus = undefined; // Reset previous response, to show loading state
       request.get(endpoint)
         .then((response) => {
-          if (response.data) this.statusResponse = response.data;
+          if (response.data && typeof response.data === 'object') {
+            this.statusResponse = response.data;
+          }
         })
         .catch(() => { // Something went very wrong.
           this.statusResponse = {
-            statusText: 'Failed to make request',
-            statusSuccess: false,
+            successStatus: false,
+            message: 'Failed to make request',
           };
         });
     },
@@ -221,20 +222,20 @@ export default {
       if (!this.isPingCheckEnabled) return;
       if (!this.pingCheckHost) {
         this.pingResponse = {
-          statusText: 'Host not set or invalid',
-          statusSuccess: false,
+          successStatus: false,
+          message: 'Host not set or invalid',
         };
       } else {
         if (this.pingResponse) this.pingResponse.successStatus = undefined; // Reset previous response, to show loading state
         const endpoint = this.pingCheckApiUrl;
         request.get(endpoint)
           .then((response) => {
-            if (response.data) this.pingResponse = response.data;
+            if (response.data && typeof response.data === 'object') this.pingResponse = response.data;
           })
           .catch(() => { // Something went very wrong.
             this.pingResponse = {
-              statusText: 'Failed to make Ping request',
-              statusSuccess: false,
+              successStatus: false,
+              message: 'Failed to make Ping request',
             };
           });
       }

@@ -4,7 +4,7 @@ import {
 import path from 'path';
 
 describe('Config Validator', () => {
-  const configValidator = path.resolve(__dirname, '../../services/config-validator.js');
+  const configValidator = path.resolve(__dirname, '../../services/utils/config-validator.js');
 
   beforeEach(() => {
     delete process.env.VUE_APP_CONFIG_VALID;

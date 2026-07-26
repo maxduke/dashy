@@ -5,7 +5,7 @@ import Keys from '@/utils/StoreMutations';
 import {
   makePageName, formatConfigPath, componentVisibility, configScope, stripRootOwnedFields,
 } from '@/utils/config/ConfigHelpers';
-import { applyItemId, stripItemIds } from '@/utils/config/SectionHelpers';
+import { applyItemId, mapSectionByName, stripItemIds } from '@/utils/config/SectionHelpers';
 import filterUserSections from '@/utils/CheckSectionVisibility';
 import ErrorHandler, { InfoHandler, InfoKeys } from '@/utils/logging/ErrorHandler';
 import {
@@ -252,6 +252,9 @@ const store = createStore({
       return getUserState();
     },
 
+    getSectionByName: (state, getters) => (name) => (
+      getters.sections.find((section) => (section.name || '') === name)
+    ),
     /* Index is the section's position in the raw config, not the filtered view */
     getSectionByIndex: (state) => (index) => (state.config.sections || [])[index],
     getItemById: (state, getters) => (id) => {
@@ -357,10 +360,9 @@ const store = createStore({
       })));
       InfoHandler('Item updated', InfoKeys.EDITOR);
     },
-    [UPDATE_SECTION](state, { sectionIndex, sectionData }) {
-      commitConfigField(state, 'sections', state.config.sections.map((s, i) => (
-        i === sectionIndex ? sectionData : s
-      )));
+    [UPDATE_SECTION](state, { sectionName, sectionData }) {
+      commitConfigField(state, 'sections',
+        mapSectionByName(state.config.sections, sectionName, () => sectionData));
       InfoHandler('Section updated', InfoKeys.EDITOR);
     },
     [INSERT_SECTION](state, newSection) {
@@ -370,64 +372,47 @@ const store = createStore({
       ]);
       InfoHandler('New section added', InfoKeys.EDITOR);
     },
-    [REMOVE_SECTION](state, { sectionIndex, sectionName }) {
+    [REMOVE_SECTION](state, { sectionName }) {
       const current = state.config.sections;
-      if (current[sectionIndex]?.name !== sectionName) return;
-      commitConfigField(state, 'sections', current.filter((_, i) => i !== sectionIndex));
+      if (!current.some((section) => (section.name || '') === sectionName)) return;
+      commitConfigField(state, 'sections', current.filter((section) => (section.name || '') !== sectionName));
       InfoHandler('Section removed', InfoKeys.EDITOR);
     },
     [INSERT_ITEM](state, { newItem, targetSection }) {
-      const patched = state.config.sections.map((section) => {
-        if (section.name !== targetSection) return section;
-        return { ...section, items: [...(section.items || []), newItem] };
-      });
-      commitConfigField(state, 'sections', patched);
+      commitConfigField(state, 'sections', mapSectionByName(state.config.sections, targetSection,
+        (s) => ({ ...s, items: [...(s.items || []), newItem] })));
       InfoHandler('New item added', InfoKeys.EDITOR);
     },
     [COPY_ITEM](state, { item, toSection, appendTo }) {
       const newItem = { ...item };
-      const patched = state.config.sections.map((section) => {
-        if (section.name !== toSection) return section;
-        const items = appendTo === 'beginning'
-          ? [newItem, ...(section.items || [])]
-          : [...(section.items || []), newItem];
-        return { ...section, items };
-      });
-      commitConfigField(state, 'sections', patched);
+      commitConfigField(state, 'sections', mapSectionByName(state.config.sections, toSection, (s) => ({
+        ...s,
+        items: appendTo === 'beginning'
+          ? [newItem, ...(s.items || [])]
+          : [...(s.items || []), newItem],
+      })));
       InfoHandler('Item copied', InfoKeys.EDITOR);
     },
     [REMOVE_ITEM](state, { itemId, sectionName }) {
-      const patched = state.config.sections.map((section) => {
-        if (section.name !== sectionName) return section;
-        return {
-          ...section,
-          items: (section.items || []).filter((item) => item.id !== itemId),
-        };
-      });
-      commitConfigField(state, 'sections', patched);
+      commitConfigField(state, 'sections', mapSectionByName(state.config.sections, sectionName,
+        (s) => ({ ...s, items: (s.items || []).filter((item) => item.id !== itemId) })));
       InfoHandler('Item removed', InfoKeys.EDITOR);
     },
-    [INSERT_WIDGET](state, { sectionIndex, widget }) {
-      commitConfigField(state, 'sections', state.config.sections.map((s, i) => (
-        i === sectionIndex ? { ...s, widgets: [...(s.widgets || []), widget] } : s
-      )));
+    [INSERT_WIDGET](state, { sectionName, widget }) {
+      commitConfigField(state, 'sections', mapSectionByName(state.config.sections, sectionName,
+        (s) => ({ ...s, widgets: [...(s.widgets || []), widget] })));
       InfoHandler('New widget added', InfoKeys.EDITOR);
     },
-    [UPDATE_WIDGET](state, { sectionIndex, widgetIndex, widget }) {
-      commitConfigField(state, 'sections', state.config.sections.map((s, i) => {
-        if (i !== sectionIndex) return s;
-        return {
-          ...s,
-          widgets: (s.widgets || []).map((w, wi) => (wi === widgetIndex ? widget : w)),
-        };
-      }));
+    [UPDATE_WIDGET](state, { sectionName, widgetIndex, widget }) {
+      commitConfigField(state, 'sections', mapSectionByName(state.config.sections, sectionName, (s) => ({
+        ...s,
+        widgets: (s.widgets || []).map((w, wi) => (wi === widgetIndex ? widget : w)),
+      })));
       InfoHandler('Widget updated', InfoKeys.EDITOR);
     },
-    [REMOVE_WIDGET](state, { sectionIndex, widgetIndex }) {
-      commitConfigField(state, 'sections', state.config.sections.map((s, i) => {
-        if (i !== sectionIndex) return s;
-        return { ...s, widgets: (s.widgets || []).filter((_, wi) => wi !== widgetIndex) };
-      }));
+    [REMOVE_WIDGET](state, { sectionName, widgetIndex }) {
+      commitConfigField(state, 'sections', mapSectionByName(state.config.sections, sectionName,
+        (s) => ({ ...s, widgets: (s.widgets || []).filter((_, wi) => wi !== widgetIndex) })));
       InfoHandler('Widget removed', InfoKeys.EDITOR);
     },
     [SET_THEME](state, theme) {

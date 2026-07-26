@@ -44,7 +44,7 @@ export default {
     /* The user provided Nextcloud username */
     username() {
       if (!this.options.username) this.error('A username is required');
-      return this.options.username;
+      return this.options.username || '';
     },
     /* The user provided Nextcloud password */
     password() {

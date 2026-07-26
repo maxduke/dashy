@@ -4,7 +4,7 @@
  * makes request to endpoint, then responds to the frontend with the response
  */
 
-const request = require('./request');
+const request = require('../utils/request');
 const { validateTargetUrl } = request;
 
 // If reference to env var is present, substitute for env var value if set

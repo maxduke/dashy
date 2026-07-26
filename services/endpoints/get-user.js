@@ -1,7 +1,7 @@
 module.exports = (config, req) => {
   try {
     if (config.appConfig?.auth?.enableHeaderAuth) {
-      const { userHeader } = config.appConfig.auth.headerAuth;
+      const { userHeader = 'Remote-User' } = config.appConfig.auth.headerAuth;
       const { proxyWhitelist } = config.appConfig.auth.headerAuth;
       if (proxyWhitelist.includes(req.socket.remoteAddress)) {
         return { success: true, user: req.headers[userHeader.toLowerCase()] };

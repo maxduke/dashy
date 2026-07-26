@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { markRaw } from 'vue';
 import { JsonForms } from '@jsonforms/vue';
 import { vanillaRenderers, defaultStyles } from '@jsonforms/vue-vanilla';
 import Ajv from 'ajv';
@@ -30,13 +31,13 @@ import addFormats from 'ajv-formats';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import safeClone from '@/utils/safeClone';
 
-const ajv = new Ajv({
+const ajv = markRaw(new Ajv({
   allErrors: true,
   strict: false,
   addUsedSchema: false,
   useDefaults: true,
   validateSchema: false,
-});
+}));
 addFormats(ajv);
 
 /* Global config for every control: keep field descriptions always visible,

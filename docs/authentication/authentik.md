@@ -400,4 +400,4 @@ When the token expires you're bounced back through Authentik for a new one, whic
 
 To sign out, use Dashy's Logout control: it clears the stored token and sends you to Authentik's end-session endpoint (see [Logout stuck on a consent screen](#logout-stuck-on-a-consent-screen) if that asks for confirmation).
 
-If you want the implementation details, the client side lives in `src/utils/auth/OidcAuth.js` and the server-side token verification in `services/auth-oidc.js`.
+If you want the implementation details, the client side lives in `src/utils/auth/OidcAuth.js` and the server-side token verification in `services/utils/auth-oidc.js`.

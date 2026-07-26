@@ -19,11 +19,11 @@ module.exports = (paramStr, render) => {
   if (!paramStr || !paramStr.includes('=')) {
     immediateError(render);
   } else {
-    // Prepare the parameters, which are got from the URL
-    const params = new URLSearchParams(paramStr);
-    const host = decodeURIComponent(params.get('host'));
-    const count = Number(decodeURIComponent(params.get('count'))) || 2;
-    const timeout = Number(decodeURIComponent(params.get('timeout'))) || 2000;
+    // Get the url to check from query params
+    const params = new URLSearchParams(paramStr.slice(paramStr.indexOf('?') + 1));
+    const host = params.get('host') || '';
+    const count = Number(params.get('count')) || 2;
+    const timeout = Number(params.get('timeout')) || 2000;
     if (!host || typeof host !== 'string') {
       immediateError(render, 'Invalid host given for ping check.');
       return;

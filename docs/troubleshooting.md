@@ -34,6 +34,7 @@
   - [Remote Config Not Loading](#remote-config-not-loading)
 - [Build & memory errors](#build--memory-errors)
   - [Yarn Build or Run Error](#yarn-error)
+  - [The engine "node" is incompatible with this module](#the-engine-node-is-incompatible-with-this-module)
   - [`yarn build` fails inside the container](#yarn-build-fails-inside-the-container)
   - [High CPU or RAM Usage on Startup](#high-cpu-or-ram-usage-on-startup)
   - [Heap limit Allocation failed](#ineffective-mark-compacts-near-heap-limit-allocation-failed)
@@ -372,6 +373,19 @@ Alternatively, as a workaround, you have several options:
 - Try using [NPM](https://www.npmjs.com/get-npm) instead: So clone, cd, then run `npm install`, `npm run build` and `npm start`
 - Try using [Docker](https://www.docker.com/get-started) instead, and all of the system setup and dependencies will already be taken care of. So from within the directory, just run `docker build -t lissy93/dashy .` to build, and then use docker start to run the project, e.g: `docker run -it -p 8080:8080 lissy93/dashy` (see the [deploying docs](https://github.com/Lissy93/dashy/blob/master/docs/deployment.md#deploy-with-docker) for more info)
 
+### The engine "node" is incompatible with this module
+
+You'll see this error while running `yarn`, if your version of Node is too old or incompatible. 
+
+The solution is to upgrade to the latest LTS version of Node 24.
+Alternatively (not recommended), you can ignore this warning by running `yarn install --ignore-engines`.
+
+
+Dashy needs Node **`^22.18.0 || >=24.11.0`** - that's either the Node 22 LTS line at 22.18.0 or newer, or 24.11.0 or newer.
+Check your current version with `node --version`.
+The easiest way to do this, is to use a version manager, like [nvm](https://github.com/nvm-sh/nvm) to quickly download and apply different node versions. Run `nvm install 24` then `nvm use 24`.
+
+
 ### `yarn build` fails inside the container
 
 If you run `docker exec <container> yarn build` and get `vite: not found` (or similar), it's because the published image ships only production dependencies. The build toolchain (vite, vue-tsc, sass, etc.) lives in `devDependencies` and isn't installed in the runtime image.
@@ -531,6 +545,11 @@ Dashy's server is rejecting the id_token. Check Dashy's container logs for `[aut
 - **Audience mismatch**. The `aud` claim in the id_token is not `dashy`. Confirm the provider's Client ID is exactly `dashy` (no leading or trailing whitespace)
 - **Dashy server can't reach Authentik**. The Dashy container fails to fetch the discovery document. Exec into the container and try `wget -qO- https://auth.example.com/application/o/dashy/.well-known/openid-configuration`
 - **Clock skew**. The middleware allows 30 seconds of drift. If a container's clock is further off than that, `exp`/`iat` checks fail
+
+If you've exhausted these and need a stop-gap, set `oidc.disableServerSideCheck: true` to skip server-side verification and fall back to client-side-only auth. This leaves Dashy's server routes unprotected, so only use it in a trusted environment (see the [OIDC docs](/docs/authentication/oidc.md)).
+
+### Sent back to the login page after a while
+Your SSO session's id_token expired, so Dashy signs you out (rather than leaving a logged-in-looking UI whose API calls all silently 401). For OIDC, set `oidc.enableSilentRenew: true` to refresh the session in the background before it lapses; this needs your provider to issue refresh tokens (Dashy adds the `offline_access` scope automatically when it's on). Otherwise, just sign in again when prompted.
 
 ### Logged in but no admin controls
 The id_token doesn't include the groups claim. Open browser devtools after logging in, find the call to `/application/o/dashy/userinfo/`, and check the response. You should see a `groups` array containing `dashy-admins`. If not:
@@ -723,7 +742,7 @@ If the URL you are checking has an unsigned certificate, or is not using HTTPS, 
 
 If your service is online, but responds with a status code that is not in the 2xx range, then you can use `statusCheckAcceptCodes` to set an accepted status code.
 
-If you get an error, like `Service Unavailable: Server resulted in a fatal error`, even when it's definitely online, this is most likely caused by missing the protocol. Don't forget to include `https://` (or whatever protocol) before the URL, and ensure that if needed, you've specified the port.
+If you get an error, like `Service Unavailable: Server resulted in Invalid URL`, even when it's definitely online, this is most likely caused by missing the protocol. Don't forget to include `https://` (or whatever protocol) before the URL, and ensure that if needed, you've specified the port.
 
 Running Dashy in HOST network mode, instead of BRIDGE will allow status check access to other services in HOST mode. For more info, see [#445](https://github.com/Lissy93/dashy/discussions/445).
 

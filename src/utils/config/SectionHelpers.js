@@ -15,15 +15,14 @@ export const shouldBeVisible = (routeName) => {
 
 /* Based on section title, item name and index, return a string value for ID */
 const makeItemId = (sectionStr, itemStr, index) => {
-  const sectionTitle = sectionStr || `unlabeledSec_${Math.random()}`;
+  const sectionTitle = String(sectionStr || `unlabeledSec_${Math.random()}`);
   const charSum = sectionTitle.split('').map((a) => a.charCodeAt(0)).reduce((x, y) => x + y);
-  const newItemStr = itemStr || `unknown_${Math.random()}`;
+  const newItemStr = String(itemStr || `unknown_${Math.random()}`);
   const itemTitleStr = newItemStr.replace(/\s+/g, '-').replace(/[^a-zA-Z ]/g, '').toLowerCase();
   return `${index}_${charSum}_${itemTitleStr}`;
 };
 
-/* Return a new array of sections with runtime ids removed from items and widgets,
- * so they don't end up in the persisted config */
+/* Return a new array of sections, without item/widget ids so they don't get saved */
 export const stripItemIds = (inputSections) => (inputSections || []).map((section) => {
   const next = { ...section };
   if (Array.isArray(section.items)) {
@@ -52,3 +51,8 @@ export const applyItemId = (inputSections) => (inputSections || []).map((section
   }
   return next;
 });
+
+/* Returns new sections array, with the `transform` function applied to section with given `name` */
+export const mapSectionByName = (sections, name, transform) => (
+  sections.map((section) => ((section.name || '') === name ? transform(section) : section))
+);

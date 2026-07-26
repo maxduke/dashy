@@ -215,4 +215,4 @@ Expected with the default config. Logout clears Dashy's cookie, but you're still
 
 Server-side, the same proxy-whitelist middleware guards the config and API routes, so a request from an untrusted IP is rejected before it reaches anything. Writes (saving config) additionally require the matched user to be `type: admin`.
 
-The relevant code is `src/utils/auth/HeaderAuth.js` on the frontend, and `services/app.js` with `services/get-user.js` on the server.
+The relevant code is `src/utils/auth/HeaderAuth.js` on the frontend, and `services/app.js` with `services/endpoints/get-user.js` on the server.

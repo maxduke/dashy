@@ -13,7 +13,7 @@ const byTitle = (items) => [...items].sort(
 const byUsage = (items, key) => {
   const counts = readUsage(key);
   const get = (item) => counts[item.id] || 0;
-  return [...items].reverse().sort((a, b) => (get(a) < get(b) ? 1 : -1));
+  return [...items].sort((a, b) => get(b) - get(a));
 };
 
 const shuffled = (items) => items

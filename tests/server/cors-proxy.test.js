@@ -14,7 +14,7 @@ const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dashy-cors-test-'));
 process.env.USER_DATA_DIR = tmpDir;
 
 const app = require('../../services/app');
-const { substituteEnv } = require('../../services/cors-proxy');
+const { substituteEnv } = require('../../services/endpoints/cors-proxy');
 
 describe('CORS proxy', () => {
   it('rejects missing Target-URL', async () => {
@@ -182,7 +182,7 @@ describe('CORS proxy error classification', () => {
 // classifies via a `timeout: true` marker on the RequestError, not via the
 // 'ECONNABORTED' string (which collides with a real libuv errno).
 describe('request.js timeout marker', () => {
-  const request_ = require('../../services/request');
+  const request_ = require('../../services/utils/request');
 
   let target;
   let targetUrl;

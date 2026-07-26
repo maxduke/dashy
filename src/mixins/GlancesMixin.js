@@ -23,7 +23,7 @@ export default {
     /* Make the request to Glances API, and calls handler function with results
     * Requires endpoint attribute and processData method to be implemented by child */
     fetchData() {
-      this.makeRequest(this.endpoint, this.credentials).then(this.processData);
+      this.makeRequest(this.endpoint, this.credentials).then(this.processData).catch(() => {});
     },
     /* Returns URL to Glances API endpoint */
     makeGlancesUrl(apiPath) {

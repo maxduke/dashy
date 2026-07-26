@@ -31,7 +31,7 @@ beforeAll(() => {
   fs.writeFileSync(path.join(tmpDir, 'sub.yml'), 'pageInfo:\n  title: Sub\n');
   process.env.USER_DATA_DIR = tmpDir;
   delete require.cache[require.resolve('../../services/app')];
-  delete require.cache[require.resolve('../../services/auth-oidc')];
+  delete require.cache[require.resolve('../../services/utils/auth-oidc')];
   app = require('../../services/app');
 });
 
