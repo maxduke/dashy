@@ -15,6 +15,13 @@ const byUsage = (items, key) => {
   const get = (item) => counts[item.id] || 0;
   return [...items].sort((a, b) => get(b) - get(a));
 };
+const byProvider = (items) => [...items].sort(
+  (a, b) => ((a.provider || '').toLowerCase() > (b.provider || '').toLowerCase() ? 1 : -1),
+);
+
+const byID = (items) => [...items].sort(
+  (a, b) => ((a.id || '').toLowerCase() > (b.id || '').toLowerCase() ? 1 : -1),
+);
 
 const shuffled = (items) => items
   .map((value) => ({ value, sort: Math.random() }))
@@ -31,6 +38,10 @@ export default function sortItems(items, order, sectionTitle = '') {
   if (ord === 'most-used') return byUsage(list, localStorageKeys.MOST_USED);
   if (ord === 'last-used') return byUsage(list, localStorageKeys.LAST_USED);
   if (ord === 'random') return shuffled(list);
+  if (ord === 'provider') return byProvider(list);
+  if (ord === 'provider-reverse') return byProvider(list).reverse();
+  if (ord === 'item-id') return byID(list);
+  if (ord === 'item-id-reverse') return byID(list).reverse();
   ErrorHandler(`Unknown Sort order '${ord}'${sectionTitle ? ` under '${sectionTitle}'` : ''}`);
   return list;
 }

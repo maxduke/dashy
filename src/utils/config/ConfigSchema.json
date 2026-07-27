@@ -907,6 +907,10 @@
                   "last-used",
                   "alphabetical",
                   "reverse-alphabetical",
+                  "provider",
+                  "provider-reverse",
+                  "item-id",
+                  "item-id-reverse",
                   "random"
                 ],
                 "default": "default",
