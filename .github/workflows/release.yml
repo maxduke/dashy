@@ -135,7 +135,7 @@ jobs:
             ${{ steps.package.outputs.tarball }}
             ${{ steps.checksum.outputs.file }}
             ${{ steps.attest_asset.outputs.file }}
-          token: ${{ secrets.BOT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.OWNER_RELEASE_TOKEN || secrets.BOT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: 📋 Job summary
         if: always()
