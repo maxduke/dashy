@@ -185,7 +185,10 @@ export default {
       this.$emit('navigateToSection');
     },
     editTooltip() {
-      const content = this.$t('interactive-editor.edit-section.edit-tooltip');
+      const key = this.disableContextMenu
+        ? 'interactive-editor.edit-section.edit-tooltip-basic'
+        : 'interactive-editor.edit-section.edit-tooltip';
+      const content = this.$t(key);
       return { content, delay: { show: 100, hide: 0 } };
     },
     toggleTooltip() {

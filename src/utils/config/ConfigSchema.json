@@ -691,6 +691,11 @@
                   "default": false,
                   "description": "If set to true, Dashy automatically renews your session in the background before it expires. Requires your OIDC provider to issue refresh tokens"
                 },
+                "postLogoutRedirectUri": {
+                  "title": "Post-Logout Redirect URI",
+                  "type": "string",
+                  "description": "URL to send users back to after logging out at the OIDC provider. Must be registered as a valid post-logout redirect URI with your provider"
+                },
                 "allowedIssuers": {
                   "title": "Allowed Token Issuers",
                   "type": "array",

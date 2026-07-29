@@ -58,6 +58,7 @@ class OidcAuth {
       adminGroup,
       adminRole,
       enableSilentRenew,
+      postLogoutRedirectUri,
     } = auth.oidc;
     if (typeof clientId === 'number' && !Number.isSafeInteger(clientId)) {
       ErrorHandler(
@@ -76,6 +77,7 @@ class OidcAuth {
       authority: endpoint,
       client_id: String(clientId),
       redirect_uri: `${window.location.origin}`,
+      post_logout_redirect_uri: postLogoutRedirectUri,
       response_type: 'code',
       scope: requestedScope,
       response_mode: 'query',

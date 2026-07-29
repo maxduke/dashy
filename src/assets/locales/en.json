@@ -369,6 +369,7 @@
       "edit-section-title": "Edit Section",
       "add-section-title": "Add New Section",
       "edit-tooltip": "Click to Edit, or right-click for more options",
+      "edit-tooltip-basic": "Click to Edit",
       "remove-confirm": "Are you sure you want to remove this section? This action can be undone later.",
       "missing-name-err": "A section name is required",
       "duplicate-name-err": "A section named '{name}' already exists"

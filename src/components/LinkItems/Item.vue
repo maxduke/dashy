@@ -183,7 +183,10 @@ export default {
       if (provider) parts.push(`<b>Provider</b>: ${provider}`);
       if (description) parts.push(description);
       if (hotkey) parts.push(`Press '${hotkey}' to launch`);
-      const editText = this.$t('interactive-editor.edit-section.edit-tooltip');
+      const editKey = this.appConfig.disableContextMenu
+        ? 'interactive-editor.edit-section.edit-tooltip-basic'
+        : 'interactive-editor.edit-section.edit-tooltip';
+      const editText = this.$t(editKey);
       return {
         content: (this.isEditMode ? editText : parts.join('<br>')),
         html: true,
