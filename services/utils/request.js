@@ -239,12 +239,9 @@ function request(config) {
         });
       });
 
-      // Expose socket events for servername access
+      // Expose socket for servername access (used by status-check.js)
       req.on('socket', (socket) => {
         req.socket = socket;
-        socket.on('secureConnect', () => {
-          req.socket = socket;
-        });
       });
 
       req.on('error', (err) => {
