@@ -65,7 +65,7 @@ jobs:
             }
 
       - name: Close stale issues ⚰️
-        uses: actions/stale@v10
+        uses: actions/stale@v11
         with:
           repo-token: ${{ secrets.BOT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           days-before-stale: 120
@@ -89,7 +89,7 @@ jobs:
           labels-to-add-when-unstale: '📌 Keep Open'
 
       - name: Close issues without response 🚏
-        uses: actions/stale@v10
+        uses: actions/stale@v11
         with:
           repo-token: ${{ secrets.BOT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           days-before-stale: 7
@@ -110,7 +110,7 @@ jobs:
           labels-to-remove-when-unstale: '🚏 Awaiting User Response,🛑 No Response'
 
       - name: Notify repo owner to respond 👤
-        uses: actions/stale@v10
+        uses: actions/stale@v11
         with:
           repo-token: ${{ secrets.BOT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           days-before-stale: 7
