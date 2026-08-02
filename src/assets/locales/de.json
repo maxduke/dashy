@@ -7,14 +7,18 @@
   "home": {
     "no-results": "keine Suchergebnisse",
     "no-data": "keine Daten konfiguriert",
-    "no-items-section": "Noch keine Elemente zum Anzeigen"
+    "no-items-section": "Noch keine Elemente zum Anzeigen",
+    "session-expired-line1": "Ihre Sitzung ist abgelaufen",
+    "session-expired-line2": "Authentifizieren Sie sich neu, um auf das Dashboard zuzugreifen",
+    "sign-in-again": "Wieder anmelden"
   },
   "search": {
     "search-label": "Suche",
     "search-placeholder": "Tippe, um zu filtern",
     "clear-search-tooltip": "Suchfeld leeren",
     "enter-to-search-web": "Drücke Enter, um das Internet zu durchsuchen",
-    "enter-to-open-url": "Drücke die Eingabetaste, um die URL zu öffnen"
+    "enter-to-open-url": "Drücke die Eingabetaste, um die URL zu öffnen",
+    "enter-to-launch-first": "Drücke Enter, um den ersten Treffer zu starten"
   },
   "splash-screen": {
     "loading": "Lädt"
@@ -48,6 +52,7 @@
     "error-no-user-configured": "Authentifizierung ist nicht aktiviert, oder es sind keine Benutzer konfiguriert",
     "error-go-home-button": "Zur Startseite",
     "logged-in-guest": "Als Gast eingeloggt, Umleitung...",
+    "authenticated-redirecting": "Authentifiziert, leite weiter...",
     "error-guest-access": "Gastzugriff nicht erlaubt"
   },
   "app-info": {
@@ -364,7 +369,10 @@
       "edit-section-title": "Sektion bearbeiten",
       "add-section-title": "Neue Sektion hinzufügen",
       "edit-tooltip": "Klicken zum Bearbeiten oder Rechtsklick für weitere Optionen",
-      "remove-confirm": "Sind Sie sicher, dass Sie diese Sektion entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      "edit-tooltip-basic": "Klicken zum Bearbeiten",
+      "remove-confirm": "Sind Sie sicher, dass Sie diese Sektion entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "missing-name-err": "Ein Sektionsname ist erforderlich",
+      "duplicate-name-err": "Eine Sektion namens '{name}' existiert bereits"
     },
     "edit-widget": {
       "edit-widget-title": "Widget bearbeiten",
@@ -435,6 +443,14 @@
       "show-less": "Weniger anzeigen",
       "open-link": "Weiterlesen"
     },
+    "github-profile": {
+      "repos": "Repositories",
+      "followers": "Follower",
+      "following": "Folge ich",
+      "stars": "Sterne",
+      "forks": "Forks",
+      "issues": "Issues"
+    },
     "pi-hole": {
       "status-heading": "Status"
     },
@@ -455,7 +471,12 @@
       "disk-file-system": "Dateisystem",
       "disk-io-read": "Lesen",
       "disk-io-write": "Schreiben",
-      "system-load-desc": "Prozesse in der Warteschlange, Durchschnitt aller Kerne"
+      "system-load-desc": "Prozesse in der Warteschlange, Durchschnitt aller Kerne",
+      "gpu-usage": "Auslastung",
+      "gpu-memory": "Speicher",
+      "gpu-temperature": "Temperatur",
+      "gpu-fan-speed": "Lüfter",
+      "gpu-none": "Keine GPU erkannt"
     },
     "system-info": {
       "uptime": "Uptime"
