@@ -7,14 +7,18 @@
   "home": {
     "no-results": "沒有結果",
     "no-data": "未設定資料",
-    "no-items-section": "無可顯示項目"
+    "no-items-section": "無可顯示項目",
+    "session-expired-line1": "您的工作階段已過期",
+    "session-expired-line2": "請重新驗證身分以存取您的儀表板",
+    "sign-in-again": "重新登入"
   },
   "search": {
     "search-label": "搜尋",
     "search-placeholder": "開始輸入以篩選",
     "clear-search-tooltip": "清空搜尋",
     "enter-to-search-web": "按下 Enter 鍵來搜尋網際網路",
-    "enter-to-open-url": "按下 Enter 鍵以開啟網址"
+    "enter-to-open-url": "按下 Enter 鍵以開啟網址",
+    "enter-to-launch-first": "按下 Enter 鍵以開啟第一個相符項目"
   },
   "splash-screen": {
     "loading": "正在載入"
@@ -48,6 +52,7 @@
     "error-no-user-configured": "未啟用驗證，或未設定任何使用者",
     "error-go-home-button": "返回首頁",
     "logged-in-guest": "已以訪客身分登入，正在重新導向...",
+    "authenticated-redirecting": "驗證成功，正在重新導向...",
     "error-guest-access": "不允許訪客存取"
   },
   "app-info": {
@@ -364,7 +369,10 @@
       "edit-section-title": "編輯區塊",
       "add-section-title": "新增區塊",
       "edit-tooltip": "點擊以編輯，右鍵以查看更多選項",
-      "remove-confirm": "您確定要移除此區塊嗎？此操作可復原。"
+      "edit-tooltip-basic": "點擊以編輯",
+      "remove-confirm": "您確定要移除此區塊嗎？此操作可復原。",
+      "missing-name-err": "必須填寫區塊名稱",
+      "duplicate-name-err": "名為「{name}」的區塊已存在"
     },
     "edit-widget": {
       "edit-widget-title": "編輯小工具",
@@ -435,6 +443,14 @@
       "show-less": "顯示較少",
       "open-link": "繼續閱讀"
     },
+    "github-profile": {
+      "repos": "儲存庫",
+      "followers": "追蹤者",
+      "following": "追蹤中",
+      "stars": "星號",
+      "forks": "分支",
+      "issues": "議題"
+    },
     "pi-hole": {
       "status-heading": "狀態"
     },
@@ -455,7 +471,12 @@
       "disk-file-system": "檔案系統",
       "disk-io-read": "讀取",
       "disk-io-write": "寫入",
-      "system-load-desc": "正在執行隊列中等待的執行序數量，平均分配到所有核心"
+      "system-load-desc": "正在執行隊列中等待的執行序數量，平均分配到所有核心",
+      "gpu-usage": "使用率",
+      "gpu-memory": "記憶體",
+      "gpu-temperature": "溫度",
+      "gpu-fan-speed": "風扇",
+      "gpu-none": "未偵測到 GPU"
     },
     "system-info": {
       "uptime": "開機時間"
