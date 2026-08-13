@@ -363,7 +363,9 @@
       "save-locally-warning": "Wenn Sie fortfahren werden die Änderungen nur in Ihrem Browser gespeichert. Um die Konfiguration auf anderen Geräten zu nutzen sollten Sie sie exportieren. Möchten Sie fortfahren?"
     },
     "edit-item": {
-      "missing-title-err": "Ein Titel ist zwingend erforderlich"
+      "missing-title-err": "Ein Titel ist zwingend erforderlich",
+      "add-item-title": "Neues Element hinzufügen",
+      "add-item-description": "Klicken, um ein neues Element hinzuzufügen"
     },
     "edit-section": {
       "edit-section-title": "Sektion bearbeiten",
