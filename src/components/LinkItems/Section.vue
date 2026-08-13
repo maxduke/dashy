@@ -48,8 +48,8 @@
       <Item v-if="isEditMode"
         :item="{
           icon: ':heavy_plus_sign:',
-          title: 'Add New Item',
-          description: 'Click to add new item',
+          title: $t('interactive-editor.edit-item.add-item-title'),
+          description: $t('interactive-editor.edit-item.add-item-description'),
           id: 'add-new',
         }"
         :isAddNew="true"

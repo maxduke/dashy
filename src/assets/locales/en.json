@@ -363,7 +363,9 @@
       "save-locally-warning": "If you proceed, changes will be saved only in your browser. You should export a copy of your config for use on other machines. Would you like to continue?"
     },
     "edit-item": {
-      "missing-title-err": "An item title is required"
+      "missing-title-err": "An item title is required",
+      "add-item-title": "Add New Item",
+      "add-item-description": "Click to add new item"
     },
     "edit-section": {
       "edit-section-title": "Edit Section",
