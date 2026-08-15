@@ -4,7 +4,7 @@
     <div class="search-wrap">
       <input
         id="filter-tiles"
-        v-model="input"
+        :value="input"
         ref="filter"
         role="searchbox"
         :aria-label="$t('search.search-label')"
@@ -107,7 +107,8 @@ export default {
       }
     },
     /* Emmits users's search term up to parent */
-    userIsTypingSomething() {
+    userIsTypingSomething(event) {
+      if (event) this.input = event.target.value;
       if (this.emitFrame != null) return;
       this.emitFrame = requestAnimationFrame(() => {
         this.emitFrame = null;
