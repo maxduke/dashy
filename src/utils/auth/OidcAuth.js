@@ -1,5 +1,5 @@
 import ConfigAccumulator from '@/utils/config/ConfigAccumalator';
-import { localStorageKeys } from '@/utils/config/defaults';
+import { localStorageKeys, routePaths } from '@/utils/config/defaults';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 import { statusMsg, statusErrorMsg } from '@/utils/logging/CoolConsole';
 import getApiAuthHeader, { getApiAuthState } from '@/utils/auth/getApiAuthHeader';
@@ -24,12 +24,14 @@ const markSilentRenewAttempt = () => {
   try { sessionStorage.setItem(SILENT_RENEW_GUARD_KEY, String(Date.now())); } catch { /* ignore */ }
 };
 
-/* Return a same-origin path to navigate back to after IdP, or just `/` */
+
+/* Returns path to navigate back to after IdP (same-origin, not /login page) */
 const safeReturnTo = (raw) => {
   if (typeof raw !== 'string') return '/';
   try {
     const u = new URL(raw, window.location.origin);
-    return u.origin === window.location.origin ? u.pathname + u.search + u.hash : '/';
+    if (u.origin !== window.location.origin || u.pathname === routePaths.login) return '/';
+    return u.pathname + u.search + u.hash;
   } catch {
     return '/';
   }
@@ -43,6 +45,12 @@ const getAppConfig = () => {
 const isOidcGuestAccessEnabled = () => {
   const { auth } = getAppConfig();
   return auth && auth.enableGuestAccess;
+};
+
+/* True when Dashy's own login page should be shown, instead of jumping to the IdP */
+export const isOidcLoginPageEnabled = () => {
+  const { auth } = getAppConfig();
+  return Boolean(auth?.oidc?.showLoginPage);
 };
 
 class OidcAuth {
@@ -136,7 +144,7 @@ class OidcAuth {
 
     const user = await this.userManager.getUser();
     if (user === null) {
-      if (isOidcGuestAccessEnabled()) return false;
+      if (isOidcGuestAccessEnabled() || isOidcLoginPageEnabled()) return false;
       await this.redirectToIdp();
       return true;
     }
@@ -221,11 +229,11 @@ class OidcAuth {
     if (this.silentRenewEnabled && user?.refresh_token) this.userManager.startSilentRenew();
   }
 
-  /* Redirect to the IdP for interactive sign-in
-   * If we just tried this, bail with error to prevent loops */
-  async redirectToIdp() {
+
+  /* Redirects to IdP for signin. Bail on failed retry to prevent infinite redirect loop */
+  async redirectToIdp(userInitiated = false) {
     const lastAttempt = Number(sessionStorage.getItem(SIGNIN_GUARD_KEY)) || 0;
-    if (Date.now() - lastAttempt < SIGNIN_GUARD_THRESHOLD_MS) {
+    if (!userInitiated && Date.now() - lastAttempt < SIGNIN_GUARD_THRESHOLD_MS) {
       sessionStorage.removeItem(SIGNIN_GUARD_KEY);
       throw new Error(
         'OIDC sign-in redirect loop detected. Check provider redirect URIs '
@@ -301,3 +309,6 @@ export const getOidcAuth = () => {
   }
   return oidc;
 };
+
+/* Sends the user off to the IdP, for an interactive sign-in */
+export const oidcSignIn = () => getOidcAuth().redirectToIdp(true);

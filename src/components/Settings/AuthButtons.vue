@@ -26,7 +26,7 @@ import router from '@/router';
 import Keys from '@/utils/StoreMutations';
 import { logout as registerLogout, getLogoutRedirectUrl } from '@/utils/auth/Auth';
 import { getKeycloakAuth, isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
-import { getOidcAuth, isOidcEnabled } from '@/utils/auth/OidcAuth';
+import { getOidcAuth, isOidcEnabled, oidcSignIn } from '@/utils/auth/OidcAuth';
 import { localStorageKeys, userStateEnum } from '@/utils/config/defaults';
 import IconLogout from '@/assets/interface-icons/user-logout.svg';
 
@@ -90,7 +90,7 @@ export default {
     },
     goToLogin() {
       if (isOidcEnabled()) {
-        getOidcAuth().userManager.signinRedirect();
+        oidcSignIn();
       } else if (isKeycloakEnabled()) {
         const kc = getKeycloakAuth();
         kc.keycloakClient.login(kc.loginOptions);

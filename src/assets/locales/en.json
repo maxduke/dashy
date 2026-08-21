@@ -26,6 +26,8 @@
   "login": {
     "title": "Dashy",
     "guest-label": "Guest Access",
+    "oidc-label": "Single Sign-On",
+    "oidc-login-button": "Sign In with SSO",
     "username-label": "Username",
     "password-label": "Password",
     "login-button": "Login",

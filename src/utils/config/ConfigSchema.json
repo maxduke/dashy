@@ -697,6 +697,12 @@
                     "type": "string",
                     "description": "The scope(s) to request from the OIDC provider"
                   },
+                "showLoginPage": {
+                  "title": "Show Dashy's Login Page",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "If set to true, signed-out users are shown Dashy's login page (with sign-in and guest buttons), instead of being redirected straight to the OIDC provider"
+                },
                 "enableSilentRenew": {
                   "title": "Enable Silent Token Renewal",
                   "type": "boolean",

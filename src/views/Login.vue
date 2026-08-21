@@ -48,9 +48,17 @@
         <p :class="`login-error-message ${status}`" v-show="message">{{ message }}</p>
       </transition>
     </form>
+    <!-- OIDC sign-in -->
+    <form class="login-form" v-if="isOidcEnabled && !isUserAlreadyLoggedIn">
+      <h2 class="login-title">{{ $t('login.oidc-label') }}</h2>
+      <Button class="login-button" :click="oidcLogin">
+        {{ $t('login.oidc-login-button') }}
+      </Button>
+    </form>
     <!-- Guest login form -->
     <form class="guest-form"
-      v-if="isGuestAccessEnabled && !isUserAlreadyLoggedIn && isAuthenticationEnabled">
+      v-if="isGuestAccessEnabled && !isUserAlreadyLoggedIn
+        && (isAuthenticationEnabled || isOidcEnabled)">
       <h2 class="login-title">{{ $t('login.guest-label') }}</h2>
       <Button class="login-button" :click="guestLogin">
         {{ $t('login.proceed-guest-button') }}
@@ -61,7 +69,7 @@
       </p>
     </form>
     <!-- Edge case - guest mode enabled, but no users configured -->
-    <div class="not-configured" v-if="!isAuthenticationEnabled">
+    <div class="not-configured" v-if="!isAuthenticationEnabled && !isOidcEnabled">
       <h2>{{ $t('login.error') }}</h2>
       <p>{{ $t('login.error-no-user-configured') }}</p>
       <Button class="login-button" :click="guestLogin">
@@ -86,6 +94,7 @@ import {
   isGuestAccessEnabled,
   getLogoutRedirectUrl,
 } from '@/utils/auth/Auth';
+import { isOidcEnabled, oidcSignIn } from '@/utils/auth/OidcAuth';
 
 export default {
   name: 'login',
@@ -134,11 +143,16 @@ export default {
       return Array.isArray(auth) ? auth : auth.users || [];
     },
     isUserAlreadyLoggedIn() {
+      // For OIDC there are no configured users, so the session itself is the check
+      if (this.isOidcEnabled) return Boolean(isLoggedIn() && this.existingUsername);
       const loggedIn = (!this.users || this.users.length === 0 || isLoggedIn());
       return (loggedIn && this.existingUsername);
     },
     isGuestAccessEnabled() {
       return isGuestAccessEnabled();
+    },
+    isOidcEnabled() {
+      return isOidcEnabled();
     },
     isAuthenticationEnabled() {
       return (this.appConfig && this.appConfig.auth && this.users.length > 0);
@@ -166,6 +180,10 @@ export default {
       } else {
         WarningInfoHandler('Unable to Sign In', InfoKeys.AUTH, this.message);
       }
+    },
+    /* Sends the user to their OIDC provider, to sign in */
+    oidcLogin() {
+      oidcSignIn();
     },
     /* Calls function to double-check guest access enabled, then log in as guest */
     guestLogin() {
