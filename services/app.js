@@ -11,12 +11,15 @@ const crypto = require('crypto');
 /* Project root — one level up from services/ */
 const rootDir = path.join(__dirname, '..');
 
-/* Import NPM dependencies */
-const yaml = require('./utils/yaml');
-
 /* Import Express + middleware functions */
 const express = require('express');
 const basicAuth = require('express-basic-auth');
+
+/* Config schema, served at /schema.json for use by external editors */
+const configSchema = require('../src/utils/config/ConfigSchema.json');
+
+/* Import NPM dependencies */
+const yaml = require('./utils/yaml');
 
 /* Kick of some basic checks */
 require('./utils/update-checker'); // Checks if there are any updates available, prints message
@@ -45,6 +48,7 @@ const ENDPOINTS = {
   systemInfo: '/system-info',
   corsProxy: '/cors-proxy',
   getUser: '/get-user',
+  configSchema: '/schema.json',
   api: '/api',
 };
 
@@ -323,6 +327,8 @@ const app = express()
     onConfigSaved: (filename, newConf) => { if (filename === 'conf.yml') config = newConf; },
   }))
   .use(ENDPOINTS.api, apiErrorHandler)
+  // Serves the config schema, for use by external editors and validators
+  .get(ENDPOINTS.configSchema, (req, res) => res.json(configSchema))
   // Middleware to serve any .yml/.yaml files in USER_DATA_DIR with optional protection
   // Note: returns stripped version if auth configured but not yet authenticated
   .get(/\.ya?ml$/i, bootstrapAuth, (req, res) => {

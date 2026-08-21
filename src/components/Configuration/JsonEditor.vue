@@ -119,19 +119,24 @@
 <script>
 import { shallowRef, markRaw } from 'vue';
 import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from '@codemirror/view';
-import { EditorState, Compartment } from '@codemirror/state';
+import { EditorState, Compartment, Prec } from '@codemirror/state';
 import { yaml } from '@codemirror/lang-yaml';
 import { linter, lintGutter, forEachDiagnostic } from '@codemirror/lint';
-import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import {
+  defaultKeymap, history, historyKeymap, indentWithTab, insertNewlineAndIndent,
+} from '@codemirror/commands';
 import {
   bracketMatching, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting, HighlightStyle,
 } from '@codemirror/language';
-import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+import {
+  acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap, closeCompletion, startCompletion,
+} from '@codemirror/autocomplete';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { tags as t } from '@lezer/highlight';
 import { load as yamlLoad, dump as yamlDump } from '@/utils/yaml';
 import { schemaLinter } from '@/utils/config/schemaLinter';
 import { schemaHover } from '@/utils/config/schemaHover';
+import { schemaComplete } from '@/utils/config/schemaComplete';
 import ConfigSavingMixin from '@/mixins/ConfigSaving';
 import ErrorHandler, { InfoHandler, InfoKeys } from '@/utils/logging/ErrorHandler';
 import StoreKeys from '@/utils/StoreMutations';
@@ -260,7 +265,22 @@ export default {
             indentOnInput(),
             syntaxHighlighting(dashyHighlight, { fallback: true }),
             highlightSelectionMatches(),
+            // Esc closes an open suggestion list, without reaching the modal (which
+            // would close the whole editor). Falls through when nothing is open
+            Prec.highest(keymap.of([
+              { key: 'Escape', run: closeCompletion, stopPropagation: true },
+            ])),
             keymap.of([
+              // Tab accepts an open suggestion; Enter starts a new line, then offers them
+              { key: 'Tab', run: acceptCompletion },
+              {
+                key: 'Enter',
+                run: (view) => {
+                  if (!insertNewlineAndIndent(view)) return false;
+                  startCompletion(view);
+                  return true;
+                },
+              },
               ...closeBracketsKeymap,
               ...defaultKeymap,
               ...searchKeymap,
@@ -272,6 +292,7 @@ export default {
             lintGutter(),
             linter(schemaLinter, { delay: 300 }),
             schemaHover,
+            autocompletion({ override: [schemaComplete], icons: false }),
             this.wrapCompartment.of(this.wordWrap ? EditorView.lineWrapping : []),
             EditorView.darkTheme.of(true),
             updateListener,
@@ -726,6 +747,25 @@ p.no-permission-note {
   &-error {
     border-left-color: var(--danger);
   }
+}
+
+/* Autocomplete popup. Extra classes needed to out-weigh CodeMirror's own theme */
+.cm-editor .cm-tooltip.cm-tooltip-autocomplete {
+  ul li[aria-selected] {
+    background: var(--config-settings-background);
+    color: var(--config-settings-color);
+  }
+  .cm-completionDetail {
+    color: var(--medium-grey);
+    font-style: normal;
+    float: right;
+    margin-left: 1rem;
+  }
+}
+
+.cm-editor .cm-tooltip.cm-completionInfo {
+  max-width: 22rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .cm-schema-hover {

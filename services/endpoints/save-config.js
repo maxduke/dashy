@@ -9,6 +9,27 @@ const path = require('path');
 
 const MAX_CONFIG_BYTES = 256 * 1024;
 
+/* Schema modeline to get added to conf.yml */
+const SCHEMA_MODELINE = '# yaml-language-server: $schema='
+  + 'https://raw.githubusercontent.com/Lissy93/dashy/master/src/utils/config/ConfigSchema.json';
+
+/* Adds the $schema part in, if not already present */
+const withModeline = (newConfig, oldConfig, isRootConfig) => {
+  // ReGex for checking if a schema reference already present
+  const MODELINE = /^#[ \t]+(?:yaml-language-server[ \t]*:|\$schema:).*/m;
+  const SCHEMA_KEY = /^["']?\$schema["']?[ \t]*:/m;
+
+  // Gets everything before the first line of content
+  const headerOf = (text) => text.split(/^(?![ \t]*(?:#|%|---|$))/m)[0];
+
+  // Skip if a schema is already referenced or if has byte-order-mark
+  if (newConfig.startsWith('\uFEFF') || SCHEMA_KEY.test(newConfig)
+    || MODELINE.test(headerOf(newConfig))) return newConfig;
+  const [existing] = headerOf(oldConfig).match(MODELINE) || [];
+  const modeline = existing || (isRootConfig ? SCHEMA_MODELINE : null);
+  return modeline ? `${modeline}\n${newConfig}` : newConfig;
+};
+
 // Disallow paths having path separators, control chars (NUL/CR/LF), or ..
 const SAFE_FILENAME = /^(?!\.+$)[^\\/\0\r\n]+\.ya?ml$/i;
 
@@ -63,7 +84,9 @@ module.exports = async (newConfig, render) => {
 
   // Write the new config
   try {
-    await fsPromises.writeFile(targetFilePath, newConfig.config, { encoding: 'utf8' });
+    const previous = await fsPromises.readFile(targetFilePath, 'utf8').catch(() => '');
+    const toWrite = withModeline(newConfig.config, previous, targetFile === 'conf.yml');
+    await fsPromises.writeFile(targetFilePath, toWrite, { encoding: 'utf8' });
   } catch (error) {
     respond(false, `Unable to write to ${targetFile}: ${error}`);
     return;
