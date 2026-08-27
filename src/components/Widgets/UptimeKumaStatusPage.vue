@@ -13,13 +13,7 @@
       >
         <div class="item monitor-row">
           <div class="title-title">
-            <span class="text">
-              {{
-                monitorNames && monitorNames[index]
-                  ? monitorNames[index]
-                  : `Monitor ${index + 1}`
-              }}
-            </span>
+            <span class="text">{{ heartbeat.name }}</span>
           </div>
           <div class="monitors-container">
             <div class="status-container">
@@ -60,10 +54,14 @@ export default {
       return this.parseAsEnvVar(this.options.slug);
     },
     monitorNames() {
-      return this.options.monitorNames || [];
+      return Array.isArray(this.options.monitorNames) ? this.options.monitorNames : [];
     },
     endpoint() {
       return `${this.host}/api/status-page/heartbeat/${this.slug}`;
+    },
+    /* Monitor names aren't in the heartbeat response, they're only here */
+    configEndpoint() {
+      return `${this.host}/api/status-page/${this.slug}`;
     },
     statusPageUrl() {
       return `${this.host}/status/${this.slug}`;
@@ -82,24 +80,33 @@ export default {
       if (!this.optionsValid({ host, slug })) {
         return;
       }
-      this.makeRequest(this.endpoint)
-        .then(this.processData)
+      Promise.all([
+        this.makeRequest(this.endpoint), // Get uptime data
+        this.makeRequest(this.configEndpoint).catch(() => null), // attempt get monitor names
+      ])
+        .then(([heartbeats, statusPage]) => this.processData(heartbeats, statusPage))
         .catch((error) => {
           this.errorMessage = error.message || 'Failed to fetch data';
         });
     },
-    processData(response) {
+    processData(response, statusPage) {
       const { heartbeatList } = response;
-      const lastHeartbeats = [];
-      // Use Object.keys to safely iterate over heartbeatList
-      Object.keys(heartbeatList).forEach((monitorId) => {
-        const heartbeats = heartbeatList[monitorId];
-        if (heartbeats.length > 0) {
-          const lastHeartbeat = heartbeats[heartbeats.length - 1];
-          lastHeartbeats.push(lastHeartbeat);
-        }
-      });
-      this.lastHeartbeats = lastHeartbeats;
+      this.lastHeartbeats = this.getOrderedMonitors(statusPage, heartbeatList)
+        .map((monitor, index) => {
+          const heartbeats = heartbeatList[monitor.id];
+          return {
+            ...heartbeats[heartbeats.length - 1],
+            name: this.monitorNames[index] || monitor.name || `Monitor ${index + 1}`,
+          };
+        });
+    },
+    /* Monitors which have heartbeats, in the same order as the status page */
+    getOrderedMonitors(statusPage, heartbeatList) {
+      const groups = statusPage?.publicGroupList;
+      const monitors = groups
+        ? groups.flatMap((group) => group.monitorList)
+        : Object.keys(heartbeatList).map((id) => ({ id }));
+      return monitors.filter((monitor) => heartbeatList[monitor.id]?.length > 0);
     },
     optionsValid({ host, slug }) {
       const errors = [];
@@ -163,24 +170,24 @@ export default {
   margin: 0.1em 0.5em;
   min-width: 64px;
   &.up {
-    background-color: #5cdd8b;
-    color: black;
+    background-color: var(--success);
+    color: var(--black);
   }
   &.down {
-    background-color: #dc3545;
-    color: white;
+    background-color: var(--danger);
+    color: var(--white);
   }
   &.pending {
-    background-color: #f8a306;
-    color: black;
+    background-color: var(--warning);
+    color: var(--black);
   }
   &.maintenance {
-    background-color: #1747f5;
-    color: white;
+    background-color: var(--info);
+    color: var(--black);
   }
   &.unknown {
-    background-color: gray;
-    color: white;
+    background-color: var(--neutral);
+    color: var(--white);
   }
 }
 .monitor-row {
@@ -193,7 +200,7 @@ export default {
   font-weight: bold;
 }
 .error-message {
-  color: red;
+  color: var(--danger);
   font-weight: bold;
 }
 </style>

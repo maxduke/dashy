@@ -2837,23 +2837,21 @@ Linkding is a self-hosted bookmarking service, which has a clean interface and i
 | ------------------ | -------- | ------------ | --------------------------------------------------------------------------------- |
 | **`host`**         | `string` | Required     | The URL of the Uptime Kuma instance                                               |
 | **`slug`**         | `string` | Required     | The slug of the status page                                                       |
-| **`monitorNames`** | `strins` | _Optional_   | Names of monitored services (in the same order as on the kuma uptime status page) |
+| **`monitorNames`** | `string[]` | _Optional_   | Optional labels to override the monitor names from Uptime Kuma, in the same order as they appear on the status page |
 
 #### Example
 
 ```yaml
 - type: uptime-kuma-status-page
+  useProxy: true
   options:
     host: http://localhost:3001
     slug: another-beautiful-status-page
-    monitorNames:
-      - "Name1"
-      - "Name2"
 ```
 
 #### Info
 
-- **CORS**: 🟢 Enabled
+- **CORS**: 🔴 Proxied (Uptime Kuma only sends CORS headers when running in development mode, so `useProxy: true` is required)
 - **Auth**: 🟢 Not Needed
 - **Price**: 🟢 Free
 - **Host**: Self-Hosted (see [Uptime Kuma](https://github.com/louislam/uptime-kuma) )

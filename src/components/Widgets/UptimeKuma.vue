@@ -197,13 +197,13 @@ export default {
   min-width: 64px;
 
   &.up {
-    background-color: rgb(92, 221, 139);
-    color: black;
+    background-color: var(--success);
+    color: var(--black);
   }
 
   &.down {
-    background-color: rgb(220, 53, 69);
-    color: white;
+    background-color: var(--danger);
+    color: var(--white);
   }
 }
 
