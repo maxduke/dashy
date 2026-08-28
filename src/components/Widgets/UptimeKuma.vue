@@ -2,16 +2,19 @@
   <div>
     <template v-if="monitors">
       <div v-for="monitor in monitors" :key="monitor.name" class="item-wrapper">
-        <div class="item monitor-row">
+        <div class="item monitor-row" v-tooltip="monitorTooltip(monitor)">
           <div class="title-title"><span class="text">{{ monitor.name }}</span></div>
           <div class="monitors-container">
-            <div class="status-container">
+            <div v-if="!hideStatus" class="status-container">
               <span class="status-pill" :class="getStatusClass(monitor.status)">
                 {{ getStatusText(monitor.status) }}
               </span>
             </div>
-            <div class="status-container">
+            <div v-if="!hideResponseTime" class="status-container">
               <span class="response-time">{{ formatResponseTime(monitor.responseTime) }}</span>
+            </div>
+            <div v-if="!hideUptime && monitor.uptime" class="status-container">
+              <span class="uptime">{{ monitor.uptime }}</span>
             </div>
           </div>
         </div>
@@ -40,6 +43,8 @@ const STATUSES = {
   3: { text: 'Maintenance', class: 'maintenance' },
 };
 const UNKNOWN = { text: 'Unknown', class: 'unknown' };
+const WINDOWS = [['1d', '24h'], ['30d', '30d'], ['365d', '1y']];
+const formatPercent = (ratio) => `${(ratio * 100).toFixed(2)}%`;
 
 export default {
   mixins: [WidgetMixin],
@@ -62,6 +67,15 @@ export default {
     /* Get instance URL */
     url() {
       return this.parseAsEnvVar(this.options.url);
+    },
+    hideStatus() {
+      return this.options.hideStatus || false;
+    },
+    hideResponseTime() {
+      return this.options.hideResponseTime || false;
+    },
+    hideUptime() {
+      return this.options.hideUptime || false;
     },
     /* Create authorisation header for the instance from the apiKey */
     authHeaders() {
@@ -98,6 +112,18 @@ export default {
         });
     },
     /* Add ms unit to response time if it valid (-1 means no ping) */
+    summariseWindows(label, values, format) {
+      const parts = WINDOWS
+        .filter(([key]) => Number.isFinite(values?.[key]))
+        .map(([key, name]) => `${format(values[key])} (${name})`);
+      return parts.length ? `${label}: ${parts.join(', ')}` : null;
+    },
+    monitorTooltip(monitor) {
+      return this.tooltip([
+        this.summariseWindows('Uptime', monitor.uptimes, formatPercent),
+        this.summariseWindows('Avg response', monitor.avgResponse, (v) => `${Math.round(v * 1000)}ms`),
+      ].filter(Boolean).join('<br>'), true);
+    },
     formatResponseTime(responseTime) {
       const ms = Number(responseTime);
       return Number.isFinite(ms) && ms >= 0 ? `${ms}ms` : '-';
@@ -133,13 +159,22 @@ export default {
       const monitor = monitors.get(monitorName);
       const value = this.getRowValue(row);
 
-      const updated = this.setMonitorValue(dataType, monitor, value);
+      const updated = this.setMonitorValue(dataType, monitor, value, this.getRowWindow(row));
 
       monitors.set(monitorName, updated);
     },
-    setMonitorValue(key, monitor, value) {
+    setMonitorValue(key, monitor, value, timeWindow) {
       const copy = { ...monitor };
       switch (key) {
+        case 'monitor_uptime_ratio': {
+          copy.uptimes = { ...copy.uptimes, [timeWindow]: Number(value) };
+          if (timeWindow === '1d') copy.uptime = formatPercent(Number(value));
+          break;
+        }
+        case 'monitor_response_time_seconds': {
+          copy.avgResponse = { ...copy.avgResponse, [timeWindow]: Number(value) };
+          break;
+        }
         case 'monitor_cert_days_remaining': {
           copy.certDaysRemaining = value;
           break;
@@ -167,6 +202,9 @@ export default {
     },
     getRowMonitorName(row) {
       return this.getValueWithRegex(row, /monitor_name="([^"]+)"/);
+    },
+    getRowWindow(row) {
+      return this.getValueWithRegex(row, /window="([^"]+)"/);
     },
     getRowDataType(row) {
       return this.getValueWithRegex(row, /^(.*?)\{/);

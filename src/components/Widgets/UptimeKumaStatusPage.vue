@@ -11,19 +11,23 @@
         :key="heartbeat.id"
         class="item-wrapper"
       >
-        <div class="item monitor-row">
+        <div class="item monitor-row" v-tooltip="monitorTooltip(heartbeat)">
           <div class="title-title">
             <span class="text">{{ heartbeat.name }}</span>
           </div>
           <div class="monitors-container">
-            <div class="status-container">
+            <div v-if="!hideHistory" class="heartbeat-strip">
               <span
-                class="status-pill"
-                :class="getStatusClass(heartbeat.status)"
-              >
-                {{ getStatusText(heartbeat.status) }}
-              </span>
+                v-for="(beat, index) in heartbeat.history"
+                :key="index"
+                class="beat"
+                :class="getStatusClass(beat.status)"
+              ></span>
             </div>
+            <span v-if="!hideUptime && heartbeat.uptime" class="uptime">{{ heartbeat.uptime }}</span>
+            <span v-if="!hideStatus" class="status-pill" :class="getStatusClass(heartbeat.status)">
+              {{ getStatusText(heartbeat.status) }}
+            </span>
           </div>
         </div>
       </div>
@@ -33,6 +37,7 @@
 
 <script>
 import WidgetMixin from '@/mixins/WidgetMixin';
+import { getTimeAgo } from '@/utils/MiscHelpers';
 
 const STATUSES = {
   0: { text: 'Down', class: 'down' },
@@ -41,6 +46,7 @@ const STATUSES = {
   3: { text: 'Maintenance', class: 'maintenance' },
 };
 const UNKNOWN = { text: 'Unknown', class: 'unknown' };
+const HISTORY_BEATS = 30;
 
 export default {
   mixins: [WidgetMixin],
@@ -63,6 +69,15 @@ export default {
     },
     monitorNames() {
       return Array.isArray(this.options.monitorNames) ? this.options.monitorNames : [];
+    },
+    hideHistory() {
+      return this.options.hideHistory || false;
+    },
+    hideUptime() {
+      return this.options.hideUptime || false;
+    },
+    hideStatus() {
+      return this.options.hideStatus || false;
     },
     endpoint() {
       return `${this.host}/api/status-page/heartbeat/${this.slug}`;
@@ -100,17 +115,30 @@ export default {
         });
     },
     processData(response, statusPage) {
-      const { heartbeatList } = response;
+      const { heartbeatList, uptimeList } = response;
       this.errorMessage = null;
       this.lastHeartbeats = this.getOrderedMonitors(statusPage, heartbeatList)
         .map((monitor, index) => {
           const heartbeats = heartbeatList[monitor.id];
+          const uptime = uptimeList?.[`${monitor.id}_24`];
           return {
             ...heartbeats[heartbeats.length - 1],
             id: monitor.id,
             name: this.monitorNames[index] || monitor.name || `Monitor ${index + 1}`,
+            uptime: typeof uptime === 'number' ? `${(uptime * 100).toFixed(2)}%` : null,
+            history: heartbeats.slice(-HISTORY_BEATS),
           };
         });
+    },
+    monitorTooltip(heartbeat) {
+      const failed = heartbeat.history.filter((beat) => beat.status === 0).length;
+      return this.tooltip([
+        Number.isFinite(heartbeat.ping) ? `Response: ${heartbeat.ping}ms` : null,
+        /* Kuma sends UTC, without a zone marker */
+        heartbeat.time ? `Last check: ${getTimeAgo(`${heartbeat.time.replace(' ', 'T')}Z`)}` : null,
+        failed ? `${failed} of ${heartbeat.history.length} recent checks failed` : null,
+        heartbeat.msg,
+      ].filter(Boolean).join('<br>'), true);
     },
     getOrderedMonitors(statusPage, heartbeatList) {
       const groups = statusPage?.publicGroupList;
@@ -174,6 +202,36 @@ export default {
 
 .clickable-widget {
   cursor: pointer;
+  container-type: inline-size;
+}
+.monitors-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.uptime {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+.heartbeat-strip {
+  display: none;
+  gap: 1px;
+
+  .beat {
+    width: 3px;
+    height: 1.1em;
+    border-radius: 1px;
+    background-color: var(--neutral);
+
+    &.up { background-color: var(--success); }
+    &.down { background-color: var(--danger); }
+    &.pending { background-color: var(--warning); }
+    &.maintenance { background-color: var(--info); }
+  }
+}
+/* Only room for the strip once the widget's own column is wide enough */
+@container (min-width: 320px) {
+  .heartbeat-strip { display: flex; }
 }
 .monitor-row {
   display: flex;
