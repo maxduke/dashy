@@ -7,8 +7,8 @@
     </template>
     <template v-else-if="lastHeartbeats">
       <div
-        v-for="(heartbeat, index) in lastHeartbeats"
-        :key="index"
+        v-for="heartbeat in lastHeartbeats"
+        :key="heartbeat.id"
         class="item-wrapper"
       >
         <div class="item monitor-row">
@@ -33,6 +33,14 @@
 
 <script>
 import WidgetMixin from '@/mixins/WidgetMixin';
+
+const STATUSES = {
+  0: { text: 'Down', class: 'down' },
+  1: { text: 'Up', class: 'up' },
+  2: { text: 'Pending', class: 'pending' },
+  3: { text: 'Maintenance', class: 'maintenance' },
+};
+const UNKNOWN = { text: 'Unknown', class: 'unknown' };
 
 export default {
   mixins: [WidgetMixin],
@@ -59,7 +67,6 @@ export default {
     endpoint() {
       return `${this.host}/api/status-page/heartbeat/${this.slug}`;
     },
-    /* Monitor names aren't in the heartbeat response, they're only here */
     configEndpoint() {
       return `${this.host}/api/status-page/${this.slug}`;
     },
@@ -67,10 +74,13 @@ export default {
       return `${this.host}/status/${this.slug}`;
     },
   },
-  mounted() {
-    this.fetchData();
-  },
   methods: {
+    getStatusText(status) {
+      return (STATUSES[status] || UNKNOWN).text;
+    },
+    getStatusClass(status) {
+      return (STATUSES[status] || UNKNOWN).class;
+    },
     update() {
       this.startLoading();
       this.fetchData();
@@ -91,16 +101,17 @@ export default {
     },
     processData(response, statusPage) {
       const { heartbeatList } = response;
+      this.errorMessage = null;
       this.lastHeartbeats = this.getOrderedMonitors(statusPage, heartbeatList)
         .map((monitor, index) => {
           const heartbeats = heartbeatList[monitor.id];
           return {
             ...heartbeats[heartbeats.length - 1],
+            id: monitor.id,
             name: this.monitorNames[index] || monitor.name || `Monitor ${index + 1}`,
           };
         });
     },
-    /* Monitors which have heartbeats, in the same order as the status page */
     getOrderedMonitors(statusPage, heartbeatList) {
       const groups = statusPage?.publicGroupList;
       const monitors = groups
@@ -121,42 +132,11 @@ export default {
     openStatusPage() {
       window.open(this.statusPageUrl, '_blank');
     },
-    getStatusText(status) {
-      switch (status) {
-        case 1:
-          return 'Up';
-        case 0:
-          return 'Down';
-        case 2:
-          return 'Pending';
-        case 3:
-          return 'Maintenance';
-        default:
-          return 'Unknown';
-      }
-    },
-    getStatusClass(status) {
-      switch (status) {
-        case 1:
-          return 'up';
-        case 0:
-          return 'down';
-        case 2:
-          return 'pending';
-        case 3:
-          return 'maintenance';
-        default:
-          return 'unknown';
-      }
-    },
   },
 };
 </script>
 
 <style scoped lang="scss">
-.clickable-widget {
-  cursor: pointer;
-}
 .status-pill {
   border-radius: 50em;
   box-sizing: border-box;
@@ -169,6 +149,7 @@ export default {
   padding: 0.35em 0.65em;
   margin: 0.1em 0.5em;
   min-width: 64px;
+
   &.up {
     background-color: var(--success);
     color: var(--black);
@@ -189,6 +170,10 @@ export default {
     background-color: var(--neutral);
     color: var(--white);
   }
+}
+
+.clickable-widget {
+  cursor: pointer;
 }
 .monitor-row {
   display: flex;

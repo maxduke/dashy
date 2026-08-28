@@ -2819,7 +2819,7 @@ Linkding is a self-hosted bookmarking service, which has a clean interface and i
 
 #### Info
 
-- **CORS**: 🟢 Enabled
+- **CORS**: 🔴 Proxied
 - **Auth**: 🟢 Required
 - **Price**: 🟢 Free
 - **Host**: Self-Hosted (see [Uptime Kuma](https://github.com/louislam/uptime-kuma) )

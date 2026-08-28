@@ -1,15 +1,17 @@
 <template>
   <div>
     <template v-if="monitors">
-      <div v-for="(monitor, index) in monitors" :key="index" class="item-wrapper">
+      <div v-for="monitor in monitors" :key="monitor.name" class="item-wrapper">
         <div class="item monitor-row">
           <div class="title-title"><span class="text">{{ monitor.name }}</span></div>
           <div class="monitors-container">
             <div class="status-container">
-              <span class="status-pill" :class="[monitor.statusClass]">{{ monitor.status }}</span>
+              <span class="status-pill" :class="getStatusClass(monitor.status)">
+                {{ getStatusText(monitor.status) }}
+              </span>
             </div>
             <div class="status-container">
-              <span class="response-time">{{ monitor.responseTime }}ms</span>
+              <span class="response-time">{{ formatResponseTime(monitor.responseTime) }}</span>
             </div>
           </div>
         </div>
@@ -26,15 +28,21 @@
 
 <script>
 /**
- * A simple example which you can use as a template for creating your own widget.
- * Takes two optional parameters (`text` and `count`), and fetches a list of images
- * from dummyapis.com, then renders the results to the UI.
+ * Renders the status and response time of each monitor on an Uptime Kuma
+ * instance, read from its Prometheus-format `/metrics` endpoint
  */
 import WidgetMixin from '@/mixins/WidgetMixin';
 
+const STATUSES = {
+  0: { text: 'Down', class: 'down' },
+  1: { text: 'Up', class: 'up' },
+  2: { text: 'Pending', class: 'pending' },
+  3: { text: 'Maintenance', class: 'maintenance' },
+};
+const UNKNOWN = { text: 'Unknown', class: 'unknown' };
+
 export default {
   mixins: [WidgetMixin],
-  components: {},
   data() {
     return {
       monitors: null,
@@ -46,9 +54,6 @@ export default {
     };
   },
 
-  mounted() {
-    this.fetchData();
-  },
   computed: {
     /* Get API key for access to instance */
     apiKey() {
@@ -68,23 +73,34 @@ export default {
     },
   },
   methods: {
-    /* The update() method extends mixin, used to update the data.
-     * It's called by parent component, when the user presses update
-     */
+    getStatusText(status) {
+      return (STATUSES[status] || UNKNOWN).text;
+    },
+    getStatusClass(status) {
+      return (STATUSES[status] || UNKNOWN).class;
+    },
     update() {
       this.startLoading();
       this.fetchData();
     },
     /* Make the data request to the computed API endpoint */
     fetchData() {
-      const { authHeaders, url } = this;
+      const { authHeaders, url, apiKey } = this;
 
-      if (!this.optionsValid({ authHeaders, url })) {
+      if (!this.optionsValid({ url, apiKey })) {
         return;
       }
 
       this.makeRequest(url, authHeaders)
-        .then(this.processData);
+        .then(this.processData)
+        .catch((error) => {
+          this.errorMessage = error.message || 'Failed to fetch data';
+        });
+    },
+    /* Add ms unit to response time if it valid (-1 means no ping) */
+    formatResponseTime(responseTime) {
+      const ms = Number(responseTime);
+      return Number.isFinite(ms) && ms >= 0 ? `${ms}ms` : '-';
     },
     /* Convert API response data into a format to be consumed by the UI */
     processData(response) {
@@ -97,14 +113,18 @@ export default {
         this.processRow(row, monitors);
       }
 
+      this.errorMessage = null;
       this.monitors = Array.from(monitors.values());
     },
     getMonitorRows(response) {
+      if (typeof response !== 'string') return [];
       return response.split('\n').filter(row => row.startsWith('monitor_'));
     },
     processRow(row, monitors) {
       const dataType = this.getRowDataType(row);
       const monitorName = this.getRowMonitorName(row);
+
+      if (!monitorName) return;
 
       if (!monitors.has(monitorName)) {
         monitors.set(monitorName, { name: monitorName });
@@ -133,8 +153,7 @@ export default {
           break;
         }
         case 'monitor_status': {
-          copy.status = value === '1' ? 'Up' : 'Down';
-          copy.statusClass = copy.status.toLowerCase();
+          copy.status = Number(value);
           break;
         }
         default:
@@ -144,7 +163,7 @@ export default {
       return copy;
     },
     getRowValue(row) {
-      return this.getValueWithRegex(row, /\b(\d+)(\.\d+)*\b$/);
+      return this.getValueWithRegex(row, /\s(\S+)\s*$/);
     },
     getRowMonitorName(row) {
       return this.getValueWithRegex(row, /monitor_name="([^"]+)"/);
@@ -163,13 +182,13 @@ export default {
 
       return result.length > 1 ? result[1] : result[0];
     },
-    optionsValid({ url, authHeaders }) {
+    optionsValid({ url, apiKey }) {
       const errors = [];
-      if (url === undefined) {
+      if (!url) {
         errors.push(this.errorMessageConstants.missingUrl);
       }
 
-      if (authHeaders === undefined) {
+      if (!apiKey) {
         errors.push(this.errorMessageConstants.missingApiKey);
       }
 
@@ -192,7 +211,7 @@ export default {
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  padding: .35em .65em;
+  padding: 0.35em 0.65em;
   margin: 0.1em 0.5em;
   min-width: 64px;
 
@@ -200,9 +219,20 @@ export default {
     background-color: var(--success);
     color: var(--black);
   }
-
   &.down {
     background-color: var(--danger);
+    color: var(--white);
+  }
+  &.pending {
+    background-color: var(--warning);
+    color: var(--black);
+  }
+  &.maintenance {
+    background-color: var(--info);
+    color: var(--black);
+  }
+  &.unknown {
+    background-color: var(--neutral);
     color: var(--white);
   }
 }
