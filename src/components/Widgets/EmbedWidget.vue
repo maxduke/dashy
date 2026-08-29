@@ -26,6 +26,10 @@ export default {
     scriptSrc() {
       return this.options.scriptSrc || '';
     },
+    /* Optional URL to fetch HTML markup from */
+    htmlSrc() {
+      return this.options.htmlSrc || '';
+    },
     /* Unique element ID */
     elementId() {
       return `elem-${Math.round(Math.random() * 10000)}`;
@@ -38,6 +42,25 @@ export default {
     window.removeEventListener('load', this.injectHtml);
   },
   methods: {
+    /* Fetches remote HTML (if htmlSrc set), then renders it */
+    fetchData() {
+      if (!this.htmlSrc) {
+        this.finishLoading();
+        return;
+      }
+      this.makeRequest(this.htmlSrc)
+        .then(this.processData)
+        .catch(() => { /* error already surfaced by the mixin */ });
+    },
+    /* Renders fetched HTML into the widget */
+    processData(data) {
+      if (typeof data !== 'string') {
+        this.error('Fetched content is not HTML', data);
+        return;
+      }
+      const element = document.getElementById(this.elementId);
+      if (element) element.innerHTML = data;
+    },
     /* Injects users content */
     injectHtml() {
       if (this.html) {
@@ -69,7 +92,12 @@ export default {
       }
     },
     update() {
-      this.injectHtml();
+      if (this.htmlSrc) {
+        this.startLoading();
+        this.fetchData();
+      } else {
+        this.injectHtml();
+      }
     },
   },
 };
