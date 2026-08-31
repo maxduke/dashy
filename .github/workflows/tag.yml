@@ -265,6 +265,25 @@ jobs:
             const prAuthor = context.payload.pull_request.user?.login;
             const creditAuthor = prAuthor && prAuthor.toLowerCase() !== 'lissy93';
             const marker = `released-${version}`;
+
+            // Public sponsors, so we don't ask them to sponsor us again
+            const sponsors = new Set();
+            try {
+              const query = `query($login: String!, $cursor: String) {
+                user(login: $login) { sponsors(first: 100, after: $cursor) {
+                  nodes { ... on User { login } ... on Organization { login } }
+                  pageInfo { hasNextPage endCursor }
+                } }
+              }`;
+              let cursor = null;
+              do {
+                const { user } = await github.graphql(query, { login: owner, cursor });
+                user.sponsors.nodes.forEach(n => n?.login && sponsors.add(n.login.toLowerCase()));
+                cursor = user.sponsors.pageInfo.hasNextPage ? user.sponsors.pageInfo.endCursor : null;
+              } while (cursor);
+            } catch (e) {
+              core.warning(`Failed to fetch sponsors: ${e.message}`);
+            }
             for (const num of issues) {
               const issue_number = parseInt(num, 10);
               try {
@@ -294,8 +313,10 @@ jobs:
                   ];
                   if (isOld) parts.push(`\nWe're sorry this one took so long 😔`);
                   if (isNew) {
-                    parts.push(`\nIf you're enjoying Dashy, consider ` +
-                      `[sponsoring us](https://github.com/sponsors/lissy93) on GitHub to help with development 💖`);
+                    parts.push(sponsors.has(author?.toLowerCase())
+                      ? `\nThank you for supporting Dashy's development with your sponsorship 💖`
+                      : `\nIf you're enjoying Dashy, consider ` +
+                        `[sponsoring us](https://github.com/sponsors/lissy93) on GitHub to help with development 💖`);
                   }
                   parts.push(`<!-- ${marker} -->`);
                   const body = parts.join(' ');

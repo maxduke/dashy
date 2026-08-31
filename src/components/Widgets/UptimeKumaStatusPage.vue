@@ -79,6 +79,10 @@ export default {
     hideStatus() {
       return this.options.hideStatus || false;
     },
+    /* Status pill text overrides */
+    statusLabels() {
+      return this.options.statusLabels || {};
+    },
     endpoint() {
       return `${this.host}/api/status-page/heartbeat/${this.slug}`;
     },
@@ -91,7 +95,8 @@ export default {
   },
   methods: {
     getStatusText(status) {
-      return (STATUSES[status] || UNKNOWN).text;
+      const { text, class: key } = STATUSES[status] || UNKNOWN;
+      return this.statusLabels[key] || text;
     },
     getStatusClass(status) {
       return (STATUSES[status] || UNKNOWN).class;

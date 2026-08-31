@@ -78,7 +78,8 @@ jobs:
           elif [ "$EVENT_NAME" = "push" ]; then
             v="$REF_NAME"
           else
-            v="latest"
+            v="$(jq -r '.version // empty' package.json 2>/dev/null || true)"
+            v="${v:-latest}"
           fi
           echo "value=$v" >> "$GITHUB_OUTPUT"
           echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
