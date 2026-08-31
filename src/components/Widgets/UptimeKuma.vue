@@ -77,6 +77,10 @@ export default {
     hideUptime() {
       return this.options.hideUptime || false;
     },
+    /* Optional status pill text overrides, keyed by status (e.g. `down: Error`) */
+    statusLabels() {
+      return this.options.statusLabels || {};
+    },
     /* Create authorisation header for the instance from the apiKey */
     authHeaders() {
       if (!this.apiKey) {
@@ -88,7 +92,8 @@ export default {
   },
   methods: {
     getStatusText(status) {
-      return (STATUSES[status] || UNKNOWN).text;
+      const { text, class: key } = STATUSES[status] || UNKNOWN;
+      return this.statusLabels[key] || text;
     },
     getStatusClass(status) {
       return (STATUSES[status] || UNKNOWN).class;
