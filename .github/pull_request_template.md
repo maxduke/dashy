@@ -1,5 +1,5 @@
 ### Category
-<!-- Bugfix / Feature / Docs / Dependencies / Localization / Widget / Theme / Showcase -->
+<!-- Bugfix / Feature / Docs / Dependencies / Localization / Widget / Theme / Showcase / CI -->
 
 ### Overview
 <!-- Briefly outline your PR. Explain what was changed and why -->
