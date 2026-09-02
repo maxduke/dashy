@@ -43,6 +43,10 @@ const WidgetMixin = {
     useProxy() {
       return this.options.useProxy || this.overrideProxyChoice;
     },
+    /* Skip TLS verification on proxied requests, for self-signed or mismatched certs */
+    allowInsecure() {
+      return !!this.options.allowInsecure;
+    },
     requestTimeout() {
       return this.options.timeout || this.defaultTimeout;
     },
@@ -103,6 +107,14 @@ const WidgetMixin = {
         content, html,
       };
     },
+    /* Builds the headers which tell the CORS proxy where, and how, to make the request */
+    proxyHeaders(endpoint, customHeaders = null) {
+      return {
+        'Target-URL': endpoint,
+        CustomHeaders: JSON.stringify(customHeaders),
+        ...(this.allowInsecure ? { 'Allow-Insecure': 'true' } : {}),
+      };
+    },
     /* Makes data request, returns promise */
     makeRequest(endpoint, options, protocol, body) {
       // Request Options
@@ -111,7 +123,7 @@ const WidgetMixin = {
       const data = JSON.stringify(body || {});
       const CustomHeaders = options || null;
       const headers = this.useProxy
-        ? { 'Target-URL': endpoint, CustomHeaders: JSON.stringify(CustomHeaders) } : CustomHeaders;
+        ? this.proxyHeaders(endpoint, CustomHeaders) : CustomHeaders;
       const requestConfig = {
         method, url, headers, data, timeout: this.requestTimeout,
       };
@@ -153,6 +165,12 @@ const WidgetMixin = {
           return `Upstream returned ${upstream.status}${tail}.`;
         }
         if (upstream.type === 'upstream_error') {
+          // Node TLS failures which the user can opt out of, with `allowInsecure`
+          const TLS_ERROR_CODE = /^(?:ERR_TLS_|UNABLE_TO_|SELF_SIGNED_|DEPTH_ZERO_|CERT_)/;
+          if (!this.allowInsecure && TLS_ERROR_CODE.test(upstream.code || '')) {
+            return `TLS certificate could not be verified (${upstream.code}). `
+              + 'If you trust this host, set `allowInsecure: true` on the widget.';
+          }
           return `Could not reach target server${upstream.code ? ` (${upstream.code})` : ''}.`;
         }
       }

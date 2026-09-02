@@ -189,10 +189,11 @@ export default {
       const ignoreErrors = this.widget.ignoreErrors || false;
       const label = this.widget.label || null;
       const useProxy = this.appConfig.widgetsAlwaysUseProxy || !!this.widget.useProxy;
+      const allowInsecure = !!this.widget.allowInsecure;
       const updateInterval = this.widget.updateInterval !== undefined
         ? this.widget.updateInterval : null;
       return {
-        timeout, ignoreErrors, label, useProxy, updateInterval, ...options,
+        timeout, ignoreErrors, label, useProxy, allowInsecure, updateInterval, ...options,
       };
     },
     /* A unique string to reference the widget by */
