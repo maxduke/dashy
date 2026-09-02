@@ -40,6 +40,12 @@
         :initialOption="form.useProxy"
       />
       <Radio
+        v-model="form.allowInsecure"
+        :label="$t('interactive-editor.edit-widget.allow-insecure-label')"
+        :options="boolRadioOptions"
+        :initialOption="form.allowInsecure"
+      />
+      <Radio
         v-model="form.ignoreErrors"
         :label="$t('interactive-editor.edit-widget.ignore-errors-label')"
         :options="boolRadioOptions"
@@ -88,6 +94,7 @@ const emptyForm = () => ({
   updateInterval: '',
   timeout: '',
   useProxy: '',
+  allowInsecure: '',
   ignoreErrors: '',
 });
 
@@ -139,6 +146,7 @@ export default {
       updateInterval: widget.updateInterval ?? '',
       timeout: widget.timeout ?? '',
       useProxy: widget.useProxy === undefined ? '' : String(widget.useProxy),
+      allowInsecure: widget.allowInsecure === undefined ? '' : String(widget.allowInsecure),
       ignoreErrors: widget.ignoreErrors === undefined ? '' : String(widget.ignoreErrors),
     };
     this.optionRows = Object.entries(widget.options || {}).map(([key, value]) => ({
@@ -168,6 +176,8 @@ export default {
       }
       if (this.form.useProxy === 'true') widget.useProxy = true;
       else if (this.form.useProxy === 'false') widget.useProxy = false;
+      if (this.form.allowInsecure === 'true') widget.allowInsecure = true;
+      else if (this.form.allowInsecure === 'false') widget.allowInsecure = false;
       if (this.form.ignoreErrors === 'true') widget.ignoreErrors = true;
       else if (this.form.ignoreErrors === 'false') widget.ignoreErrors = false;
       const options = {};

@@ -1493,6 +1493,11 @@
                   "type": "boolean",
                   "description": "If set to true, request will be proxied through the backend. Requires the Node server to be running"
                 },
+                "allowInsecure": {
+                  "title": "Allow Insecure?",
+                  "type": "boolean",
+                  "description": "If set to true, TLS certificate errors on the target will be ignored. Only applies to proxied requests, so also requires useProxy"
+                },
                 "options": {
                   "title": "Widget Options",
                   "type": "object",

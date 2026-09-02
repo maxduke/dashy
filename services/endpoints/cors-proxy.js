@@ -81,6 +81,11 @@ const handler = (req, res) => {
     validateUrl: validateTargetUrl,
   };
 
+  // Opt-in to skipping TLS verification, for targets with a self-signed or mismatched cert
+  if (req.header('Allow-Insecure') === 'true') {
+    requestConfig.httpsAgent = { rejectUnauthorized: false };
+  }
+
   // Make the request, and respond with result
   const send = (status, body) => {
     if (res.headersSent) return;
