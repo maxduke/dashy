@@ -165,6 +165,17 @@ describe('CORS proxy error classification', () => {
     expect(res.body.error.type).toBe('upstream_error');
   });
 
+  it('does not forward the Allow-Insecure control header to the target', async () => {
+    let received = null;
+    handler = (req, res) => { received = req.headers; res.end('{}'); };
+    const res = await request(app)
+      .get('/cors-proxy')
+      .set('Target-URL', targetUrl)
+      .set('Allow-Insecure', 'true');
+    expect(res.status).toBe(200);
+    expect(received['allow-insecure']).toBeUndefined();
+  });
+
   it('blocks a redirect to a metadata host (does not follow it)', async () => {
     handler = (req, res) => {
       res.statusCode = 302;

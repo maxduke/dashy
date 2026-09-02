@@ -182,7 +182,7 @@ export default {
       if (this.useProxy) {
         return {
           url: this.proxyReqEndpoint,
-          headers: { 'Target-URL': endpoint, CustomHeaders: JSON.stringify(headers) },
+          headers: this.proxyHeaders(endpoint, headers),
         };
       }
       return { url: endpoint, headers };

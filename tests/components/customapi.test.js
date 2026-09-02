@@ -3,6 +3,7 @@ import {
 } from 'vitest';
 import { shallowMount, flushPromises } from '@vue/test-utils';
 import CustomApi from '@/components/Widgets/CustomApi.vue';
+import request from '@/utils/request';
 
 const response = {
   name: 'dashy',
@@ -89,6 +90,22 @@ describe('CustomApi widget', () => {
         headers: { 'Content-Type': 'application/xml' },
       });
       expect(wrapper.vm.mergedHeaders['Content-Type']).toBe('application/xml');
+    });
+  });
+
+  describe('proxied requests', () => {
+    beforeEach(() => request.mockClear());
+
+    it('sends the Allow-Insecure header when allowInsecure is set', async () => {
+      wrapper = mountWidget({ url: 'https://example.com', useProxy: true, allowInsecure: true });
+      await flushPromises();
+      expect(request.mock.calls[0][0].headers['Allow-Insecure']).toBe('true');
+    });
+
+    it('omits the Allow-Insecure header by default', async () => {
+      wrapper = mountWidget({ url: 'https://example.com', useProxy: true });
+      await flushPromises();
+      expect(request.mock.calls[0][0].headers).not.toHaveProperty('Allow-Insecure');
     });
   });
 

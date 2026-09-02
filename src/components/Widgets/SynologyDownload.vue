@@ -73,7 +73,7 @@ export default {
       request({
         method: 'GET',
         url: this.proxyReqEndpoint,
-        headers: { 'Target-URL': this.endpointLogin },
+        headers: this.proxyHeaders(this.endpointLogin),
       })
         .then(this.processLogin);
     },
@@ -81,7 +81,7 @@ export default {
       request({
         method: 'GET',
         url: this.proxyReqEndpoint,
-        headers: { 'Target-URL': this.endpointTasks },
+        headers: this.proxyHeaders(this.endpointTasks),
       })
         .then(this.processTask);
     },
@@ -89,7 +89,7 @@ export default {
       request({
         method: 'GET',
         url: this.proxyReqEndpoint,
-        headers: { 'Target-URL': this.endpointLogout },
+        headers: this.proxyHeaders(this.endpointLogout),
       });
     },
     fetchData() {

@@ -387,6 +387,7 @@
       "update-interval-label": "Update Interval (seconds)",
       "timeout-label": "Timeout (ms)",
       "use-proxy-label": "Use Proxy",
+      "allow-insecure-label": "Allow Insecure",
       "ignore-errors-label": "Ignore Errors",
       "options-heading": "Widget Options",
       "add-option-btn": "Add Option",
