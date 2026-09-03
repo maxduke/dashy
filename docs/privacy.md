@@ -199,6 +199,7 @@ Dashy supports [Widgets](/docs/widgets.md) for displaying dynamic content. Below
 |---|---|---|
 | [Weather](/docs/widgets.md#weather) / [Weather Forecast](/docs/widgets.md#weather-forecast) | `https://api.openweathermap.org` | [OWM Privacy Policy](https://openweather.co.uk/privacy-policy) |
 | [RSS Feed](/docs/widgets.md#rss-feed) | `https://api.rss2json.com/v1/api.json` | [Rss2Json Privacy Policy](https://rss2json.com/privacy-policy) |
+| [Calendar](/docs/widgets.md#calendar) | Your own ICS feed URL | _No third-party service; the feed you configure is fetched directly_ |
 | [IP Address](/docs/widgets.md#public-ip) | `https://free.freeipapi.com/api/json` | [FreeIPAPI](https://freeipapi.com/) |
 | | `https://ipinfo.io/json` | [IPInfo Privacy Policy](https://ipinfo.io/privacy-policy) |
 | | `https://api.ipquery.io/` | [IPQuery](https://ipquery.io/) |
