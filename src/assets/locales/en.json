@@ -448,6 +448,13 @@
       "show-less": "Show Less",
       "open-link": "Continue Reading"
     },
+    "calendar": {
+      "all-day": "All day",
+      "no-events": "Nothing coming up",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "untitled": "Untitled event"
+    },
     "github-profile": {
       "repos": "Repos",
       "followers": "Followers",
