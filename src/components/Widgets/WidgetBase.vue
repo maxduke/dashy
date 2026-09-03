@@ -58,6 +58,7 @@ const COMPAT = {
   anonaddy: 'AnonAddy',
   apod: 'Apod',
   'blacklist-check': 'BlacklistCheck',
+  calendar: 'Calendar',
   chucknorris: 'ChuckNorris',
   clock: 'Clock',
   'code-stats': 'CodeStats',
