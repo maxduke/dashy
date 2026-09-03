@@ -14,9 +14,12 @@
       v-tooltip="eventTooltip(event)"
     >
       <span class="event-time" :class="{ 'all-day': event.allDay }">{{ event.time }}</span>
-      <span class="event-title">
-        <span class="calendar-dot" v-if="event.color" :style="{ background: event.color }"></span>
-        {{ event.summary }}
+      <span class="event-body">
+        <span class="event-title">
+          <span class="calendar-dot" v-if="event.color" :style="{ background: event.color }"></span>
+          {{ event.summary }}
+        </span>
+        <span class="event-meta" v-if="event.meta">{{ event.meta }}</span>
       </span>
     </component>
   </div>
@@ -26,7 +29,7 @@
 <script>
 import WidgetMixin from '@/mixins/WidgetMixin';
 import { parseIcs } from '@/utils/IcsParser';
-import { sanitize } from '@/utils/MiscHelpers';
+import { sanitize, truncateStr } from '@/utils/MiscHelpers';
 import { sanitizeText, sanitizeUrl } from '@/utils/Sanitizer';
 
 export default {
@@ -46,7 +49,7 @@ export default {
       const list = Array.isArray(input) ? input : [input];
       return list
         .map((entry) => (typeof entry === 'string' ? { url: entry } : entry))
-        .filter((entry) => entry && entry.url)
+        .filter((entry) => entry && typeof entry.url === 'string')
         .map((entry) => ({
           ...entry,
           url: this.parseAsEnvVar(entry.url).replace(/^webcal:\/\//i, 'https://'),
@@ -64,14 +67,14 @@ export default {
     hideAllDay() {
       return !!this.options.hideAllDay;
     },
-    /* The window to fetch events for, starting now unless told otherwise */
+  },
+  methods: {
+    /* The window to show events for. A method, so refreshes move it along with the clock */
     range() {
       const requested = this.options.startDate ? new Date(this.options.startDate).getTime() : NaN;
       const start = Number.isNaN(requested) ? Date.now() : requested;
       return { start, end: start + this.daysAhead * 86400000 };
     },
-  },
-  methods: {
     fetchData() {
       if (!this.calendars.length) {
         this.error('Missing calendarUrl, see the docs for supported formats');
@@ -83,11 +86,12 @@ export default {
       }
       const requests = this.calendars.map((calendar) => this.makeRequest(calendar.url));
       Promise.allSettled(requests).then((outcomes) => {
+        const range = this.range();
         const events = [];
         let readable = 0;
         outcomes.forEach((outcome, index) => {
           if (outcome.status !== 'fulfilled') return;
-          if (this.readFeed(outcome.value, this.calendars[index], events)) readable += 1;
+          if (this.readFeed(outcome.value, this.calendars[index], events, range)) readable += 1;
         });
         // Leave the widget empty if nothing could be read, so only the error shows
         if (!readable) return;
@@ -96,15 +100,15 @@ export default {
       });
     },
     /* Parse a single feed, appending its events to the combined list */
-    readFeed(data, calendar, events) {
-      let parsed;
+    readFeed(data, calendar, events, range) {
+      let feed;
       try {
-        parsed = parseIcs(data, this.range);
+        feed = parseIcs(data, range);
       } catch (error) {
         this.error(`Unable to parse calendar${calendar.name ? ` '${calendar.name}'` : ''}`, error);
         return false;
       }
-      parsed.forEach((event) => {
+      feed.events.forEach((event) => {
         if (this.hideAllDay && event.allDay) return;
         events.push({
           ...event,
@@ -112,7 +116,7 @@ export default {
           // Feeds often put markup in the description, but never in the other fields
           description: sanitizeText(event.description),
           url: sanitizeUrl(event.url) || '',
-          source: calendar.name || '',
+          source: calendar.name || feed.name,
           color: calendar.color || '',
         });
       });
@@ -124,13 +128,24 @@ export default {
       events.forEach((event) => {
         const label = this.dayLabel(event);
         const current = groups[groups.length - 1];
-        const time = event.allDay
-          ? this.$t('widgets.calendar.all-day') : this.formatTime(event.start);
-        const formatted = { ...event, time };
-        if (current && current.label === label) current.events.push(formatted);
-        else groups.push({ label, events: [formatted] });
+        const row = { ...event, time: this.eventTime(event), meta: this.eventMeta(event) };
+        if (current && current.label === label) current.events.push(row);
+        else groups.push({ label, events: [row] });
       });
       return groups;
+    },
+    eventTime(event) {
+      if (event.allDay) return this.$t('widgets.calendar.all-day');
+      return this.formatTime(event.start);
+    },
+    /* Location and description, when the user has asked to see them inline */
+    eventMeta(event) {
+      const meta = [];
+      if (this.options.showLocation && event.location) meta.push(event.location);
+      if (this.options.showDescription && event.description) {
+        meta.push(truncateStr(event.description.replace(/\s+/g, ' '), 100));
+      }
+      return meta.join(' · ');
     },
     /* All-day events are anchored to UTC, so must be read back in UTC */
     eventDate(event) {
@@ -144,7 +159,8 @@ export default {
       today.setHours(0, 0, 0, 0);
       const date = this.eventDate(event);
       const daysAway = Math.round((date - today) / 86400000);
-      if (daysAway === 0) return this.$t('widgets.calendar.today');
+      // Anything already underway belongs under today, not the day it began
+      if (daysAway <= 0) return this.$t('widgets.calendar.today');
       if (daysAway === 1) return this.$t('widgets.calendar.tomorrow');
       return date.toLocaleDateString(navigator.language, {
         weekday: 'short', day: 'numeric', month: 'short',
@@ -157,7 +173,8 @@ export default {
     },
     eventTooltip(event) {
       const lines = [];
-      if (event.source) lines.push(`<b>${sanitize(event.source)}</b>`);
+      // Only worth naming the calendar when there is more than one to tell apart
+      if (event.source && this.calendars.length > 1) lines.push(`<b>${sanitize(event.source)}</b>`);
       if (!event.allDay && event.end > event.start) {
         lines.push(`${event.time} - ${this.formatTime(event.end)}`);
       }
@@ -203,10 +220,18 @@ export default {
       opacity: var(--dimming-factor);
       &.all-day { font-size: 0.75rem; }
     }
-    .event-title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .event-body {
+      min-width: 0;
+      .event-title, .event-meta {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .event-meta {
+        font-size: 0.75rem;
+        opacity: var(--dimming-factor);
+      }
     }
     .calendar-dot {
       display: inline-block;

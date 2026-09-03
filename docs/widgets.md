@@ -271,6 +271,7 @@ Shows upcoming events from any calendar that publishes an iCalendar (`.ics`) fee
 Note that this needs to be proxied through Dashy, since calendar providers don't send CORS headers.
 `webcal://` links are accepted, same as `https://`.
 Recurring events, exceptions and moved occurrences are all expanded, and times are converted to your browser's timezone.
+Events already underway stay listed until they end, and calendars with no `name` set use the name their feed publishes.
 
 #### Options
 
@@ -280,6 +281,8 @@ Recurring events, exceptions and moved occurrences are all expanded, and times a
 **`days`** | `number` |  _Optional_ | How many days ahead to show. Min: `1`, max: `365`. Defaults to `7`
 **`limit`** | `number` |  _Optional_ | Maximum number of events to show. Defaults to `10`
 **`hideAllDay`** | `boolean` |  _Optional_ | If `true`, all-day events are omitted
+**`showLocation`** | `boolean` |  _Optional_ | If `true`, shows each event's location under its title
+**`showDescription`** | `boolean` |  _Optional_ | If `true`, shows each event's description under its title
 **`startDate`** | `string` |  _Optional_ | Show events from this date instead of today, e.g. `2026-09-03`
 
 #### Example

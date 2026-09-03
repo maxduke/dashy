@@ -7,8 +7,9 @@
 const DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 const FREQS = ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'];
 const DAY_MS = 86400000;
+// Longest each period can be, so skipping ahead always lands early, never past an occurrence
 const PERIOD_MS = {
-  DAILY: DAY_MS, WEEKLY: 7 * DAY_MS, MONTHLY: 28 * DAY_MS, YEARLY: 365 * DAY_MS,
+  DAILY: DAY_MS, WEEKLY: 7 * DAY_MS, MONTHLY: 31 * DAY_MS, YEARLY: 366 * DAY_MS,
 };
 const MAX_PERIODS = 5000;
 const LOCAL_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -115,6 +116,8 @@ const parseRule = (value) => {
   return rule;
 };
 
+const numbers = (value) => (value ? value.split(',').map(Number) : null);
+
 const startOfPeriod = (ms, freq, weekStart) => {
   const date = new Date(ms);
   date.setUTCHours(0, 0, 0, 0);
@@ -145,8 +148,9 @@ const daysMatchingByDay = (byDay, monthStart, monthLength) => {
       if (new Date(ms).getUTCDay() === weekday) matches.push(ms);
     }
     if (!nth) found.push(...matches);
-    else if (matches[nth > 0 ? nth - 1 : matches.length + nth]) {
-      found.push(matches[nth > 0 ? nth - 1 : matches.length + nth]);
+    else {
+      const nthMatch = matches[nth > 0 ? nth - 1 : matches.length + nth];
+      if (nthMatch) found.push(nthMatch);
     }
   });
   return found;
@@ -197,14 +201,13 @@ const expandRule = (rule, start, range) => {
   const interval = parseInt(rule.INTERVAL, 10) || 1;
   const count = parseInt(rule.COUNT, 10) || 0;
   const until = rule.UNTIL ? toEpoch(parseDate(rule.UNTIL)) : null;
-  const byMonth = rule.BYMONTH ? rule.BYMONTH.split(',').map(Number) : null;
   const parsed = {
     byDay: rule.BYDAY ? rule.BYDAY.split(',') : null,
-    byMonthDay: rule.BYMONTHDAY ? rule.BYMONTHDAY.split(',').map(Number) : null,
-    byMonth,
+    byMonthDay: numbers(rule.BYMONTHDAY),
+    byMonth: numbers(rule.BYMONTH),
   };
-  const bySetPos = rule.BYSETPOS ? rule.BYSETPOS.split(',').map(Number) : null;
-  const weekStart = Math.max(DAYS.indexOf(rule.WKST), 0);
+  const bySetPos = numbers(rule.BYSETPOS);
+  const weekStart = DAYS.includes(rule.WKST) ? DAYS.indexOf(rule.WKST) : 1;
   const timeOfDay = ((start.wall % DAY_MS) + DAY_MS) % DAY_MS;
 
   let cursor = startOfPeriod(start.wall, freq, weekStart);
@@ -217,8 +220,8 @@ const expandRule = (rule, start, range) => {
   const found = [];
   for (let period = 0; period < MAX_PERIODS && cursor <= range.end; period += 1) {
     let days = daysInPeriod(cursor, freq, parsed, start.wall);
-    if (byMonth && freq !== 'YEARLY') {
-      days = days.filter((ms) => byMonth.includes(new Date(ms).getUTCMonth() + 1));
+    if (parsed.byMonth && freq !== 'YEARLY') {
+      days = days.filter((ms) => parsed.byMonth.includes(new Date(ms).getUTCMonth() + 1));
     }
     let candidates = days.map((ms) => ms + timeOfDay).sort((a, b) => a - b);
     if (bySetPos) {
@@ -226,8 +229,7 @@ const expandRule = (rule, start, range) => {
         .map((pos) => candidates[pos > 0 ? pos - 1 : candidates.length + pos])
         .filter((ms) => ms !== undefined);
     }
-    for (let i = 0; i < candidates.length; i += 1) {
-      const wall = candidates[i];
+    for (const wall of candidates) {
       if (wall >= start.wall) {
         if (until !== null && toEpoch({ ...start, wall }) > until) return found;
         found.push(wall);
@@ -239,9 +241,10 @@ const expandRule = (rule, start, range) => {
   return found;
 };
 
-/* Read every VEVENT, skipping nested components such as VALARM */
-const collectEvents = (text) => {
+/* Read the calendar's name and every VEVENT, skipping nested parts such as VALARM */
+const readCalendar = (text) => {
   const events = [];
+  let calendarName = '';
   let event = null;
   let nested = 0;
   unfold(text).forEach((raw) => {
@@ -258,7 +261,11 @@ const collectEvents = (text) => {
       else if (value === 'VEVENT' && event) { events.push(event); event = null; }
       return;
     }
-    if (!event || nested) return;
+    if (!event) {
+      if (name === 'X-WR-CALNAME') calendarName = unescapeText(value);
+      return;
+    }
+    if (nested) return;
     if (TEXT_FIELDS[name]) event[TEXT_FIELDS[name]] = unescapeText(value);
     else if (name === 'DTSTART') event.start = parseDate(value, params);
     else if (name === 'DTEND') event.end = parseDate(value, params);
@@ -273,7 +280,7 @@ const collectEvents = (text) => {
       });
     }
   });
-  return events;
+  return { name: calendarName, events };
 };
 
 /* Turn one occurrence into the flat shape the widget renders */
@@ -297,16 +304,16 @@ const buildOccurrence = (event, wall) => {
 const isCancelled = (event) => event.status === 'CANCELLED';
 
 /**
- * Parse an ICS document into occurrences starting within `range`.
+ * Parse an ICS document into the occurrences falling within `range`.
  * @param {string} text - Raw iCalendar document
  * @param {{ start: number, end: number }} range - Window, as epoch milliseconds
- * @returns {Array} Occurrences, ordered by start time
+ * @returns {{ name: string, events: Array }} Feed name, and occurrences ordered by start time
  */
 export const parseIcs = (text, range) => {
   if (!text || typeof text !== 'string' || !text.includes('BEGIN:VCALENDAR')) {
     throw new Error('Not a valid iCalendar feed');
   }
-  const events = collectEvents(text);
+  const { name, events } = readCalendar(text);
   const overrides = new Map();
   events.forEach((event) => {
     if (event.recurrenceId && event.uid) {
@@ -314,7 +321,9 @@ export const parseIcs = (text, range) => {
     }
   });
 
-  const inRange = (occurrence) => occurrence.start >= range.start && occurrence.start <= range.end;
+  /* Anything overlapping the window, so events stay listed while they are still running */
+  const inRange = ({ start, end }) => start <= range.end
+    && (start >= range.start || end > range.start);
   const occurrences = [];
 
   events.forEach((event) => {
@@ -335,7 +344,5 @@ export const parseIcs = (text, range) => {
     if (inRange(occurrence)) occurrences.push(occurrence);
   });
 
-  return occurrences.sort((a, b) => a.start - b.start);
+  return { name, events: occurrences.sort((a, b) => a.start - b.start) };
 };
-
-export default parseIcs;
