@@ -427,6 +427,7 @@ Dashy supports multiple languages and locales. When available, your language sho
 - 🇬🇧 **English**: `en` - _Default_
 - 🇬🇧 **English (British)**: `en-GB`
 - 🇦🇪 **Arabic**: `ar` - Contributed by **[@kayedspace](https://github.com/kayedspace)**
+- 🇦🇿 **Azerbaijani**: `az` - Contributed by **[@jamalkamaladdin](https://github.com/jamalkamaladdin)**
 - 🇧🇩 **Bengali**: `bn` - Contributed by **[@soaibsafi](https://github.com/soaibsafi)**
 - 🇧🇬 **Bulgarian**: `bg` - Contributed by **[@asenov](https://github.com/asenov)**
 - 🇨🇳 **Chinese**: `zh-CN` - Contributed by **[@FormatToday](https://github.com/FormatToday)**
