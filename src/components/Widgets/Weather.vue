@@ -34,7 +34,7 @@ export default {
       icon: null,
       description: null,
       temp: null,
-      showDetails: false,
+      showDetails: !this.options.hideDetails,
       weatherDetails: [],
     };
   },
