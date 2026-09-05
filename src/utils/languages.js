@@ -4,6 +4,7 @@ export const languages = [
   { name: 'English', code: 'en', flag: '🇬🇧' },
   { name: 'English (British)', code: 'en-GB', flag: '🇬🇧' },
   { name: 'العربية', code: 'ar', flag: '🇦🇪' },
+  { name: 'Azərbaycan dili', code: 'az', flag: '🇦🇿' },
   { name: 'Български', code: 'bg', flag: '🇧🇬' },
   { name: 'বাংলা', code: 'bn', flag: '🇧🇩' },
   { name: 'Čeština', code: 'cs', flag: '🇨🇿' },
