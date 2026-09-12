@@ -100,6 +100,7 @@ function request(config) {
     maxRedirects = 5,
     timeout = 0,
     maxResponseSize = 0,
+    ignoreResponseBody = false,
     httpsAgent,
     validateUrl,
   } = config;
@@ -175,6 +176,39 @@ function request(config) {
           return;
         }
 
+        // Resolves (or rejects) the promise, from an already-complete response body
+        const finish = (raw) => {
+          let responseData;
+          try { responseData = JSON.parse(raw); } catch (_) { responseData = raw; }
+
+          const response = {
+            data: responseData,
+            status: res.statusCode,
+            statusText: res.statusMessage,
+            headers: res.headers,
+          };
+          // Expose raw request for socket access (non-enumerable, circular refs break stringify)
+          Object.defineProperty(response, 'request', {
+            value: req,
+            enumerable: false,
+          });
+
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(response);
+          } else {
+            reject(new RequestError(
+              `Request failed with status ${res.statusCode}`,
+              { response, code: res.statusCode },
+            ));
+          }
+        };
+        // If body not needed, can finish early with just status code
+        if (ignoreResponseBody) {
+          finish('');
+          req.destroy();
+          return;
+        }
+
         // Decompress response based on Content-Encoding (matching axios behavior)
         let stream = res;
         const encoding = (res.headers['content-encoding'] || '').toLowerCase();
@@ -209,33 +243,7 @@ function request(config) {
         });
         stream.on('end', () => {
           if (aborted) return;
-          const raw = Buffer.concat(chunks).toString('utf8');
-          let responseData;
-          try { responseData = JSON.parse(raw); } catch (_) { responseData = raw; }
-
-          const response = {
-            data: responseData,
-            status: res.statusCode,
-            statusText: res.statusMessage,
-            headers: res.headers,
-          };
-          // Expose the raw request object for socket access (status-check.js
-          // needs this). Defined as non-enumerable so JSON.stringify() skips
-          // it — the http.ClientRequest has circular socket references that
-          // would otherwise crash any endpoint forwarding the response.
-          Object.defineProperty(response, 'request', {
-            value: req,
-            enumerable: false,
-          });
-
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(response);
-          } else {
-            reject(new RequestError(
-              `Request failed with status ${res.statusCode}`,
-              { response, code: res.statusCode },
-            ));
-          }
+          finish(Buffer.concat(chunks).toString('utf8'));
         });
       });
 

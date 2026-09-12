@@ -40,6 +40,7 @@ const makeRequest = (url, options, render) => {
     headers,
     maxRedirects,
     timeout: 10000,
+    ignoreResponseBody: true,
     httpsAgent: { rejectUnauthorized: !enableInsecure },
     validateUrl: validateTargetUrl,
   })
