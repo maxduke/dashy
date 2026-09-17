@@ -57,12 +57,12 @@ export default {
     },
   },
   methods: {
-    /* Reads the kbpersec value of the server status, converts to mb/s if over 1024 kb. */
+    /* Reads the kbpersec value of the server status, converts to MB/s if over 1024 KB. */
     processKBperSec(kbpersec) {
       if (kbpersec <= 1024) {
-        return `${Number(kbpersec).toFixed(0)} kb/s`;
+        return `${Number(kbpersec).toFixed(0)} KB/s`;
       } else {
-        return `${Number(kbpersec / 1024).toFixed(1)} mb/s`;
+        return `${Number(kbpersec / 1024).toFixed(1)} MB/s`;
       }
     },
     /* Reads the bool status output of the server status to append the correct icon */
