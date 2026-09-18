@@ -24,7 +24,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-global.localStorage = localStorageMock;
+vi.stubGlobal('localStorage', localStorageMock);
 
 // Mock sessionStorage for tests
 const sessionStorageMock = {
@@ -33,7 +33,7 @@ const sessionStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-global.sessionStorage = sessionStorageMock;
+vi.stubGlobal('sessionStorage', sessionStorageMock);
 
 // Mock window.matchMedia (for responsive design tests, skipped in Node environment)
 if (typeof window !== 'undefined') Object.defineProperty(window, 'matchMedia', {

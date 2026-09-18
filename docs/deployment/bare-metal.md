@@ -192,7 +192,7 @@ install_packages() {
   elif command -v yum >/dev/null 2>&1; then
     yum install -y curl ca-certificates tar gzip coreutils nodejs
   else
-    echo "Please install curl, tar, sha256sum and Node.js v20 or newer, then re-run this script."
+    echo "Please install curl, tar, sha256sum and Node.js LTS, then re-run this script."
     exit 1
   fi
 }
@@ -212,7 +212,7 @@ if ! command -v node >/dev/null 2>&1; then
   if command -v apt-get >/dev/null 2>&1; then
     install_node_apt
   else
-    echo "Please install Node.js v20 or newer, then re-run this script."
+    echo "Please install Node.js LTS, then re-run this script."
     exit 1
   fi
 fi
@@ -225,7 +225,7 @@ if [ "$NODE_MAJOR" -lt 20 ]; then
   fi
 
   if [ "$NODE_MAJOR" -lt 20 ]; then
-    echo "Node.js v20 or newer is required. Found: $(node -v)"
+    echo "Node.js 22.22+, 24.15+ or 26+ is required. Found: $(node -v)"
     exit 1
   fi
 fi

@@ -75,7 +75,7 @@ The pre-built Docker image runs on `amd64` and `arm64` (32-bit `armv7` and `armv
 - Runs fine on a Pi 3 and up
 
 ### Bare Metal
-Requires [Node.js](https://nodejs.org/) (20+) and [Yarn](https://yarnpkg.com/)
+Requires [Node.js](https://nodejs.org/) LTS (22.22+, 24.15+ or 26+) and [Yarn](https://yarnpkg.com/)
 
 ### CDN / Cloud Deploy
 No specific requirements. The built app (without the Node server) is very lightweight and can be served by any static host or CDN. If you're using custom icons or other assets, additional disk space will be needed.

@@ -1,15 +1,24 @@
 {
+  "general": {
+    "close-modal": "Pencereyi kapat",
+    "confirm": "Onayla",
+    "cancel": "İptal"
+  },
   "home": {
     "no-results": "Hiçbir Arama Sonucu Yok",
     "no-data": "Yapılandırılmış Veri Yok",
-    "no-items-section": "Henüz Gösterilecek Öğe Yok"
+    "no-items-section": "Henüz Gösterilecek Öğe Yok",
+    "session-expired-line1": "Oturumunuzun süresi doldu",
+    "session-expired-line2": "Panonuza erişmek için yeniden kimlik doğrulayın",
+    "sign-in-again": "Yeniden Giriş Yap"
   },
   "search": {
     "search-label": "Ara",
     "search-placeholder": "Filtrelemek için yazmaya başla.",
     "clear-search-tooltip": "Aramayı Temizle",
     "enter-to-search-web": "Web'de aramak için enter'a bas",
-    "enter-to-open-url": "URL'yi açmak için enter'a bas"
+    "enter-to-open-url": "URL'yi açmak için enter'a bas",
+    "enter-to-launch-first": "İlk eşleşmeyi açmak için enter'a bas"
   },
   "splash-screen": {
     "loading": "Yükleniyor"
@@ -17,6 +26,8 @@
   "login": {
     "title": "Dashy",
     "guest-label": "Misafir Erişimi",
+    "oidc-label": "Tek Oturum Açma",
+    "oidc-login-button": "SSO ile Giriş Yap",
     "username-label": "Kullanıcı Adı",
     "password-label": "Şifre",
     "login-button": "Giriş",
@@ -43,12 +54,19 @@
     "error-no-user-configured": "Kimlik doğrulama etkinleştirilmemiş veya hiçbir kullanıcı yapılandırılmamış",
     "error-go-home-button": "Anasayfaya git",
     "logged-in-guest": "Misafir olarak giriş yapıldı, Yönlendiriliyor...",
+    "authenticated-redirecting": "Kimlik Doğrulandı, Yönlendiriliyor...",
     "error-guest-access": "Misafir Erişimine İzin Verilmiyor"
   },
   "app-info": {
     "title": "Uygulama Bilgisi",
+    "sponsor-heading": "Dashy'ye Sponsor Olun",
+    "sponsor-l1-prefix": "Dashy'yi beğendiniz mi? Geliştirmenin sürmesine destek olmak için",
+    "sponsor-l1-link": "GitHub'da bana sponsor olmayı",
+    "sponsor-l1-suffix": "düşünebilirsiniz 🩷",
     "report-bug": "Hata Bildir",
     "report-bug-description": "Bir hata bulduğunuzu düşünüyorsanız, lütfen",
+    "report-bug-debug-link": "hata ayıklama menüsüne bakın",
+    "report-bug-middle": "ve",
     "report-bug-link": "bir Sorun bildirin",
     "more-info": "Daha Fazla Bilgi",
     "source": "Kaynak",
@@ -82,6 +100,7 @@
     "disabled-note": "Bazı yapılandırma özellikleri yöneticiniz tarafından devre dışı bırakılmıştır",
     "small-screen-note": "Çok küçük bir ekran kullanıyorsunuz ve bu menüdeki bazı ekranlar en uygun şekilde görüntülenemeyebilir",
     "app-info-button": "Uygulama Bilgisi",
+    "debug-info-button": "Hata Ayıklama Bilgisi",
     "backup-note": "Değişiklik yapmadan önce yapılandırmanızın yedeğini almanız önerilir.",
     "reset-config-msg-l1": "Bu, tüm kullanıcı ayarlarını yerel depolamadan kaldıracak, ancak 'conf.yml' dosyanızı etkilemeyecektir.",
     "reset-config-msg-l2": "Gelecekte kullanmak istiyorsanız, önce yerel olarak yaptığınız tüm değişiklikleri yedeklemelisiniz.",
@@ -105,29 +124,119 @@
     "workspace": "Çalışma Alanı",
     "minimal": "Minimal"
   },
+  "remote-config": {
+    "title": "Uzak Yapılandırma Yüklensin mi?",
+    "apply-button": "Önizlemeyi Uygula",
+    "intro": "Harici bir URL'den yapılandırma yüklüyorsunuz. Devam etmek istiyor musunuz?",
+    "warning": "Devam etmeden önce yüklediğiniz içeriği okuduğunuzdan emin olun. Yüklendikten sonra tarayıcınız, bu yapılandırmada belirtilen tüm istemci tarafı kodları çalıştırabilir.",
+    "field-title": "Başlık",
+    "field-source": "Kaynak",
+    "field-sections": "Bölümler",
+    "field-items": "Öğeler",
+    "preview-note": "Yalnızca önizleme. Diskte hiçbir değişiklik yapmaz ve Dashy kurulumunuzu hiçbir şekilde etkilemez.",
+    "applied-toast": "Uzak yapılandırma uygulandı (yalnızca önizleme)",
+    "previewing-banner": "Uzak yapılandırma önizleniyor",
+    "revert-button": "Geri Al",
+    "error-invalid-url": "Uzak yapılandırma URL'si geçerli değil (http veya https olmalı)",
+    "error-fetch": "Uzak yapılandırma alınamadı. URL'nin erişilebilir olduğunu ve CORS'a izin verildiğini kontrol edin.",
+    "error-parse": "Uzak yapılandırma geçerli bir YAML değil",
+    "error-not-config": "Uzak dosya bir Dashy yapılandırmasına benzemiyor",
+    "error-apply": "Uzak yapılandırma uygulanamadı"
+  },
   "settings": {
     "theme-label": "Tema",
     "layout-label": "Düzen",
     "layout-auto": "Oto",
     "layout-horizontal": "Yatay",
     "layout-vertical": "Dikey",
+    "layout-masonry": "Döşeme",
     "item-size-label": "Öğe Boyutu",
     "item-size-small": "Küçük",
     "item-size-medium": "Orta",
     "item-size-large": "Geniş",
+    "language-label": "Dil",
     "config-launcher-label": "Yapılandırma",
     "config-launcher-tooltip": "Yapılandırmayı Güncelle",
+    "nav-links-tooltip": "Gezinme ve Yapılandırmalar",
+    "toggle-nav-aria": "Gezinme menüsünü aç/kapat",
     "sign-out-tooltip": "Çıkış Yap",
     "sign-in-tooltip": "Giriş Yap",
     "sign-in-welcome": "Merhaba {username}!",
-    "hide": "Gizle"
+    "please-login": "Tam erişim için giriş yapın",
+    "hide": "Gizle",
+    "options-title": "Seçenekler",
+    "options-tooltip": "Seçenekler"
   },
   "updates": {
     "app-version-note": "Dashy versiyon",
     "up-to-date": "Güncel",
     "out-of-date": "Güncelleştirme mevcut",
     "unsupported-version-l1": "Dashy'nin desteklenmeyen bir sürümünü kullanıyorsunuz",
-    "unsupported-version-l2": "En iyi deneyim ve en son güvenlik yamaları için lütfen güncelleyin"
+    "unsupported-version-l2": "En iyi deneyim ve en son güvenlik yamaları için lütfen güncelleyin",
+    "sw-update-available": "Dashy'nin yeni bir sürümü mevcut.",
+    "sw-update-action": "Yenile"
+  },
+  "debug": {
+    "getting-help": "Yardım Alma",
+    "getting-help-msg": "Bir sorunla karşılaştıysanız topluluk yardımcı olabilir.",
+    "resources": {
+      "troubleshooting-name": "Sorun Giderme",
+      "troubleshooting-desc": "Sık karşılaşılan sorunların çözümlerini burada topladık",
+      "docs-name": "Belgeler",
+      "docs-desc": "Kullanım kılavuzları ve yapılandırma talimatları",
+      "source-name": "Kaynak kodu",
+      "source-desc": "Bunlar yetmezse sorunu koddan tespit edebilirsiniz",
+      "email-name": "E-posta Desteği",
+      "email-note": "(yalnızca sponsorlar)",
+      "email-desc": "Bana yazın, yardımcı olmaya çalışırım"
+    },
+    "reporting-bug": "Hata Bildirme",
+    "reporting-bug-l1-prefix": "Beklendiği gibi çalışmayan bir şey bulduysanız lütfen GitHub depomuzda bir",
+    "reporting-bug-l1-link": "sorun kaydı",
+    "reporting-bug-l1-suffix": "açın.",
+    "reporting-bug-l2-intro": "Hata bildirirken lütfen şunlar gibi ilgili bilgileri ekleyin:",
+    "reporting-bug-list": {
+      "version": "Dashy sürümü",
+      "deployment": "Dağıtım türü",
+      "errors": "Hata günlükleri",
+      "config": "Yapılandırma parçaları",
+      "overrides": "İlgili geçersiz kılmalar",
+      "environment": "Ortam bilgisi"
+    },
+    "reporting-bug-note": "Hassas bilgileri gizlediğinizden emin olun. Hata ayıklama, teşhis ve düzeltme için yeterli bilgi içermeyen kayıtlar kapatılabilir. Zaman kısıtı nedeniyle sponsorlardan gelen destek ve özellik isteklerine öncelik verilir.",
+    "app-version": "Uygulama Sürümü",
+    "error-log": "Hata Günlüğü",
+    "error-log-hint-prefix": "Tarayıcı günlüklerini nasıl görüntüleyeceğinizi öğrenmek için",
+    "error-log-hint-link": "buraya",
+    "error-log-hint-suffix": "bakın. Sunucu günlüklerinde de yararlı bilgiler olabilir.",
+    "no-errors": "Bu oturumda hata kaydedilmedi.",
+    "current-config": "Geçerli Yapılandırma",
+    "current-config-hint": "Sorun kaydı açarken lütfen yapılandırma dosyanızın ilgili kısımlarını ekleyin.",
+    "config-render-error": "Yapılandırma görüntülenemedi: {error}",
+    "local-storage": "Yerel Depolama",
+    "local-storage-hint": "Bu tarayıcıda kayıtlı ayarlar. Temizlenene kadar varsayılanları geçersiz kılar.",
+    "no-local-storage": "Yerel olarak kayıtlı bir şey yok.",
+    "local-storage-error": "Yerel depolama okunamadı: {error}",
+    "environment": "Ortam",
+    "environment-hint": "Hata bildirirken eklenecek tarayıcı ve cihaz bilgisi.",
+    "env": {
+      "unknown": "Bilinmiyor",
+      "yes": "Evet",
+      "no": "Hayır",
+      "browser": "Tarayıcı",
+      "os": "İşletim Sistemi",
+      "viewport": "Görünüm Alanı",
+      "screen": "Ekran",
+      "dpr": "Piksel Oranı",
+      "languages": "Diller",
+      "timezone": "Saat Dilimi",
+      "colorScheme": "Renk Şeması",
+      "reducedMotion": "Azaltılmış Hareket",
+      "online": "Çevrimiçi",
+      "route": "Geçerli Rota",
+      "mode": "Derleme Modu",
+      "swActive": "Service Worker"
+    }
   },
   "language-switcher": {
     "title": "Uygulama Dilini Değiştir",
@@ -153,7 +262,26 @@
     "success-msg-disk": "Yapılandırma dosyası diske başarıyla yazıldı",
     "success-msg-local": "Yerel değişiklikler başarıyla kaydedildi",
     "error-msg-cannot-save": "Yapılandırma kaydedilirken bir hata oluştu",
-    "not-admin-note": "Yönetici olarak giriş yapmadığınız için değiştirilenleri diske yazamazsınız."
+    "not-admin-note": "Yönetici olarak giriş yapmadığınız için değiştirilenleri diske yazamazsınız.",
+    "preview-applied-msg": "Yapılandırma önizlendi. Değişiklikleri görmek için bu pencereyi kapatın.",
+    "reset-confirm-msg": "Kaydedilmemiş tüm değişiklikler atılıp özgün yapılandırmaya dönülsün mü?",
+    "wrap-label": "Satır Kaydır",
+    "format-label": "Biçimlendir",
+    "reset-label": "Sıfırla",
+    "reset-tooltip": "Tüm düzenlemeleri at ve özgün yapılandırmaya dön",
+    "download-tooltip": "conf.yml olarak indir",
+    "download-label": "YAML İndir",
+    "copy-tooltip": "YAML'ı panoya kopyala",
+    "copy-label": "YAML Kopyala",
+    "copy-success-msg": "Yapılandırma panoya kopyalandı",
+    "copy-fail-msg": "Kopyalama başarısız: {message}",
+    "format-fail-msg": "Biçimlendirilemiyor: {message}",
+    "status-valid": "Geçerli",
+    "status-invalid": "Geçersiz",
+    "status-warning": "{n} Uyarı",
+    "status-warnings": "{n} Uyarı",
+    "parse-fail-msg": "YAML ayrıştırma hatası: {message}",
+    "editor-init-fail-msg": "Düzenleyici başlatılamadı: {message}"
   },
   "cloud-sync": {
     "title": "Bulut Yedekleme ve Geri Yükleme",
@@ -197,19 +325,24 @@
       "open-section": "Bölümü Aç",
       "edit-section": "Düzenle",
       "expand-collapse": "Genişlet / Daralt",
-      "remove-section": "Kaldır"
+      "remove-section": "Kaldır",
+      "section-options": "Bölüm Seçenekleri"
     }
   },
   "interactive-editor": {
     "menu": {
       "start-editing-tooltip": "Etkileşimli Düzenleyiciye girin",
+      "config-unavailable": "Yapılandırma düzenleyicisi kullanılamıyor",
       "edit-site-data-subheading": "Site Verilerini Düzenle",
+      "edit-config-as-code-btn": "Yapılandırmayı Kod Olarak Düzenle",
+      "edit-config-as-code-tooltip": "Ham yapılandırma dosyasını düzenlemek için YAML düzenleyicisini açın",
       "edit-page-info-btn": "Sayfa Bilgilerini Düzenle",
       "edit-page-info-tooltip": "Uygulama başlığı, açıklama, gezinme bağlantıları, altbilgi metni vb.",
       "edit-app-config-btn": "Uygulama Yapılandırmasını Düzenle",
       "edit-app-config-tooltip": "Diğer tüm uygulama yapılandırma seçenekleri",
       "edit-pages-btn": "Sayfaları Düzenle",
       "edit-pages-tooltip": "Ek görünümler ekleyin veya kaldırın",
+      "edit-pages-subconfig-disabled": "Sayfalar yalnızca kök yapılandırmadan düzenlenebilir",
       "config-save-methods-subheading": "Kaydetme Seçeneklerini Yapılandırın",
       "save-locally-btn": "Yerel Olarak Kaydet",
       "save-locally-tooltip": "Yapılandırmayı yerel olarak tarayıcı depolama alanına kaydedin. Bu, yapılandırma dosyanızı etkilemeyecek ancak değişiklikler yalnızca bu cihaza kaydedilecek",
@@ -223,6 +356,7 @@
       "edit-raw-config-tooltip": "JSON editörü aracılığıyla ham yapılandırmayı görüntüleyin ve değiştirin",
       "cancel-changes-btn": "Düzenlemeyi İptal Et",
       "cancel-changes-tooltip": "Mevcut değişiklikleri sıfırlayın ve Düzenleme Modundan çıkın. Bu, kayıtlı yapılandırmanızı etkilemez",
+      "leave-while-editing-confirm": "Kaydedilmemiş değişiklikleriniz var. Bu sayfadan ayrılıp değişiklikler atılsın mı?",
       "edit-mode-name": "Düzenleme modu",
       "edit-mode-subtitle": "Düzenleme Modundasınız",
       "edit-mode-description": "Bu, yapılandırmanızda değişiklikler yapabileceğiniz ve sonuçları önizleyebileceğiniz anlamına gelir, ancak siz kaydedene kadar değişikliklerinizin hiçbiri korunmaz.",
@@ -231,13 +365,37 @@
       "save-locally-warning": "Devam ederseniz, değişiklikler yalnızca tarayıcınıza kaydedilecektir. Diğer makinelerde kullanmak için yapılandırmanızın bir kopyasını dışa aktarmalısınız. Devam etmek ister misin?"
     },
     "edit-item": {
-      "missing-title-err": "Öğe başlığı gerekli"
+      "missing-title-err": "Öğe başlığı gerekli",
+      "add-item-title": "Yeni Öğe Ekle",
+      "add-item-description": "Yeni öğe eklemek için tıklayın"
     },
     "edit-section": {
       "edit-section-title": "Bölümü düzenle",
       "add-section-title": "Yeni Bölüm Ekle",
       "edit-tooltip": "Düzenlemek için tıklayın veya daha fazla seçenek için sağ tıklayın",
-      "remove-confirm": "Bu bölümü kaldırmak istediğinizden emin misiniz? Bu işlem daha sonra geri alınabilir."
+      "edit-tooltip-basic": "Düzenlemek İçin Tıklayın",
+      "remove-confirm": "Bu bölümü kaldırmak istediğinizden emin misiniz? Bu işlem daha sonra geri alınabilir.",
+      "missing-name-err": "Bölüm adı zorunludur",
+      "duplicate-name-err": "'{name}' adlı bir bölüm zaten var"
+    },
+    "edit-widget": {
+      "edit-widget-title": "Widget'ı Düzenle",
+      "add-widget-title": "Yeni Widget Ekle",
+      "add-widget-btn": "Widget Ekle",
+      "type-label": "Widget Türü",
+      "label-label": "Etiket",
+      "update-interval-label": "Güncelleme Aralığı (saniye)",
+      "timeout-label": "Zaman Aşımı (ms)",
+      "use-proxy-label": "Proxy Kullan",
+      "allow-insecure-label": "Güvensiz Bağlantıya İzin Ver",
+      "ignore-errors-label": "Hataları Yoksay",
+      "options-heading": "Widget Seçenekleri",
+      "add-option-btn": "Seçenek Ekle",
+      "key-placeholder": "Anahtar",
+      "value-placeholder": "Değer",
+      "missing-type-err": "Widget türü zorunludur",
+      "remove-widget": "Widget'ı Kaldır",
+      "remove-confirm": "Bu widget'ı kaldırmak istediğinizden emin misiniz? Bu işlem daha sonra geri alınabilir."
     },
     "edit-app-config": {
       "warning-msg-title": "Dikkatle ilerleyin",
@@ -250,7 +408,28 @@
       "copy-clipboard-btn": "Yapılandırmayı Panoya Kopyala",
       "copy-clipboard-tooltip": "Tüm uygulama yapılandırmasını sistem panosuna YAML biçiminde kopyalayın",
       "download-file-btn": "Dosya Olarak İndir",
-      "download-file-tooltip": "Tüm uygulama yapılandırmasını bir YAML dosyasında cihazınıza indirin"
+      "download-file-tooltip": "Tüm uygulama yapılandırmasını bir YAML dosyasında cihazınıza indirin",
+      "current-config-title": "Geçerli Yapılandırma",
+      "preview-toggle": "YAML önizlemesi",
+      "issues-title": "Şema sorunları ({n})",
+      "config-list-title": "Yapılandırma Listesi",
+      "col-title": "Başlık",
+      "col-path": "Yol",
+      "col-content": "İçerik",
+      "col-status": "Durum",
+      "col-actions": "İşlemler",
+      "content-summary": "{sections} bölüm, {items} öğe, {widgets} widget",
+      "status-loading": "yükleniyor",
+      "status-valid": "geçerli",
+      "status-warnings": "{n} uyarı",
+      "status-error": "hata",
+      "status-unknown": "bilinmiyor",
+      "edit-current-btn": "Yapılandırmayı Düzenle",
+      "edit-current-tooltip": "Geçerli yapılandırmayı JSON düzenleyicisinde açın",
+      "copy-fail-msg": "Panoya kopyalanamadı, günlüğe bakın",
+      "download-row-tooltip": "YAML İndir",
+      "preview-row-tooltip": "YAML Önizlemesini Aç/Kapat",
+      "apply-row-tooltip": "Yapılandırmayı uygula"
     }
   },
   "critical-error": {
@@ -268,6 +447,21 @@
       "mem-details": "Bellek Detayları",
       "show-less": "Daha Az Göster",
       "open-link": "Okumaya Devam Et"
+    },
+    "calendar": {
+      "all-day": "Tüm gün",
+      "no-events": "Yaklaşan etkinlik yok",
+      "today": "Bugün",
+      "tomorrow": "Yarın",
+      "untitled": "Adsız etkinlik"
+    },
+    "github-profile": {
+      "repos": "Depolar",
+      "followers": "Takipçiler",
+      "following": "Takip Edilenler",
+      "stars": "Yıldızlar",
+      "forks": "Fork'lar",
+      "issues": "Sorunlar"
     },
     "pi-hole": {
       "status-heading": "Durum"
@@ -289,7 +483,12 @@
       "disk-file-system": "Dosya Sistemi",
       "disk-io-read": "Okuma",
       "disk-io-write": "Yazma",
-      "system-load-desc": "Çalışma kuyruğunda bekleyen işlemlerin sayısı, tüm çekirdeklerde ortalaması alınır"
+      "system-load-desc": "Çalışma kuyruğunda bekleyen işlemlerin sayısı, tüm çekirdeklerde ortalaması alınır",
+      "gpu-usage": "Kullanım",
+      "gpu-memory": "Bellek",
+      "gpu-temperature": "Sıcaklık",
+      "gpu-fan-speed": "Fan",
+      "gpu-none": "GPU algılanmadı"
     },
     "system-info": {
       "uptime": "Aktiflik Süresi"

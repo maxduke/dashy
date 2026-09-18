@@ -153,7 +153,7 @@ All images are multi-arch (works on amd64 and arm64).
 
 ### Deploying from Source 🔨
 
-You'll need Node (20+) installed, as well as git and `yarn` enabled.
+You'll need up-to-date Node LTS installed, as well as git and `yarn` enabled.
 
 - Clone the Repo: `git clone https://github.com/Lissy93/dashy.git` and `cd dashy`
 - Configuration: Fill in your settings in `./user-data/conf.yml`
@@ -495,7 +495,7 @@ pages:
 
 ## System Requirements 📊
 
-If running on bare metal, Dashy requires [Node](https://nodejs.org/en/) V 20.0.0 or later, LTS (22.x) is recommended.
+If running on bare metal, Dashy requires [Node](https://nodejs.org/en/) LTS (24.x) is recommended.
 
 If running in Docker container, the recommended base image is Alpine (3.21)
 
