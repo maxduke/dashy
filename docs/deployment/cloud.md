@@ -11,6 +11,19 @@ Where possible, I've included templates and 1-click install links, so you can de
 
 ---
 
+## VPS Hosting
+
+### Hostinger
+
+Deploy Dashy with a single click on Hostinger - pre-configured and ready to run.
+
+<a href="https://www.hostg.xyz/aff_c?offer_id=48&aff_id=243972&url_id=6825"><img alt="Hostinger" src="https://assets.hostinger.com/vps/deploy.svg" height="32"></a>
+
+Hostinger is kindly sponsoring another project of ours, [Web-Check](https://github.com/lissy93/web-check).
+You can use [this link](https://www.hostg.xyz/aff_c?offer_id=48&aff_id=243972&url_id=6825) to get ~70% off a VPS of your choice. If you'd prefer a non-affiliate link, you can use this link: [https://www.hostinger.com/applications/dashy](https://www.hostinger.com/applications/dashy).
+
+---
+
 ## Static Hosting Providers
 
 ### Netlify

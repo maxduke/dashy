@@ -166,14 +166,14 @@ You'll need up-to-date Node LTS installed, as well as git and `yarn` enabled.
 ### Deploy to the Cloud ☁️
 
 Dashy supports **1-Click deployments** on several popular cloud platforms. To spin up a new instance, just click a link below:
-- [<img src="https://i.ibb.co/ZxtzrP3/netlify.png" width="18"/> Deploy to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/lissy93/dashy)
-- [<img src="https://i.ibb.co/Ld2FZzb/vercel.png" width="18"/> Deploy to Vercel](https://vercel.com/new/project?template=https://github.com/lissy93/dashy)
-- [<img src="https://i.ibb.co/xCHtzgh/render.png" width="18"/> Deploy to Render](https://render.com/deploy?repo=https://github.com/lissy93/dashy)
+- [<img src="https://pixelflare.cc/alicia/icons/hostinger.png/w128" width="18"/> Deploy to Hostinger](https://www.hostg.xyz/aff_c?offer_id=48&aff_id=243972&url_id=6825)
+- [<img src="https://pixelflare.cc/alicia/icons/netlify.png/w128" width="18"/> Deploy to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/lissy93/dashy)
+- [<img src="https://pixelflare.cc/alicia/icons/vercel.png/w128" width="18"/> Deploy to Vercel](https://vercel.com/new/project?template=https://github.com/lissy93/dashy)
+- [<img src="https://pixelflare.cc/alicia/icons/render.jpg/w128" width="18"/> Deploy to Render](https://render.com/deploy?repo=https://github.com/lissy93/dashy)
 - [<img src="https://railway.app/brand/logo-light.png" width="18"/> Deploy to Railway](https://railway.app/template/MtdjAQ?referralCode=app)
-- [<img src="https://i.ibb.co/J7MGymY/googlecloud.png" width="18"/> Deploy to GCP](https://deploy.cloud.run/?git_repo=https://github.com/lissy93/dashy.git)
-- [<img src="https://i.ibb.co/HVWVYF7/docker.png" width="18"/> Deploy to PWD](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/Lissy93/dashy/master/docker-compose.yml)
-- [<img src="https://i.ibb.co/7NxnM2P/easypanel.png" width="18"/> Deploy to Easypanel](https://easypanel.io/docs/templates/dashy)
-- [<img src="https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/af4a7321-0f56-47ae-a39e-3fd1d162d8e6.jpeg" width="18"/> Deploy to EdgeOne](https://edgeone.ai/pages/new?repository-url=https://github.com/lissy93/dashy)
+- [<img src="https://pixelflare.cc/alicia/icons/google-cloud-run.png/w128" width="18"/> Deploy to GCP](https://deploy.cloud.run/?git_repo=https://github.com/lissy93/dashy.git)
+- [<img src="https://pixelflare.cc/alicia/icons/easy-panel.png/w128" width="18"/> Deploy to Easypanel](https://easypanel.io/docs/templates/dashy)
+- [<img src="https://pixelflare.cc/alicia/icons/edgeone.png" width="18"/> Deploy to EdgeOne](https://edgeone.ai/pages/new?repository-url=https://github.com/lissy93/dashy)
 
 > For more 1-click cloud deployments, see [Cloud Deployment](./docs/deployment.md#deploy-to-cloud-service)
 
