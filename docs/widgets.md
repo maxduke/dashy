@@ -1067,7 +1067,7 @@ Shows real-time tube status of the London Underground. All fields are optional.
 
 ### Stock Price History
 
-Shows recent price history for a given publicly-traded stock or share
+Shows recent daily price history for a given publicly-traded stock or share
 
 <p align="center"><img width="400" src="https://pixelflare.cc/alicia/dashy/stocks" /></p>
 
@@ -1078,6 +1078,7 @@ Shows recent price history for a given publicly-traded stock or share
 **`apiKey`** | `string` |  Required | API key for [Alpha Vantage](https://www.alphavantage.co/), you can get a free API key [here](https://www.alphavantage.co/support/#api-key)
 **`stock`** | `string` | Required | The stock symbol for the asset to fetch data for
 **`priceTime`** | `string` |  _Optional_ | The time to fetch price for. Can be `high`, `low`, `open` or `close`. Defaults to `high`
+**`dataPoints`** | `number` | _Optional_ | Number of days to plot, between `6` and `99`. Defaults to `30`
 **`chartColor`** | `string` | _Optional_ | Color of the chart value. Defaults to `--widget-text-color` which inherits dashboard primary color
 **`chartHeight`** | `number` | _Optional_ | The height of rendered chart in px. Defaults to `300`
 
@@ -1094,7 +1095,7 @@ Shows recent price history for a given publicly-traded stock or share
 
 - **CORS**: 🟢 Enabled
 - **Auth**: 🔴 Required
-- **Price**: 🟠 Free plan (up to 500 requests/day)
+- **Price**: 🟠 Free plan (up to 25 requests/day)
 - **Host**: Managed Instance Only
 - **Privacy**: _See [AlphaVantage Privacy Policy](https://www.alphavantage.co/privacy/)_
 

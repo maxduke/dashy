@@ -23,24 +23,19 @@ export default {
     stock() {
       return this.options.stock;
     },
-    /* The time interval between data points, in minutes */
-    interval() {
-      return `${(this.options.interval || 30)}min`;
-    },
     /* The users API key for AlphaVantage */
     apiKey() {
       return this.parseAsEnvVar(this.options.apiKey);
     },
     /* The formatted GET request API endpoint to fetch stock data from */
     endpoint() {
-      const func = 'TIME_SERIES_INTRADAY';
-      return `${widgetApiEndpoints.stockPriceChart}?function=${func}`
-      + `&symbol=${this.stock}&interval=${this.interval}&apikey=${this.apiKey}`;
+      return `${widgetApiEndpoints.stockPriceChart}?function=TIME_SERIES_DAILY`
+      + `&symbol=${this.stock}&apikey=${this.apiKey}`;
     },
     /* The number of data points to render on the chart */
     dataPoints() {
       const userChoice = this.options.dataPoints;
-      if (typeof usersChoice === 'number' && userChoice < 100 && userChoice > 5) {
+      if (typeof userChoice === 'number' && userChoice < 100 && userChoice > 5) {
         return userChoice;
       }
       return 30;
@@ -85,14 +80,14 @@ export default {
         },
       });
     },
-    /* Make GET request to CoinGecko API endpoint */
+    /* Make GET request to AlphaVantage API endpoint */
     fetchData() {
       request.get(this.endpoint)
         .then((response) => {
-          if (response.data.note) {
-            this.error('API Error', response.data.Note);
-          } else if (response.data['Error Message']) {
-            this.error('API Error', response.data['Error Message']);
+          const apiError = response.data['Error Message']
+            || response.data.Information || response.data.Note;
+          if (apiError) {
+            this.error('API Error', apiError);
           } else {
             this.processData(response.data);
           }
@@ -108,11 +103,15 @@ export default {
      * To improve efficiency, only a certain amount of data points are plotted
      */
     processData(data) {
+      const rawMarketData = data['Time Series (Daily)'];
+      if (!rawMarketData) {
+        this.error('Unexpected stock price response format');
+        return;
+      }
       const priceLabels = [];
       const priceValues = [];
-      const dataKey = `Time Series (${this.interval})`;
-      const rawMarketData = data[dataKey];
-      const interval = Math.round(Object.keys(rawMarketData).length / this.dataPoints);
+      const numPoints = Object.keys(rawMarketData).length;
+      const interval = Math.max(1, Math.round(numPoints / this.dataPoints));
       Object.keys(rawMarketData).forEach((timeGroup, index) => {
         if (index % interval === 0) {
           priceLabels.push(this.formatDate(timeGroup));
@@ -133,11 +132,11 @@ export default {
     renderChart() {
       this.chartDom = this.generateChart();
     },
-    /* Format the date for a given time stamp, also include time if required */
+    /* Format the date for a given time stamp */
     formatDate(timestamp) {
       const localFormat = navigator.language;
       const dateFormat = { weekday: 'short', day: 'numeric', month: 'short' };
-      return new Date(timestamp).toLocaleDateString(localFormat, dateFormat);
+      return new Date(`${timestamp}T00:00:00`).toLocaleDateString(localFormat, dateFormat);
     },
     /* Format the price, rounding to given number of decimal places */
     formatPrice(priceStr) {

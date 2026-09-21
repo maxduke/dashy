@@ -76,7 +76,7 @@
     "config-launcher-tooltip": "Oppdater konfigurasjon",
     "sign-out-tooltip": "Logg av",
     "sign-in-tooltip": "Logg inn",
-    "sign-in-welcome": "Hei {brukernavn}!"
+    "sign-in-welcome": "Hei {username}!"
   },
   "updates": {
     "app-version-note": "Dashy-versjon",
