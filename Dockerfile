@@ -48,16 +48,16 @@ RUN apk upgrade --no-cache \
  && apk del .setcap \
  && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
-COPY --chown=node:node --from=deps  /app/node_modules ./node_modules
-COPY --chown=node:node --from=build /app/dist ./dist
-COPY --chown=node:node --from=build /app/public ./public
-COPY --chown=node:node --from=build /app/services ./services
-COPY --chown=node:node --from=build /app/src/utils/config/ConfigSchema.json ./src/utils/config/ConfigSchema.json
-COPY --chown=node:node --from=build /app/server.js ./server.js
-COPY --chown=node:node --from=build /app/package.json ./package.json
+COPY --from=deps  /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/public ./public
+COPY --from=build /app/services ./services
+COPY --from=build /app/src/utils/config/ConfigSchema.json ./src/utils/config/ConfigSchema.json
+COPY --from=build /app/server.js ./server.js
+COPY --from=build /app/package.json ./package.json
 COPY --chown=node:node --from=build /app/user-data/conf.yml ./user-data/conf.yml
 
-USER node
+USER 1000:1000
 
 EXPOSE 8080
 

@@ -196,7 +196,7 @@ Dashy runs as UID=1000 (default non-root node user). You can see this by running
 
 Fixes:
 1. **Hand the directory to uid 1000** (recommended). Keeps the container running as a non-root user, which is how Dashy is built to run `sudo chown -R 1000:1000 /path/to/your/user-data`
-2. **Run the container as your own user** if `chown` isn't practical (multi-user hosts, NAS appliances, host directories you don't want relabelled). Add `--user $(id -u):$(id -g)` to `docker run`, or set `user: "1000:1000"` (or your host uid:gid) on the service in `docker-compose.yml`.
+2. **Run the container as your own user** if `chown` isn't practical (multi-user hosts, NAS appliances, host directories you don't want relabelled). Add `--user $(id -u):$(id -g)` to `docker run`, or set `user: "<your-uid>:<your-gid>"` on the service in `docker-compose.yml`.
 3. **Loosen a single-file mount** if its mode is `444`. Narrow case, only fixes that one symptom: `chmod 644 /path/to/conf.yml`
 
 **Common mistakes**

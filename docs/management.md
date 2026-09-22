@@ -75,6 +75,8 @@ There are two ways to sort it. Pick whichever is less hassle:
    sudo chown -R 1000:1000 /path/to/user-data
    ```
 
+If you're on rootless Podman, use `--userns=keep-id` instead of `--user`. Rootless Podman maps container uids to a sub-uid range, so without it a directory you own looks root-owned from inside the container.
+
 Note that if you run the container as root (e.g. `--user 0:0`), Dashy will still work, but you lose the security benefit of a non-root container. Don't do that unless you've a good reason.
 
 **[⬆️ Back to Top](#management)**
@@ -83,7 +85,7 @@ Note that if you run the container as root (e.g. `--user 0:0`), Dashy will still
 
 ## Running Commands
 
-If you're running an app in Docker, then commands will need to be passed to the container to be executed. This can be done by preceding each command with `docker exec -it [container-id]`, where container ID can be found by running `docker ps`. For example `docker exec -it 26c156c467b4 yarn build`. You can also enter the container, with `docker exec -it [container-id] /bin/ash`, and navigate around it with normal Linux commands.
+If you're running an app in Docker, then commands will need to be passed to the container to be executed. This can be done by preceding each command with `docker exec -it [container-id]`, where container ID can be found by running `docker ps`. For example `docker exec -it 26c156c467b4 yarn validate-config`. You can also enter the container, with `docker exec -it [container-id] /bin/ash`, and navigate around it with normal Linux commands.
 
 Dashy has several commands that can be used for various tasks, you can find a list of these either in the [Developing Docs](/docs/developing.md#project-commands), or by looking at the [`package.json`](https://github.com/Lissy93/dashy/blob/master/package.json#L5). These can be used by running `yarn [command-name]`.
 
@@ -95,7 +97,7 @@ Dashy has several commands that can be used for various tasks, you can find a li
 
 Healthchecks are configured to periodically check that Dashy is up and running correctly on the specified port. By default, the health script is called every 5 minutes, but this can be modified with the `--health-interval` option. You can check the current container health with: `docker inspect --format "{{json .State.Health }}" [container-id]`, and a summary of health status will show up under `docker ps`. You can also manually request the current application status by running `docker exec -it [container-id] yarn health-check`. You can disable healthchecks altogether by adding the `--no-healthcheck` flag to your Docker run command.
 
-To restart unhealthy containers automatically, check out [Autoheal](https://hub.docker.com/r/willfarrell/autoheal/). This image watches for unhealthy containers, and automatically triggers a restart. (This is a stand in for Docker's `--exit-on-unhealthy` that was proposed, but [not merged](https://github.com/moby/moby/pull/22719)). There's also [Deunhealth](https://github.com/qdm12/deunhealth), which is super light-weight, and doesn't require network access.
+To restart unhealthy containers automatically, check out [Autoheal](https://hub.docker.com/r/willfarrell/autoheal/). This image watches for unhealthy containers, and automatically triggers a restart. (This is a stand in for Docker's `--exit-on-unhealthy` that was proposed, but [not merged](https://github.com/moby/moby/pull/22719)). There's also [Deunhealth](https://github.com/qdm12/deunhealth), which is super light-weight, and doesn't require network access. Both need access to the Docker socket, see [Don't Expose the Docker Daemon Socket](#dont-expose-the-docker-daemon-socket) for the trade-off.
 
 ```bash
 docker run -d \
@@ -134,8 +136,6 @@ reverse_proxy dashy:8080 {
 }
 ```
 
-For Nginx Proxy Manager, set the *Forward Hostname* health-check path to `/healthz` under the proxy host's *Custom locations* / advanced config.
-
 **[⬆️ Back to Top](#management)**
 
 ---
@@ -166,7 +166,7 @@ Docker supports using [Prometheus](https://prometheus.io/) to collect logs, whic
 
 You can use Docker's [restart policies](https://docs.docker.com/engine/reference/run/#restart-policies---restart) to instruct the container to start after a system reboot, or restart after a crash. Just add the `--restart=always` flag to your Docker compose script or Docker run command. For more information, see the docs on [Starting Containers Automatically](https://docs.docker.com/config/containers/start-containers-automatically/).
 
-For Podman, you can use `systemd` to create a service that launches your container, [the docs](https://podman.io/blogs/2018/09/13/systemd.html) explains things further. A similar approach can be used with Docker, if you need to start containers after a reboot, but before any user interaction.
+For Podman, use [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html) to run your container as a `systemd` service. A similar approach can be used with Docker, if you need to start containers after a reboot, but before any user interaction.
 
 To restart the container after something within it has crashed, consider using [`docker-autoheal`](https://github.com/willfarrell/docker-autoheal) by @willfarrell, a service that monitors and restarts unhealthy containers. For more info, see the [Healthchecks](#healthchecks) section above.
 
@@ -187,43 +187,36 @@ Dashy is under active development, so to take advantage of the latest features, 
 	- Remove container: `docker rm [container_id]`
 3. Spin up new container: `docker run [params] lissy93/dashy`
 
+Or if you're using Docker Compose, it's just `docker compose pull && docker compose up -d`.
+
 ### Automatic Docker Updates
 
-You can automate the above process using [Watchtower](https://github.com/containrrr/watchtower).
-Watchtower will watch for new versions of a given image on Docker Hub, pull down your new image, gracefully shut down your existing container and restart it with the same options that were used when it was deployed initially.
+You can automate the above process using [Watchtower](https://github.com/nicholas-fedor/watchtower).
+Watchtower will watch for new versions of a given image on Docker Hub, pull down your new image, gracefully shut down your existing container and restart it with the same options that were used when it was deployed initially. Note that the original `containrrr/watchtower` project was archived in December 2025, so use the maintained fork linked above (`nickfedor/watchtower` on Docker Hub), which is a drop-in replacement.
 
-To get started, spin up the watchtower container:
+To get started, spin up the watchtower container (it needs the Docker socket too):
 
 ```bash
 docker run -d \
   --name watchtower \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  containrrr/watchtower
+  nickfedor/watchtower
 ```
 
-For more information, see the [Watchtower Docs](https://containrrr.dev/watchtower/)
+For more information, see the [Watchtower Docs](https://watchtower.nickfedor.com/)
 
 ### Updating Dashy from Source
 
 Stop your current instance of Dashy, then navigate into the source directory. Pull down the latest code, with `git pull origin master`, then update dependencies with `yarn`, rebuild with `yarn build`, and start the server again with `yarn start`.
 
-### Verifying a Release Download
+### Upgrading Across Major Versions
 
-Each [GitHub release](https://github.com/lissy93/dashy/releases) bundles a SHA256 checksum and a SLSA build-provenance attestation alongside the source tarball (`dashy-<version>.tar.gz`). You don't need either to run Dashy, but they let you confirm a download arrived intact and was genuinely built from our source, rather than tampered with in transit or on a mirror.
+Major releases can include breaking changes, so skim the [release notes](https://github.com/Lissy93/dashy/releases) before jumping versions. The two that catch most people out:
 
-Check the tarball is intact using the `.sha256` file published next to it:
+- **v3** moved all user files (config, icons, etc) into a single `user-data` directory, mounted at `/app/user-data`, replacing the old `/app/public/conf.yml` mount.
+- **v4** made the container run as a non-root user (uid 1000). If your mounted `user-data` isn't writable by that uid, config saves from the UI will fail. See [File Ownership and Permissions](#file-ownership-and-permissions).
 
-```bash
-sha256sum -c dashy-<version>.tar.gz.sha256
-```
-
-An `OK` means the file is untampered. To go further and prove it was built by our CI from our repo, verify the attestation with the [GitHub CLI](https://cli.github.com/):
-
-```bash
-gh attestation verify dashy-<version>.tar.gz --repo lissy93/dashy
-```
-
-The release notes for each version also list the checksum and a link to view the attestation directly.
+To check a download is genuine, see [Verifying Releases](#verifying-releases).
 
 **[⬆️ Back to Top](#management)**
 
@@ -231,16 +224,15 @@ The release notes for each version also list the checksum and a link to view the
 
 ## Backing Up
 
-### Backing Up Containers
+### Dashy-Specific Backup
 
-You can make a backup of any running container really easily, using [`docker commit`](https://docs.docker.com/engine/reference/commandline/commit/) and save it with [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), to do so:
+All configuration and dashboard settings are stored in your `user-data/conf.yml` file. If you provide additional assets (like icons, fonts, themes, etc), these will also live in the `user-data` directory. So to backup all Dashy data, this is the only directory you need to backup.
 
-- First find the container ID, you can do this with `docker container ls`
-- Now to create the snapshot, just run `docker commit -p [container-id] my-backup`
-- Finally, to save the backup locally, run `docker save -o ~/dashy-backup.tar my-backup`
-- If you want to push this to a container registry, run  `docker push my-backup:latest`
+When you save config through the UI, Dashy automatically creates a timestamped backup in `user-data/config-backups/` (configurable via the `BACKUP_DIR` env var). If you break your config, check that directory for a recent copy. Backups can be disabled by setting `DISABLE_CONFIG_BACKUPS=true` (e.g. on read-only filesystems or where permissions don't allow it).
 
-Note that this will not include any data in docker volumes, and the process here is a bit different. Since these files exist on your host system, if you have an existing backup solution implemented, you can incorporate and volume files within that system.
+Since Dashy is open source, there shouldn't be any need to backup the main container.
+
+Dashy also has a built-in cloud backup feature, which is free for personal users, and will let you make and restore fully encrypted backups of your config directly through the UI. To learn more, see the [Cloud Backup Docs](/docs/backup-restore.md)
 
 ### Backing Up Volumes
 
@@ -280,16 +272,6 @@ Restore:
 docker run --rm -v some_volume:/volume -v /tmp:/backup alpine sh -c "rm -rf /volume/* /volume/..?* /volume/.[!.]* ; tar -C /volume/ -xjf /backup/some_archive.tar.bz2"
 ```
 
-### Dashy-Specific Backup
-
-All configuration and dashboard settings are stored in your `user-data/conf.yml` file. If you provide additional assets (like icons, fonts, themes, etc), these will also live in the `user-data` directory. So to backup all Dashy data, this is the only directory you need to backup.
-
-When you save config through the UI, Dashy automatically creates a timestamped backup in `user-data/config-backups/` (configurable via the `BACKUP_DIR` env var). If you break your config, check that directory for a recent copy. Backups can be disabled by setting `DISABLE_CONFIG_BACKUPS=true` (e.g. on read-only filesystems or where permissions don't allow it).
-
-Since Dashy is open source, there shouldn't be any need to backup the main container.
-
-Dashy also has a built-in cloud backup feature, which is free for personal users, and will let you make and restore fully encrypted backups of your config directly through the UI. To learn more, see the [Cloud Backup Docs](/docs/backup-restore.md)
-
 **[⬆️ Back to Top](#management)**
 
 ---
@@ -313,15 +295,15 @@ If you are using [NGINX Proxy Manager](https://nginxproxymanager.com/), then SSL
 
 If you're hosting Dashy behind Cloudflare, then they offer [free and easy SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-an-ssl-certificate/)- all you need to do is enable it under the SSL/TLS tab. Or if you are using shared hosting, you may find [this tutorial](https://www.sitepoint.com/a-guide-to-setting-up-lets-encrypt-ssl-on-shared-hosting/) helpful.
 
-### Getting a Self-Signed SSL Certificate
+### Getting an SSL Certificate
 
-[Let's Encrypt](https://letsencrypt.org/docs/) is a global Certificate Authority, providing free SSL/TLS Domain Validation certificates in order to enable secure HTTPS access to your website. They have good browser/ OS [compatibility](https://letsencrypt.org/docs/certificate-compatibility/) with their ISRG X1 and DST CA X3 root certificates, support [Wildcard issuance](https://community.letsencrypt.org/t/acme-v2-production-environment-wildcards/55578) done via ACMEv2 using the DNS-01 and have [Multi-Perspective Validation](https://letsencrypt.org/2020/02/19/multi-perspective-validation.html). Let's Encrypt provide [CertBot](https://certbot.eff.org/) an easy app for generating and setting up an SSL certificate.
+[Let's Encrypt](https://letsencrypt.org/docs/) is a global Certificate Authority, providing free SSL/TLS Domain Validation certificates in order to enable secure HTTPS access to your website. They have good browser/ OS [compatibility](https://letsencrypt.org/docs/certificate-compatibility/), support [wildcard certificates](https://community.letsencrypt.org/t/acme-v2-production-environment-wildcards/55578) via DNS-01, and provide [CertBot](https://certbot.eff.org/), an easy app for generating and setting up an SSL certificate.
 
 This process can be automated, using something like the [Docker-NGINX-Auto-SSL Container](https://github.com/Valian/docker-nginx-auto-ssl) to generate and renew certificates when needed.
 
-If you're not so comfortable on the command line, then you can use a tool like [SSL For Free](https://www.sslforfree.com/) or [ZeroSSL](https://zerossl.com/) to generate your cert. They also provide step-by-step setup instructions for most platforms.
+If you're not so comfortable on the command line, then you can use a tool like [ZeroSSL](https://zerossl.com/) to generate your cert. They also provide step-by-step setup instructions for most platforms.
 
-### Passing a Self-Signed Certificate to Dashy
+### Passing an SSL Certificate to Dashy
 
 Once you've generated your SSL cert, you'll need to pass it to Dashy. This can be done by specifying the paths to your public and private keys using the `SSL_PRIV_KEY_PATH` and `SSL_PUB_KEY_PATH` environmental variables. Or if you're using Docker, then just pass public + private SSL keys in under `/etc/ssl/certs/dashy-pub.pem` and `/etc/ssl/certs/dashy-priv.key` respectively, e.g:
 
@@ -333,6 +315,8 @@ docker run -d \
   lissy93/dashy:latest
 ```
 
+Dashy runs as uid 1000 inside the container, so both files need to be readable by that user (Certbot's private keys are root-only by default). If the key can't be read, Dashy will still start on HTTP but HTTPS silently won't, with an `EACCES` error in the logs.
+
 By default the SSL port is `443` within a Docker container, or `4001` if running on bare metal, but you can override this with the `SSL_PORT` environmental variable.
 
 Once everything is setup, you can verify your site is secured using a tool like [SSL Checker](https://www.sslchecker.com/sslchecker).
@@ -343,7 +327,7 @@ Once everything is setup, you can verify your site is secured using a tool like 
 
 ## Authentication
 
-Dashy natively supports secure authentication using KeyCloak. There is also a Simple Auth feature that doesn't require any additional setup. Usage instructions for both, as well as alternative auth methods, has now moved to the **[Authentication Docs](/docs/authentication.md)** page.
+Dashy has built-in auth (users defined in your config), and supports Keycloak and any OIDC provider (Authentik, Authelia, Zitadel, Pocket ID, etc), header auth from a reverse proxy, and HTTP basic auth on the server endpoints. Usage instructions for all of these, as well as alternative auth methods, are on the **[Authentication Docs](/docs/authentication.md)** page.
 
 **[⬆️ Back to Top](#management)**
 
@@ -382,8 +366,6 @@ services:
       - ./user-data:/app/user-data
     ports:
       - 4000:8080
-    environment:
-      - BASE_URL=/my-dashboard
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'node', '/app/services/healthcheck.js']
@@ -399,17 +381,24 @@ services:
 
 ## Passing in Environmental Variables
 
-With Docker, you can define environmental variables under the `environment` section of your Docker compose file. Environmental variables are used to configure high-level settings, usually before the config file has been read. For a list of all supported env vars in Dashy, see [the developing docs](/docs/developing.md#environmental-variables), or the default [`.env`](https://github.com/Lissy93/dashy/blob/master/.env) file.
+With Docker, you can define environmental variables under the `environment` section of your Docker compose file, or with the [`--env`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) flag on `docker run` (or [`--env-file`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) if you've got many). They're used for server-level settings, read before the config file is loaded. All are optional.
 
-A common use case, is to run Dashy under a sub-page, instead of at the root of a URL (e.g. `https://my-homelab.local/dashy` instead of `https://dashy.my-homelab.local`). In this use-case, you'd specify the `BASE_URL` variable in your compose file.
+| Variable | Description |
+|---|---|
+| `PORT` | Port to listen on. Defaults to `8080` in Docker |
+| `USER_DATA_DIR` | Path to the user data directory. Defaults to `user-data` |
+| `BACKUP_DIR` | Where config backups are written. Defaults to `user-data/config-backups` |
+| `DISABLE_CONFIG_BACKUPS` | Set to `true` to skip the backup made before each config save |
+| `ENABLE_HTTP_AUTH` | Set to `true` to require the users defined in `conf.yml` on all server endpoints |
+| `BASIC_AUTH_USERNAME` / `BASIC_AUTH_PASSWORD` | Alternatively, protect the server endpoints with a single static login |
+| `DISABLE_PROXY_ENDPOINTS` | Set to `true` to turn off the status check, ping check and CORS proxy endpoints |
+| `ENABLE_API` | Set to `true` to enable the REST API, see the [API Docs](/docs/api.md) |
+| `API_TOKEN` | Bearer token granting full API access |
+| `SSL_PRIV_KEY_PATH` / `SSL_PUB_KEY_PATH` | Paths to your SSL key and certificate, see [SSL Certificates](#ssl-certificates) |
+| `SSL_PORT` | HTTPS port. Defaults to `443` in Docker |
+| `REDIRECT_HTTPS` | Set to `false` to stop HTTP redirecting to HTTPS when SSL is enabled |
 
-```yaml
-environment:
-  - BASE_URL=/dashy
-```
-
-You can also do the same thing with the docker run command, using the [`--env`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) flag.
-If you've got many environmental variables, you might find it useful to put them in a [`.env` file](https://docs.docker.com/compose/env-file/). Similarly, for Docker run you can use [`--env-file`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) if you'd like to pass in a file containing all your environmental variables.
+Anything starting with `VITE_` is a build-time variable, baked in when the app is compiled, so it has no effect on the published image. If you need one of those (e.g. for hosting under a [sub-path](/docs/troubleshooting.md#nothing-loads-when-dashy-is-behind-a-sub-path)), you'll need to [build your own container](#building-your-own-container). The full list is in the [developing docs](/docs/developing.md#environmental-variables).
 
 **[⬆️ Back to Top](#management)**
 
@@ -418,6 +407,8 @@ If you've got many environmental variables, you might find it useful to put them
 ## Setting Headers
 
 Any external requests made to a different origin (app/ service under a different domain) will be blocked if the correct headers are not specified. This is known as [Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) (CORS) and is a security feature built into modern browsers.
+
+Note that widgets fetch data through Dashy's own server-side proxy (`useProxy: true`), which avoids CORS entirely. And embedding a service in an iframe (workspace view or modals) is controlled by that service's `X-Frame-Options` / `Content-Security-Policy: frame-ancestors` headers, not CORS.
 
 If you see a CORS error in your console, this can be easily fixed by setting the correct headers. This is not a bug with Dashy, so please don't raise it as a bug!
 
@@ -649,11 +640,11 @@ If you're using NGINX, then you can use your own domain name, with a config simi
 
 ```text
 upstream dashy {
-  server 127.0.0.1:32400;
+  server 127.0.0.1:8080;
 }
 
 server {
-  listen         8080;
+  listen         443 ssl;
   server_name    dashy.mydomain.com;
 
   # Setup SSL
@@ -680,7 +671,7 @@ Similarly, a basic `Caddyfile` might look like:
 
 ```text
 dashy.example.com {
-    reverse_proxy / nginx:8080
+    reverse_proxy localhost:8080
 }
 ```
 
@@ -697,17 +688,19 @@ Everything Dashy publishes can be verified, so you can check that what you're ru
 **Docker images**: Every image pushed to GHCR has a signed SBOM (software bill of materials) and build provenance attestation attached. Verify with the [GitHub CLI](https://cli.github.com/):
 
 ```bash
-gh attestation verify oci://ghcr.io/lissy93/dashy:latest --owner lissy93
+gh attestation verify oci://ghcr.io/lissy93/dashy:latest --repo lissy93/dashy
 ```
 
 **GitHub releases (non-Docker)**: Each [release](https://github.com/Lissy93/dashy/releases) includes a pre-built tarball, along with a SHA256 checksum and its own provenance attestation. To check your download:
 
 ```bash
 sha256sum -c dashy-<version>.tar.gz.sha256
-gh attestation verify dashy-<version>.tar.gz --owner lissy93
+gh attestation verify dashy-<version>.tar.gz --repo lissy93/dashy
 ```
 
 If verification passes, the artifact was built by our GitHub Actions workflow, from the Dashy repo, and hasn't been tampered with since.
+
+To pull the SBOM and see exactly what's inside an image, use [cosign](https://github.com/sigstore/cosign): `cosign download sbom ghcr.io/lissy93/dashy:latest`
 
 **[⬆️ Back to Top](#management)**
 
@@ -721,6 +714,7 @@ If verification passes, the artifact was built by our GitHub Actions workflow, f
 - [Specify a User](#specify-a-user)
 - [Limit Capabilities](#limit-capabilities)
 - [Prevent new Privileges being Added](#prevent-new-privileges-being-added)
+- [Kubernetes](#kubernetes)
 - [Disable Inter-Container Communication](#disable-inter-container-communication)
 - [Don't Expose the Docker Daemon Socket](#dont-expose-the-docker-daemon-socket)
 - [Use Read-Only Volumes](#use-read-only-volumes)
@@ -733,7 +727,7 @@ If verification passes, the artifact was built by our GitHub Actions workflow, f
 
 ### Keep Docker Up-To-Date
 
-To prevent known container escape vulnerabilities, which typically end in escalating to root/administrator privileges, patching Docker Engine and Docker Machine is crucial. For more info, see the [Docker Installation Docs](https://docs.docker.com/engine/install/).
+To prevent known container escape vulnerabilities, which typically end in escalating to root/administrator privileges, patching Docker Engine is crucial. For more info, see the [Docker Installation Docs](https://docs.docker.com/engine/install/).
 
 ### Set Resource Quotas
 
@@ -750,11 +744,11 @@ If you're facing permission issues on Debian-based systems when running Docker c
 
 ### Specify a User
 
-For containers in general, running as an unprivileged user is one of the best ways to prevent privilege escalation attacks. You can specify a user with the [`--user` param](https://docs.docker.com/engine/reference/run/#user), using the user ID (`UID`) from `id -u` and group ID (`GID`) from `id -g`.
+For containers in general, running as an unprivileged user is one of the best ways to prevent privilege escalation attacks. Dashy already does this: the image runs as the non-root `node` user (uid/gid 1000) out of the box, so there's nothing extra to set up.
 
-**Note for Dashy:** If you use features that write to disk (saving config through the UI), the process needs write access to `/app/user-data/`. Since the default image creates these directories as root, running with `--user` will cause those features to fail with permission errors unless you also fix ownership of the mounted volumes. If you only use Dashy in read-only mode, running as a non-root user works fine:
+If your host user isn't uid 1000, you can run the container as your own user instead, with the [`--user` param](https://docs.docker.com/engine/reference/run/#user), using the user ID (`UID`) from `id -u` and group ID (`GID`) from `id -g`:
 
-`docker run --user 1000:1000 -p 8080:8080 lissy93/dashy`
+`docker run --user $(id -u):$(id -g) -p 8080:8080 lissy93/dashy`
 
 Or with Docker Compose, using an environmental variable:
 
@@ -768,6 +762,8 @@ services:
 
 And then to set the variable, and start the container, run: `CURRENT_UID=$(id -u):$(id -g) docker-compose up`
 
+Whichever user the container runs as, it needs to own your mounted `user-data` directory for config saves from the UI to work. See [File Ownership and Permissions](#file-ownership-and-permissions) for details.
+
 ### Limit capabilities
 
 Docker containers run with a subset of [Linux Kernal's Capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html) by default. It's good practice to drop privilege permissions that are not needed for any given container.
@@ -776,7 +772,9 @@ With Docker run, you can use the `--cap-drop` flag to remove capabilities, you c
 
 Note that dropping privileges and capabilities on runtime is not fool-proof, and often any leftover privileges can be used to re-escalate, see [POS36-C](https://wiki.sei.cmu.edu/confluence/display/c/POS36-C.+Observe+correct+revocation+order+while+relinquishing+privileges).
 
-Here's an example using docker-compose, removing privileges that are not required for Dashy to run:
+Dashy runs as a non-root user on an unprivileged port, so it doesn't need any capabilities at all. The one exception is `NET_RAW`, which is only needed if you've enabled ICMP ping checks (`pingCheckEnabled`).
+
+Here's an example using docker-compose, dropping everything except what's needed for ping checks (leave out `cap_add` entirely if you don't use them):
 
 ```yaml
 services:
@@ -786,11 +784,7 @@ services:
     cap_drop:
     - ALL
     cap_add:
-    - CHOWN
-    - SETGID
-    - SETUID
-    - DAC_OVERRIDE
-    - NET_BIND_SERVICE
+    - NET_RAW
 ```
 
 ### Prevent new Privileges being Added
@@ -807,9 +801,28 @@ security_opt:
 - no-new-privileges:true
 ```
 
+### Kubernetes
+
+The same hardening applies on Kubernetes, via a `securityContext` on the container. The image sets a numeric user, so `runAsNonRoot` works without overrides, and since Dashy only ever writes to `user-data`, the root filesystem can be read-only too.
+
+```yaml
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: [ALL]
+  seccompProfile:
+    type: RuntimeDefault
+```
+
+If you use ping checks, add `NET_RAW` back under `capabilities.add`, and set the pod-level sysctl `net.ipv4.ping_group_range` to `"0 2147483647"` (it's on Kubernetes' safe list) so ping can work without privilege escalation.
+
 ### Disable Inter-Container Communication
 
-By default Docker containers can talk to each other (using [`docker0` bridged network](https://docs.docker.com/config/containers/container-networking/)). If you don't need this capability, then it should be disabled. This can be done with the `--icc=false` in your run command. You can learn more about how to facilitate secure communication between containers in the [Compose Networking docs](https://docs.docker.com/compose/networking/).
+By default Docker containers can talk to each other (using [`docker0` bridged network](https://docs.docker.com/config/containers/container-networking/)). If you don't need this capability, then it should be disabled. This is a daemon-level setting: add `"icc": false` to `/etc/docker/daemon.json` and restart Docker. Docker Compose sidesteps this by giving each project its own network. You can learn more about how to facilitate secure communication between containers in the [Compose Networking docs](https://docs.docker.com/compose/networking/).
 
 ### Don't Expose the Docker Daemon Socket
 
@@ -829,41 +842,27 @@ docker run -d \
   lissy93/dashy:latest
 ```
 
-If you do want config changes from the UI to persist back to disk, leave the mount writable. You can also use `--read-only` to make the whole container filesystem read-only, but in that case UI-driven config edits will not be saved.
+If you do want config changes from the UI to persist back to disk, leave the mount writable. You can also go further and use `--read-only` (or `read_only: true` in compose) to make the whole container filesystem read-only. Dashy only ever writes to `user-data`, so as long as that's a writable mount, saves from the UI keep working.
 
 ### Set the Logging Level
 
-Logging is important, as it enables you to review events in the future, and in the case of a compromise this will let get an idea of what may have happened. The default log level is `INFO`, and this is also the recommendation, use `--log-level info` to ensure this is set.
+Logging is important, as it enables you to review events in the future, and in the case of a compromise this will let get an idea of what may have happened. The Docker daemon's default log level is `info`, and this is also the recommendation. It's set with `"log-level": "info"` in `/etc/docker/daemon.json`, or `--log-level` when starting `dockerd`.
 
 ### Verify Image before Pulling
 
-Only use trusted images, from verified/ official sources. If an app is open source, it is more likely to be safe, as anyone can verify the code. There are also tools available for scanning containers,
+Only use trusted images, from verified/ official sources. If an app is open source, it is more likely to be safe, as anyone can verify the code. There are also tools available for [scanning containers](#container-security-scanning).
 
 Unless otherwise configured, containers can communicate among each other, so running one bad image may lead to other areas of your setup being compromised. Docker images typically contain both original code, as well as up-stream packages, and even if that image has come from a trusted source, the up-stream packages it includes may not have.
 
-Every Dashy image published to [GHCR](https://github.com/lissy93/dashy/pkgs/container/dashy) ships with a build-provenance attestation and an SBOM (software bill of materials), both signed keylessly via [Sigstore](https://www.sigstore.dev/). Provenance cryptographically ties the image back to the exact GitHub Actions run and commit that built it, so you can confirm it really came from our pipeline and was not swapped out along the way. The SBOM lists every package baked into the image, which is handy when a new CVE lands and you want to know in seconds whether you're affected.
-
-To verify the image you're about to run, use the [GitHub CLI](https://cli.github.com/):
-
-```bash
-gh attestation verify oci://ghcr.io/lissy93/dashy:latest --repo lissy93/dashy
-```
-
-A green check means it was genuinely built by us, from our repo. Worth doing on a fresh Proxmox or homelab box, especially before exposing Dashy beyond your LAN.
-
-To pull the SBOM and inspect what's inside, use [cosign](https://github.com/sigstore/cosign):
-
-```bash
-cosign download sbom ghcr.io/lissy93/dashy:latest
-```
+Every Dashy image is published with signed build provenance and an SBOM, so you can confirm it was genuinely built by our CI before you run it. See [Verifying Releases](#verifying-releases).
 
 ### Specify the Tag
 
-Using fixed tags (as opposed to `:latest` ) will ensure immutability, meaning the base image will not change between builds. Note that for Dashy, the app is being actively developed, new features, bug fixes and general improvements are merged each week, and if you use a fixed version you will not enjoy these benefits. So it's up to you weather you would prefer a stable and reproducible environment, or the latest features and enhancements.
+Using fixed tags (as opposed to `:latest`) will ensure immutability, meaning the image will not change between pulls. Dashy publishes `latest`, a major tag (`4.x`), a minor tag (`4.7`) and exact versions (`4.7.5`), so you can choose how tightly to pin. Note that Dashy is actively developed, with fixes and improvements merged most weeks, so it's up to you whether you'd prefer a stable and reproducible environment, or the latest features and enhancements.
 
 ### Container Security Scanning
 
-It's helpful to be aware of any potential security issues in any of the Docker images you are using. You can run a quick scan using Snyk on any image to output known vulnerabilities using [Docker scan](https://docs.docker.com/engine/scan/), e.g: `docker scan lissy93/dashy:latest`.
+It's helpful to be aware of any potential security issues in any of the Docker images you are using. You can run a quick scan on any image to output known vulnerabilities using [Docker Scout](https://docs.docker.com/scout/), e.g: `docker scout cves lissy93/dashy:latest`.
 
 A similar product is [Trivy](https://github.com/aquasecurity/trivy), which is free an open source. First install it (with your package manager), then to scan an image, just run: `trivy image lissy93/dashy:latest`
 
@@ -871,7 +870,7 @@ For larger systems, RedHat [Clair](https://www.redhat.com/en/topics/containers/w
 
 ### Registry Security
 
-Although over-kill for most users, you could run your own registry locally which would give you ultimate control over all images, see the [Deploying a Registry Docs](https://docs.docker.com/registry/deploying/) for more info. Another option is [Docker Trusted Registry](https://docker-docs.netlify.app/ee/dtr/), it's great for enterprise applications, it sits behind your firewall, running on a swarm managed by Docker Universal Control Plane, and lets you securely store and manage your Docker images, mitigating the risk of breaches from the internet.
+Although over-kill for most users, you could run your own registry locally which would give you ultimate control over all images, see the [Deploying a Registry Docs](https://docs.docker.com/registry/deploying/) for more info. Another option is [Harbor](https://goharbor.io/), an open source registry with built-in vulnerability scanning and image signing.
 
 ### Security Modules
 
@@ -889,17 +888,18 @@ Docker supports several modules that let you write your own security profiles.
 
 > _The following section only applies if you are not using Docker, and would like to use your own web server_
 
-Dashy ships with a pre-configured Node.js server, in [`server.js`](https://github.com/Lissy93/dashy/blob/master/server.js) which serves up the contents of the `./dist` directory on a given port. You can start the server by running `node server`. Note that the app must have been build (run `yarn build`), and you need [Node.js](https://nodejs.org) installed.
+Dashy ships with a pre-configured Node.js server, in [`server.js`](https://github.com/Lissy93/dashy/blob/master/server.js) which serves up the contents of the `./dist` directory on a given port. You can start the server by running `node server`. Note that the app must have been built (run `yarn build`), and you need [Node.js](https://nodejs.org) installed.
 
-If you wish to run Dashy from a sub page (e.g. `example.com/dashy`), then just set the `BASE_URL` environmental variable to that page name (in this example, `/dashy`), before building the app, and the path to all assets will then resolve to the new path, instead of `./`.
+If you wish to run Dashy from a sub page (e.g. `example.com/dashy`), see [this troubleshooting section](/docs/troubleshooting.md#nothing-loads-when-dashy-is-behind-a-sub-path).
 
-However, since Dashy is just a static web application, it can be served with whatever server you like. The following section outlines how you can configure a web server.
+The built frontend is just static files, so it can be served with whatever server you like. The following section outlines how you can configure a web server.
 
-Note, that if you choose not to use `server.js` to serve up the app, you will loose access to the following features:
+Note that if you choose not to use `server.js` to serve up the app, you will lose access to the following features:
 
-- Loading page, while the app is building
-- Writing config file to disk from the UI
+- Writing config file to disk from the UI (and the automatic config backups)
 - Website status indicators, and ping checks
+- The CORS proxy used by widgets
+- Server-side authentication, the REST API and the `/healthz` endpoint
 
 Example Configs
 
@@ -1033,7 +1033,7 @@ The first step is to fork the project on GitHub, and clone it to your local syst
 
 Similar to above, you'll first need to fork and clone Dashy to your local system, and then install dependencies.
 
-Then, either use Dashy's default [`Dockerfile`](https://github.com/Lissy93/dashy/blob/master/Dockerfile) as is, or modify it according to your needs.
+Then, either use Dashy's default [`Dockerfile`](https://github.com/Lissy93/dashy/blob/master/Dockerfile) as is, or modify it according to your needs. Note that the image runs as a non-root user, so if you add `RUN` steps that install packages or write anywhere outside `user-data`, switch to `USER root` first and back to `USER 1000:1000` at the end.
 
 To build and deploy locally, first build the app with: `docker build -t dashy .`, and then start the app with `docker run -p 8080:8080 --name my-dashboard dashy`.  Or modify the `docker-compose.yml` file, replacing `image: lissy93/dashy` with `build: .` and run `docker compose up`.
 
