@@ -148,6 +148,7 @@ const defaults = {
     ISADMIN: 'isAdmin',
     ID_TOKEN: 'idToken',
     DISABLE_CRITICAL_WARNING: 'disableCriticalWarning',
+    PI_HOLE_SESSION: 'piHoleSession',
   },
   /* Key names for cookie identifiers */
   cookieKeys: {

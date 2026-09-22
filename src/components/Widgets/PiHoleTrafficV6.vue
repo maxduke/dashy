@@ -5,77 +5,23 @@
 <script>
 import WidgetMixin from '@/mixins/WidgetMixin';
 import ChartingMixin from '@/mixins/ChartingMixin';
+import PiHoleV6Mixin from '@/mixins/PiHoleV6Mixin';
 
 export default {
-  mixins: [WidgetMixin, ChartingMixin],
+  mixins: [WidgetMixin, ChartingMixin, PiHoleV6Mixin],
   components: {},
-  data() {
-    return {
-      csrfToken: null,
-      sid: null,
-    };
-  },
   computed: {
-    /* Let user select which comic to display: random, latest or a specific number */
-    hostname() {
-      const usersChoice = this.parseAsEnvVar(this.options.hostname);
-      if (!usersChoice) this.error('You must specify the hostname for your Pi-Hole server');
-      return usersChoice;
-    },
-    apiKey() {
-      const usersChoice = this.parseAsEnvVar(this.options.apiKey);
-      if (!usersChoice) this.error('App Password is required, please see the docs');
-      return usersChoice;
-    },
-    authHeader() {
-      return {
-        'X-FTL-SID': this.sid,
-        'X-FTL-CSRF': this.csrfToken,
-        Accept: 'application/json',
-      };
-    },
-    authEndpoint() {
-      return `${this.hostname}/api/auth`;
-    },
     historyEndpoint() {
       return `${this.hostname}/api/history`;
     },
   },
   methods: {
     fetchData() {
-      this.makeRequest(
-        this.authEndpoint,
-        { 'Content-Type': 'application/json' },
-        'POST',
-        { password: this.apiKey },
-      )
-        .then(this.processAuthData)
-        .then(
-          () => {
-            if (!this.sid || !this.csrfToken) return;
-
-            this.fetchHistory().then((response) => {
-              if (this.validate(response)) {
-                this.processData(response);
-              }
-            });
-          },
-        );
-    },
-    processAuthData({ session }) {
-      if (!session) {
-        this.error('Missing session info in auth response');
-      } else if (session.valid !== true) {
-        this.error('Authentication failed: Invalid credentials or 2FA token required');
-      } else {
-        const { sid, csrf } = session;
-        if (!sid || !csrf) {
-          this.error('No CSRF token or SID received');
-        } else {
-          this.sid = sid;
-          this.csrfToken = csrf;
+      this.withSession(() => this.fetchHistory().then((response) => {
+        if (this.validate(response)) {
+          this.processData(response);
         }
-      }
+      }));
     },
     fetchHistory() {
       return this.makeRequest(this.historyEndpoint, this.authHeader);

@@ -12,44 +12,22 @@
 
 <script>
 import WidgetMixin from '@/mixins/WidgetMixin';
+import PiHoleV6Mixin from '@/mixins/PiHoleV6Mixin';
 import { showNumAsThousand } from '@/utils/MiscHelpers';
 
 export default {
-  mixins: [WidgetMixin],
+  mixins: [WidgetMixin, PiHoleV6Mixin],
   components: {},
   data() {
     return {
       results: null,
-      csrfToken: null,
-      sid: null,
     };
   },
   computed: {
-    /* Let user select which comic to display: random, latest or a specific number */
-    hostname() {
-      const usersChoice = this.parseAsEnvVar(this.options.hostname);
-      if (!usersChoice) this.error('You must specify the hostname for your Pi-Hole server');
-      return usersChoice;
-    },
-    apiKey() {
-      const usersChoice = this.parseAsEnvVar(this.options.apiKey);
-      if (!usersChoice) this.error('App Password is required, please see the docs');
-      return usersChoice;
-    },
     count() {
       const usersChoice = this.options.count;
       if (usersChoice && typeof usersChoice === 'number') return usersChoice;
       return 10;
-    },
-    authHeader() {
-      return {
-        'X-FTL-SID': this.sid,
-        'X-FTL-CSRF': this.csrfToken,
-        Accept: 'application/json',
-      };
-    },
-    authEndpoint() {
-      return `${this.hostname}/api/auth`;
     },
     /* This is actually just the stats that are shown on the Pi-Hole dashboard, which amounts to
     24hrs when the service first boots up, but will drift to be a little more than 24hrs worth of
@@ -63,38 +41,10 @@ export default {
   },
   methods: {
     fetchData() {
-      this.makeRequest(
-        this.authEndpoint,
-        { 'Content-Type': 'application/json' },
-        'POST',
-        { password: this.apiKey },
-      )
-        .then(this.processAuthData)
-        .then(
-          () => {
-            if (!this.sid || !this.csrfToken) return;
-
-            Promise.all([
-              this.fetchTopAllowedDomains(),
-              this.fetchTopBlockedDomains(),
-            ]).then(this.processData);
-          },
-        );
-    },
-    processAuthData({ session }) {
-      if (!session) {
-        this.error('Missing session info in auth response');
-      } else if (session.valid !== true) {
-        this.error('Authentication failed: Invalid credentials or 2FA token required');
-      } else {
-        const { sid, csrf } = session;
-        if (!sid || !csrf) {
-          this.error('No CSRF token or SID received');
-        } else {
-          this.sid = sid;
-          this.csrfToken = csrf;
-        }
-      }
+      this.withSession(() => Promise.all([
+        this.fetchTopAllowedDomains(),
+        this.fetchTopBlockedDomains(),
+      ]).then(this.processData));
     },
     fetchTopAllowedDomains() {
       const url = new URL(this.topDomainsEndpoint);

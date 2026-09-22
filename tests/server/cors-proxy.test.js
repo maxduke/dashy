@@ -283,3 +283,34 @@ describe('CORS proxy env-var substitution', () => {
     expect(warnSpy.mock.calls[1][0]).toContain('DASHY_WARN_TEST_TWO');
   });
 });
+
+describe('CORS proxy body forwarding', () => {
+  let target;
+  let targetUrl;
+  let received;
+
+  beforeAll(() => new Promise((resolve) => {
+    target = http.createServer((req, res) => {
+      let body = '';
+      req.on('data', (chunk) => { body += chunk; });
+      req.on('end', () => {
+        received = { contentType: req.headers['content-type'], body };
+        res.end('{}');
+      });
+    });
+    target.listen(0, '127.0.0.1', () => {
+      targetUrl = `http://127.0.0.1:${target.address().port}`;
+      resolve();
+    });
+  }));
+  afterAll(() => new Promise((resolve) => target.close(resolve)));
+
+  it('forwards a JSON body to the target', async () => {
+    await request(app).post('/cors-proxy')
+      .set('Target-URL', targetUrl)
+      .set('CustomHeaders', JSON.stringify({ 'Content-Type': 'application/json' }))
+      .send({ password: 'hunter2' });
+    expect(received.body).toBe('{"password":"hunter2"}');
+    expect(received.contentType).toBe('application/json');
+  });
+});

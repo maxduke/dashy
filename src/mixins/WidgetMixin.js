@@ -112,6 +112,7 @@ const WidgetMixin = {
       return {
         'Target-URL': endpoint,
         CustomHeaders: JSON.stringify(customHeaders),
+        'Content-Type': 'application/json',
         ...(this.allowInsecure ? { 'Allow-Insecure': 'true' } : {}),
       };
     },
