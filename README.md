@@ -439,6 +439,7 @@ Dashy supports multiple languages and locales. When available, your language sho
 - 🇬🇷 **Greek**: `el` - Contributed by **[@aviolaris](https://github.com/aviolaris)**
 - 🇮🇳 **Hindi**: `hi` - _Auto-generated_ (needs human review!)
 - 🇭🇺 **Hungarian**: `hu` - Contributed by **[@apgyorfi](https://github.com/apgyorfi)**
+- 🇮🇩 **Indonesian**: `id` - Contributed by **[@Yoruxyv](https://github.com/Yoruxyv)**
 - 🇮🇹 **Italian**: `it` - Contributed by **[@alexdelprete](https://github.com/alexdelprete)**
 - 🇯🇵 **Japanese**: `ja` - _Auto-generated_ (needs human review!)
 - 🇰🇷 **Korean**: `ko` - Contributed by **[@boggy-cs](https://github.com/boggy-cs)**

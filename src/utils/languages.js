@@ -15,6 +15,7 @@ export const languages = [
   { name: 'Français', code: 'fr', flag: '🇲🇫' },
   { name: 'हिन्दी', code: 'hi', flag: '🇮🇳' },
   { name: 'Magyar', code: 'hu', flag: '🇭🇺' },
+  { name: 'Bahasa Indonesia', code: 'id', flag: '🇮🇩' },
   { name: 'Italiano', code: 'it', flag: '🇮🇹' },
   { name: '日本語', code: 'ja', flag: '🇯🇵' },
   { name: '한국어', code: 'ko', flag: '🇰🇷' },
