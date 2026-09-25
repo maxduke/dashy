@@ -175,14 +175,18 @@ export default {
     /* Returns configuration object for the tooltip */
     getTooltipOptions() {
       const {
-        title, description, provider, hotkey,
+        title, description, provider, hotkey, alias,
       } = this.item;
-      if (!description && !provider && !this.titleTruncated) return {}; // Nothing to show
+      // Aliases only resolve against the root config, so never promise one on a sub-page
+      const aliasWorksHere = alias && !this.$store.getters.isSubConfig;
+      const hasShortcut = hotkey || aliasWorksHere;
+      if (!description && !provider && !hasShortcut && !this.titleTruncated) return {}; // Nothing to show
       const parts = [];
       if (this.titleTruncated) parts.push(`<b>${title}</b>`);
       if (provider) parts.push(`<b>Provider</b>: ${provider}`);
       if (description) parts.push(description);
       if (hotkey) parts.push(`Press '${hotkey}' to launch`);
+      if (aliasWorksHere) parts.push(`Visit '/${alias}' to launch`);
       const editKey = this.appConfig.disableContextMenu
         ? 'interactive-editor.edit-section.edit-tooltip-basic'
         : 'interactive-editor.edit-section.edit-tooltip';

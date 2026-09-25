@@ -1,9 +1,11 @@
 import ConfigAccumulator from '@/utils/config/ConfigAccumalator';
 import filterUserSections from '@/utils/CheckSectionVisibility';
+import checkItemVisibility from '@/utils/CheckItemVisibility';
 import { languages } from '@/utils/languages';
 import {
   visibleComponents,
   localStorageKeys,
+  routePaths,
   language as defaultLanguage,
 } from '@/utils/config/defaults';
 
@@ -188,6 +190,33 @@ export const getCustomKeyShortcuts = (sections) => (sections || [])
   .flatMap((section) => (section.items || [])
     .filter((item) => item.hotkey)
     .map((item) => ({ hotkey: item.hotkey, url: item.url })));
+
+/* Paths owned by Dashy's own views, so can never be claimed as an item alias */
+export const RESERVED_ALIASES = Object.freeze(
+  Object.values(routePaths).map((path) => path.replace(/^\//, '')),
+);
+
+/* Lowercases and strips any surrounding slashes, so alias matching is forgiving */
+const normalizeAlias = (alias) => String(alias ?? '').trim().toLowerCase().replace(/^\/+|\/+$/g, '');
+
+/* Redirects must go somewhere absolute and browsable, never to javascript: or a relative path */
+const isRedirectable = (url) => {
+  try { return ['http:', 'https:'].includes(new URL(url).protocol); } catch { return false; }
+};
+
+/**
+ * Returns the URL of the item assigned the given alias, used for /<alias> redirects
+ * Pass the root config's sections, so a redirect never depends on the page being viewed
+ */
+export const getUrlForAlias = (sections, alias) => {
+  const target = normalizeAlias(alias);
+  if (!target || RESERVED_ALIASES.includes(target)) return undefined;
+  const match = filterUserSections(sections || [])
+    .flatMap((section) => section.items || [])
+    .find((item) => item.alias && normalizeAlias(item.alias) === target);
+  if (!match || !checkItemVisibility(match) || !isRedirectable(match.url)) return undefined;
+  return match.url;
+};
 
 /**
  * Gets the users chosen language. Defaults to English.

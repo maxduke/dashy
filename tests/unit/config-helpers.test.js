@@ -10,7 +10,10 @@ import {
   formatConfigPath,
   componentVisibility,
   getCustomKeyShortcuts,
+  getUrlForAlias,
+  RESERVED_ALIASES,
 } from '@/utils/config/ConfigHelpers';
+import schema from '@/utils/config/ConfigSchema.json';
 
 describe('ConfigHelpers - makePageName', () => {
   it('converts page name to lowercase', () => {
@@ -398,5 +401,99 @@ describe('ConfigHelpers - getCustomKeyShortcuts', () => {
   it('returns an empty array for null or undefined input', () => {
     expect(getCustomKeyShortcuts(null)).toEqual([]);
     expect(getCustomKeyShortcuts(undefined)).toEqual([]);
+  });
+});
+
+describe('ConfigHelpers - getUrlForAlias', () => {
+  const sections = [
+    { name: 'Media', items: [{ title: 'Jellyfin', alias: 'Jelly', url: 'https://jelly.local' }] },
+    { name: 'Widgets Only', widgets: [{ type: 'embed' }] },
+    { name: 'Tools', items: [{ title: 'No alias', url: 'https://nope.local' }] },
+  ];
+
+  it('returns the URL of the item with a matching alias', () => {
+    expect(getUrlForAlias(sections, 'jelly')).toBe('https://jelly.local');
+  });
+
+  it('matches regardless of case, whitespace or surrounding slashes', () => {
+    expect(getUrlForAlias(sections, ' /JELLY/ ')).toBe('https://jelly.local');
+  });
+
+  it('returns undefined when no item claims the alias', () => {
+    expect(getUrlForAlias(sections, 'plex')).toBeUndefined();
+  });
+
+  it('never matches items that have no alias', () => {
+    const noAliases = [{ items: [{ title: 'No alias', url: 'https://nope.local' }] }];
+    expect(getUrlForAlias(noAliases, 'anything')).toBeUndefined();
+    expect(getUrlForAlias(noAliases, '')).toBeUndefined();
+  });
+
+  it('does not let a blank alias be reached by a blank lookup', () => {
+    const blank = [{ items: [{ alias: '   ', url: 'https://blank.local' }] }];
+    expect(getUrlForAlias(blank, '')).toBeUndefined();
+    expect(getUrlForAlias(blank, '   ')).toBeUndefined();
+  });
+
+  it('ignores aliases YAML has coerced to a non-string', () => {
+    const coerced = [{ items: [{ alias: 0, url: 'https://zero.local' }, { alias: false, url: 'https://no.local' }] }];
+    expect(getUrlForAlias(coerced, '0')).toBeUndefined();
+    expect(getUrlForAlias(coerced, 'false')).toBeUndefined();
+  });
+
+  it('refuses to redirect anywhere that is not an absolute http(s) URL', () => {
+    const unsafe = [{
+      items: [
+        { alias: 'xss', url: "javascript:alert('x')" },
+        { alias: 'loop', url: 'loop' },
+        { alias: 'mail', url: 'mailto:someone@example.com' },
+        { alias: 'none', title: 'No URL' },
+      ],
+    }];
+    ['xss', 'loop', 'mail', 'none'].forEach((a) => expect(getUrlForAlias(unsafe, a)).toBeUndefined());
+  });
+
+  it('skips items the current user is not allowed to see', () => {
+    const hidden = [{
+      items: [{ alias: 'secret', url: 'https://secret.local', displayData: { showForGroups: ['admins'] } }],
+    }];
+    expect(getUrlForAlias(hidden, 'secret')).toBeUndefined();
+  });
+
+  it('skips items inside a section the current user cannot see', () => {
+    const hidden = [{
+      displayData: { showForGroups: ['admins'] },
+      items: [{ alias: 'secret', url: 'https://secret.local' }],
+    }];
+    expect(getUrlForAlias(hidden, 'secret')).toBeUndefined();
+  });
+
+  it('refuses every reserved word, even when an item claims it', () => {
+    const shadowing = [{
+      items: RESERVED_ALIASES.map((word) => ({ alias: word, url: `https://evil.local/${word}` })),
+    }];
+    RESERVED_ALIASES.forEach((word) => expect(getUrlForAlias(shadowing, word)).toBeUndefined());
+  });
+
+  it('returns undefined for null or undefined sections', () => {
+    expect(getUrlForAlias(null, 'jelly')).toBeUndefined();
+    expect(getUrlForAlias(undefined, 'jelly')).toBeUndefined();
+  });
+});
+
+describe('ConfigSchema - item alias', () => {
+  const aliasSchema = schema.properties.sections.items.properties.items.items.properties.alias;
+  const RESERVED = ['404', 'download', 'home', 'login', 'minimal', 'workspace'];
+
+  it('reserves the same words in the schema as the router does at runtime', () => {
+    expect([...RESERVED_ALIASES].sort()).toEqual(RESERVED);
+    expect([...aliasSchema.not.enum].sort()).toEqual(RESERVED);
+  });
+
+  it.each([
+    ['jelly', true], ['git-tea', true], ['my_app', true], ['app2', true],
+    ['Jelly', false], ['has space', false], ['a/b', false], ['', false],
+  ])('accepts %j in the config: %s', (alias, valid) => {
+    expect(new RegExp(aliasSchema.pattern).test(alias)).toBe(valid);
   });
 });

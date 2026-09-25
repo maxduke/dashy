@@ -58,6 +58,16 @@ describe('Search - searchTiles', () => {
     expect(searchTiles([t], 'primary')).toHaveLength(1);
   });
 
+  it('matches an item by its url alias', () => {
+    const t = tile({
+      title: 'Jellyfin', description: '', provider: '', url: 'https://media.lab', tags: [], alias: 'watchstuff',
+    });
+    expect(searchTiles([t], 'watchstuff')).toHaveLength(1);
+    expect(searchTiles([t], 'WATCHSTUFF')).toHaveLength(1);
+    expect(searchTiles([t], 'watchstuff media')).toHaveLength(1);
+    expect(searchTiles([{ ...t, alias: undefined }], 'watchstuff')).toHaveLength(0);
+  });
+
   it('matches across multiple fields when the query has several words', () => {
     const t = tile({ title: 'Plex', description: 'Media server', tags: [] });
     expect(searchTiles([t], 'plex media')).toHaveLength(1);

@@ -1311,6 +1311,15 @@
                   "type": "number",
                   "description": "A numeric shortcut key, between 0 and 9. Useful for quickly launching frequently used applications"
                 },
+                "alias": {
+                  "title": "URL Alias",
+                  "type": "string",
+                  "pattern": "^[a-z0-9_-]+$",
+                  "not": {
+                    "enum": ["home", "minimal", "workspace", "login", "download", "404"]
+                  },
+                  "description": "A short lowercase word which, when visited as a path on your dashboard (e.g. /my-app), redirects straight to this item"
+                },
                 "rel": {
                   "title": "rel",
                   "type": "string",

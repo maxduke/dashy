@@ -18,9 +18,9 @@ import Keys from '@/utils/StoreMutations';
 import { isAuthEnabled, isLoggedIn, isGuestAccessEnabled } from '@/utils/auth/Auth';
 import { isOidcEnabled } from '@/utils/auth/OidcAuth';
 import { isKeycloakEnabled } from '@/utils/auth/KeycloakAuth';
-import { isHeaderAuthEnabled } from '@/utils/auth/HeaderAuth';
+import { initHeaderAuth, isHeaderAuthEnabled } from '@/utils/auth/HeaderAuth';
 import { startingView as defaultStartingView, routePaths } from '@/utils/config/defaults';
-import { VIEW_META } from '@/utils/config/ConfigHelpers';
+import { VIEW_META, getUrlForAlias } from '@/utils/config/ConfigHelpers';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
 
 const progress = new Progress({ color: 'var(--progress-bar)' });
@@ -49,6 +49,22 @@ const resolveStartingView = () => {
   const raw = store.state.config?.appConfig?.startingView || defaultStartingView;
   const view = raw === 'default' ? 'home' : raw;
   return VIEW_META[view] ? view : 'home';
+};
+
+/* True when a URL points back at the page we're already on, which would redirect forever */
+const isSelfReferential = (url) => {
+  try {
+    const target = new URL(url, window.location.href);
+    const path = (p) => p.replace(/\/+$/, '');
+    return target.origin === window.location.origin
+      && path(target.pathname) === path(window.location.pathname);
+  } catch { return false; }
+};
+
+/* Checks wheaather header auth is enabled, before the alias is allowed to access items */
+const identityResolved = async () => {
+  if (!isHeaderAuthEnabled() || isLoggedIn()) return true;
+  return initHeaderAuth().then(() => true, () => false);
 };
 
 /* Build the canonical /<view>/:page?/:section? routes for a given view + component.
@@ -121,6 +137,20 @@ const router = createRouter({
           ErrorHandler(`Route not found: '${to.redirectedFrom.fullPath}'`);
         }
         next();
+      },
+    },
+    { // Item aliases, where /<alias> redirects straight to that item's URL
+      path: '/:alias',
+      name: 'alias',
+      component: () => import('./views/404.vue'),
+      beforeEnter: async (to, from, next) => {
+        const url = (await identityResolved())
+          ? getUrlForAlias(store.state.rootConfig?.sections, to.params.alias) : undefined;
+        const loops = !!url && isSelfReferential(url);
+        if (loops) ErrorHandler(`Alias '${to.params.alias}' points back at itself, not redirecting`);
+        if (!url || loops) { next('/404'); return; }
+        window.location.replace(url);
+        next(false);
       },
     },
     { // Redirect any not-found routed to the 404 view

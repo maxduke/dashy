@@ -34,6 +34,8 @@ const systemInfo = require('./endpoints/system-info'); // Basic system info, for
 const sslServer = require('./utils/ssl-server'); // TLS-enabled web server
 const corsProxy = require('./endpoints/cors-proxy'); // Enables API requests to CORS-blocked services
 const getUser = require('./endpoints/get-user'); // Enables server side user lookup
+const openSearch = require('./endpoints/opensearch'); // Descriptor for browser keyword search
+const aliasTarget = require('./endpoints/alias-target'); // Resolves /<alias> to an item's URL
 const { apiEnabledGate, apiErrorHandler, createApiRouter } = require('./endpoints/api'); // Opt-in REST API
 
 const { loadOidcSettings, createOidcMiddleware, maybeBootstrapConfig } = require('./utils/auth-oidc');
@@ -49,6 +51,7 @@ const ENDPOINTS = {
   corsProxy: '/cors-proxy',
   getUser: '/get-user',
   configSchema: '/schema.json',
+  openSearch: '/opensearch.xml',
   api: '/api',
 };
 
@@ -192,6 +195,9 @@ const authIsConfigured = Boolean(
 );
 const guestAccessOn = Boolean(initialAuthConfig?.enableGuestAccess);
 
+/* Dashy's own login page is client-side, so users[] gates access even without ENABLE_HTTP_AUTH */
+const anyLoginConfigured = authIsConfigured || Boolean(initialAuthConfig.users?.length);
+
 /* Require an authenticated identity on this request. No-op for zero-auth deploys. */
 function requireAuth(req, res, next) {
   if (!authIsConfigured) return next();
@@ -329,6 +335,16 @@ const app = express()
   .use(ENDPOINTS.api, apiErrorHandler)
   // Serves the config schema, for use by external editors and validators
   .get(ENDPOINTS.configSchema, (req, res) => res.json(configSchema))
+  // OpenSearch descriptor, so browsers can offer Dashy as a keyword search engine
+  // Not cached, since the search template is built from the requesting host
+  .get(ENDPOINTS.openSearch, (req, res) => {
+    try {
+      res.set('Cache-Control', 'no-store')
+        .type('application/opensearchdescription+xml').send(openSearch(config, req));
+    } catch (e) {
+      safeEnd(res, errBody(e), 500);
+    }
+  })
   // Middleware to serve any .yml/.yaml files in USER_DATA_DIR with optional protection
   // Note: returns stripped version if auth configured but not yet authenticated
   .get(/\.ya?ml$/i, bootstrapAuth, (req, res) => {
@@ -361,6 +377,16 @@ const app = express()
   .use(express.static(path.resolve(rootDir, process.env.USER_DATA_DIR || 'user-data')))
   .use(express.static(path.join(rootDir, 'dist')))
   .use(express.static(path.join(rootDir, 'public'), { index: 'initialization.html' }))
+  // Jump straight to an aliased item, skipping the SPA boot (deploys with no login only)
+  .use(method('GET', (req, res, next) => {
+    try {
+      const url = anyLoginConfigured ? undefined : aliasTarget(config, req);
+      if (url) return res.set('Cache-Control', 'no-store').redirect(302, url);
+    } catch (e) {
+      printWarning('Could not resolve alias, falling back to the app', e);
+    }
+    return next();
+  }))
   // If no other route is matched, serve up the index.html with a 404 status
   .use((req, res) => {
     res.status(404).sendFile('index.html', { root: path.join(rootDir, 'dist') }, (err) => {

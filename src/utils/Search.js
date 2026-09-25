@@ -12,13 +12,13 @@ const haystackCache = new WeakMap();
 
 const buildHaystack = (tile) => {
   const {
-    title, description, provider, url, tags, subItems,
+    title, description, provider, url, tags, alias, subItems,
   } = tile;
   const tagsStr = Array.isArray(tags) ? tags.join(' ') : (tags || '');
   const subText = Array.isArray(subItems)
     ? subItems.map((s) => `${s.title || ''} ${s.url || ''}`).join(' ')
     : '';
-  return normalize(`${title || ''} ${provider || ''} ${description || ''} ${tagsStr} ${url || ''} ${subText}`);
+  return normalize(`${title || ''} ${provider || ''} ${description || ''} ${tagsStr} ${url || ''} ${alias || ''} ${subText}`);
 };
 
 const getHaystack = (tile) => {
@@ -32,7 +32,7 @@ const getHaystack = (tile) => {
 
 /**
  * Filter tiles based on users search term, and returns a filtered list
- * Will match based on title, description, provider, hostname from url and tags
+ * Will match based on title, description, provider, hostname from url, tags and alias
  * Ignores case, special characters and other irrelevant things
  * @param {array} allTiles An array of tiles
  * @param {string} searchTerm The users search term
