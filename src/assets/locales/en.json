@@ -448,6 +448,9 @@
       "show-less": "Show Less",
       "open-link": "Continue Reading"
     },
+    "apod": {
+      "watch-video": "Watch Video"
+    },
     "calendar": {
       "all-day": "All day",
       "no-events": "Nothing coming up",
