@@ -26,6 +26,8 @@
   "login": {
     "title": "Dashy",
     "guest-label": "Gastzugriff",
+    "oidc-label": "Single Sign-On",
+    "oidc-login-button": "Mit SSO anmelden",
     "username-label": "Benutzername",
     "password-label": "Passwort",
     "login-button": "Anmelden",
@@ -372,7 +374,7 @@
       "add-section-title": "Neue Sektion hinzufügen",
       "edit-tooltip": "Klicken zum Bearbeiten oder Rechtsklick für weitere Optionen",
       "edit-tooltip-basic": "Klicken zum Bearbeiten",
-      "remove-confirm": "Sind Sie sicher, dass Sie diese Sektion entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "remove-confirm": "Sind Sie sicher, dass Sie diese Sektion entfernen möchten? Diese Aktion kann später rückgängig gemacht werden.",
       "missing-name-err": "Ein Sektionsname ist erforderlich",
       "duplicate-name-err": "Eine Sektion namens '{name}' existiert bereits"
     },
@@ -385,6 +387,7 @@
       "update-interval-label": "Aktualisierungsintervall (Sekunden)",
       "timeout-label": "Zeitlimit (ms)",
       "use-proxy-label": "Proxy verwenden",
+      "allow-insecure-label": "Ungültige Zertifikate erlauben",
       "ignore-errors-label": "Fehler ignorieren",
       "options-heading": "Widget-Optionen",
       "add-option-btn": "Option hinzufügen",
@@ -392,7 +395,7 @@
       "value-placeholder": "Wert",
       "missing-type-err": "Ein Widget-Typ ist erforderlich",
       "remove-widget": "Widget entfernen",
-      "remove-confirm": "Sind Sie sicher, dass Sie dieses Widget entfernen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      "remove-confirm": "Sind Sie sicher, dass Sie dieses Widget entfernen möchten? Diese Aktion kann später rückgängig gemacht werden."
     },
     "edit-app-config": {
       "warning-msg-title": "Ab hier ist Vorsicht geboten",
@@ -444,6 +447,13 @@
       "mem-details": "Details Arbeitsspeicher",
       "show-less": "Weniger anzeigen",
       "open-link": "Weiterlesen"
+    },
+    "calendar": {
+      "all-day": "Ganztägig",
+      "no-events": "Keine anstehenden Termine",
+      "today": "Heute",
+      "tomorrow": "Morgen",
+      "untitled": "Unbenannter Termin"
     },
     "github-profile": {
       "repos": "Repositories",
