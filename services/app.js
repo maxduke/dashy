@@ -150,6 +150,9 @@ function getAuthMiddleware(authConfig, oidcSettings) {
   if (oidcSettings) {
     return createOidcMiddleware(oidcSettings);
   } else if (useConfAuth) {
+    if (authConfig.enableGuestAccess) {
+      printWarning('Guest access is not supported with ENABLE_HTTP_AUTH');
+    }
     return basicAuth({
       authorizer: customAuthorizer,
       challenge: true,
