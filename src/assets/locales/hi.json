@@ -78,7 +78,7 @@
     "config-launcher-tooltip": "कॉन्फ़िगरेशन अपडेट करें",
     "sign-out-tooltip": "साइन आउट",
     "sign-in-tooltip": "लॉग इन करें",
-    "sign-in-welcome": "नमस्ते {उपयोगकर्ता नाम}!"
+    "sign-in-welcome": "नमस्ते {username}!"
   },
   "updates": {
     "app-version-note": "डैशी संस्करण",
@@ -100,9 +100,9 @@
     "show-all-button": "सभी चर दिखाएं",
     "save-button": "सहेजें",
     "cancel-button": "रद्द करें",
-    "saved-toast": "{थीम} सफलतापूर्वक अपडेट किया गया",
+    "saved-toast": "{theme} सफलतापूर्वक अपडेट किया गया",
     "copied-toast": "{theme} का थीम डेटा क्लिपबोर्ड पर कॉपी किया गया",
-    "reset-toast": "{थीम} के लिए कस्टम रंग निकाले गए"
+    "reset-toast": "{theme} के लिए कस्टम रंग निकाले गए"
   },
   "config-editor": {
     "valid-label": "कॉन्फिग मान्य है",
