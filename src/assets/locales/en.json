@@ -124,6 +124,13 @@
     "workspace": "Workspace",
     "minimal": "Minimal"
   },
+  "workspace": {
+    "expand-sidebar": "Expand sidebar",
+    "collapse-sidebar": "Collapse sidebar",
+    "open-apps": "Open apps",
+    "close-app": "Close {app}",
+    "empty-state": "Select an app from the sidebar to open it here"
+  },
   "remote-config": {
     "title": "Load Remote Config?",
     "apply-button": "Apply Preview",

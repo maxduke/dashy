@@ -1,5 +1,5 @@
 <template>
-  <div id="dashy" :style="topLevelStyleModifications" :class="subPageClassName">
+  <div id="dashy" :style="topLevelStyleModifications" :class="[subPageClassName, `view-${currentView}`]">
     <EditModeTopBanner v-if="isEditMode" />
     <LoadingScreen :isLoading="isLoading" v-if="shouldShowSplash" />
     <Header :pageInfo="pageInfo" />
@@ -76,9 +76,12 @@ export default {
     footerText() {
       return this.pageInfo && this.pageInfo.footer ? this.pageInfo.footer : '';
     },
+    currentView() {
+      return viewFromPath(this.$route.path);
+    },
     /* Footer renders only when there's text AND we're not on workspace */
     footerVisible() {
-      if (viewFromPath(this.$route.path) === 'workspace') return false;
+      if (this.currentView === 'workspace') return false;
       return !!this.footerText;
     },
     /* Determine if splash screen should be shown */

@@ -197,6 +197,10 @@ You can target specific elements on the UI with these variables. All are optiona
 - `--welcome-popup-text-color` - Text color for the welcome pop-up. Defaults to `--primary`
 - `--side-bar-background` - Background color of the sidebar used in the workspace view. Defaults to `--background-darker`
 - `--side-bar-color` - Color of icons and text within the sidebar. Defaults to `--primary`
+- `--side-bar-background-lighter` - Background of open sections and the search box in the sidebar. Defaults to `--background`
+- `--side-bar-item-background` - Background of sidebar items. Defaults to `--side-bar-background`
+- `--side-bar-item-color` - Color of sidebar items, and the active item's highlight. Defaults to `--side-bar-color`
+- `--workspace-web-content-background` - Background behind apps in the workspace view. Defaults to `--background`
 - `--status-check-tooltip-background` - Background color for status check tooltips. Defaults to `--background-darker`
 - `--status-check-tooltip-color` - Text color for the status check tooltips. Defaults to `--primary`
 - `--code-editor-color` - Text color used within raw code editors. Defaults to `--black`
@@ -210,6 +214,8 @@ You can target specific elements on the UI with these variables. All are optiona
 - `--outline-color` - Used to outline focused or selected elements
 - `--curve-factor-navbar` - The border radius of the navbar. Usually this is greater than `--curve-factor`
 - `--scroll-bar-width` - Width of horizontal and vertical scroll bars. E.g. `8px`
+- `--side-bar-width` - Width of the workspace sidebar. E.g. `3.5rem`
+- `--side-bar-width-expanded` - Width of the workspace sidebar when expanded. E.g. `14rem`
 - `--item-group-padding` - Inner padding of sections, determines the width of outline. E.g. `5px`
 - `--item-shadow` - Shadow for items. E.g. `1px 1px 2px #130f23`
 - `--item-hover-shadow` - Shadow for items when hovered over. E.g. `1px 2px 4px #373737`

@@ -13,23 +13,16 @@
 
 <table align="center">
   <tr>
-    <td align="center" width="33%">
-      <a href="https://ssdnodes.com/dashy" target="_blank">
-        <img src="https://pixelflare.cc/alicia/sponsors/ssd-nodes-sponsorship.png" width="260" alt="SSD Nodes"><br>
-        <b>SSD Nodes</b>
-      </a><br>
-      <sub>Affordable VPS hosting for self-hosters</sub>
-    </td>
-    <td align="center" width="33%">
+    <td align="center" width="50%">
       <a href="https://umbrel.com?ref=dashy" target="_blank">
-        <img src="https://cdn.as93.net/sponsors/umbrel-banner.jpg" width="260" alt="Umbrel"><br>
+        <img src="https://cdn.as93.net/sponsors/umbrel-banner.jpg" width="280" alt="Umbrel"><br>
         <b>Umbrel</b>
       </a><br>
       <sub>Personal home cloud and OS for self-hosting</sub>
     </td>
-    <td align="center" width="33%">
+    <td align="center" width="50%">
       <a href="https://www.testmuai.com/?utm_medium=sponsor&utm_source=dashy" target="_blank">
-        <img src="https://cdn.as93.net/sponsors/test-mu-ai.png" width="260" alt="TestMu AI"><br>
+        <img src="https://cdn.as93.net/sponsors/test-mu-ai.png" width="280" alt="TestMu AI"><br>
         <b>TestMu AI</b>
       </a><br>
       <sub>Full-stack Agentic AI Quality Engineering platform</sub>

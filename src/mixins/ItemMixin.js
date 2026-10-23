@@ -3,6 +3,7 @@ import request from '@/utils/request';
 import router from '@/router';
 import longPress from '@/directives/LongPress';
 import ErrorHandler from '@/utils/logging/ErrorHandler';
+import { makeWorkspaceRoute } from '@/utils/config/ConfigHelpers';
 import {
   openingMethod as defaultOpeningMethod,
   serviceEndpoints,
@@ -298,7 +299,7 @@ export default {
         this.$emit('triggerModal', url);
       } else if (this.accumulatedTarget === 'workspace') {
         e.preventDefault();
-        router.push({ name: 'workspace', query: { url } });
+        router.push(makeWorkspaceRoute(url, this.$store));
       } else if (this.accumulatedTarget === 'clipboard') {
         e.preventDefault();
         this.copyToClipboard(url);
@@ -336,7 +337,7 @@ export default {
           this.$emit('triggerModal', url);
           break;
         case 'workspace':
-          router.push({ name: 'workspace', query: { url } });
+          router.push(makeWorkspaceRoute(url, this.$store));
           break;
         case 'clipboard':
           this.copyToClipboard(url);

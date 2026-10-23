@@ -281,10 +281,8 @@ Styleguides:
 │  │  ├── Nav.vue                 # Navigation bar, includes a list of links
 │  │  ╰── PageTitle.vue           # Page title and sub-title, visible within the Header
 │  ├── Workspace                  # Components used for the multi-tasking/ Workspace view
-│  │  ├── MultiTaskingWeb.vue     # When multi-tasking enabled, generates new iframe
 │  │  ├── SideBar.vue             # The left sidebar for the workspace view
 │  │  ├── SideBarItem.vue         # App item for the sidebar view
-│  │  ├── SideBarSection.vue      # Collapsible collection of items within workspace sidebar
 │  │  ├── WebContent.vue          # Workspace iframe view, displays content of current app
 │  │  ╰── WidgetView.vue          # Workspace container for displaying widgets in main content
 │  ├── Widgets                    # Directory contains all custom widget components

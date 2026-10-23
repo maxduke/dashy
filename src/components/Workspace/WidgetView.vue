@@ -1,8 +1,8 @@
 <template>
-  <div class="workspace-widget-view" v-if="widgets">
+  <div class="workspace-widget-view">
     <WidgetBase
       v-for="(widget, widgetIndx) in widgets"
-      :key="widgetIndx"
+      :key="widget.id || widgetIndx"
       :widget="widget"
       :index="widgetIndx"
       class="workspace-widget"
@@ -14,6 +14,7 @@
 import WidgetBase from '@/components/Widgets/WidgetBase';
 
 export default {
+  name: 'WidgetView',
   components: {
     WidgetBase,
   },
@@ -24,13 +25,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/style-helpers.scss';
+
 .workspace-widget-view {
-  padding: 1rem 0;
+  flex: 1;
+  min-width: 0;
+  padding: 1rem;
+  overflow-y: auto;
   background: var(--background);
-  position: absolute;
-  left: var(--side-bar-width);
-  height: calc(100% - var(--header-height) - 1rem);
-  width: calc(100% - var(--side-bar-width));
+  @extend .scroll-bar;
   .workspace-widget {
     max-width: 800px;
     margin: 0.5rem auto 1rem auto;

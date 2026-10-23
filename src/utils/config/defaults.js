@@ -150,6 +150,7 @@ const defaults = {
     ID_TOKEN: 'idToken',
     DISABLE_CRITICAL_WARNING: 'disableCriticalWarning',
     PI_HOLE_SESSION: 'piHoleSession',
+    WORKSPACE_SIDEBAR_EXPANDED: 'workspaceSidebarExpanded',
   },
   /* Key names for cookie identifiers */
   cookieKeys: {

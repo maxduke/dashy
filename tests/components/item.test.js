@@ -613,7 +613,7 @@ describe('Methods: itemClicked', () => {
       },
     });
     wrapper.vm.itemClicked(event());
-    expect(router.push).toHaveBeenCalledWith({ name: 'workspace', query: { url: 'https://x.com' } });
+    expect(router.push).toHaveBeenCalledWith({ path: '/workspace', query: { url: 'https://x.com' } });
   });
 
   it('target clipboard: calls copyToClipboard', () => {
@@ -660,7 +660,7 @@ describe('Methods: launchItem', () => {
   it('workspace calls router.push', () => {
     const { wrapper } = mountItem();
     wrapper.vm.launchItem('workspace', 'https://test.com');
-    expect(router.push).toHaveBeenCalledWith({ name: 'workspace', query: { url: 'https://test.com' } });
+    expect(router.push).toHaveBeenCalledWith({ path: '/workspace', query: { url: 'https://test.com' } });
   });
 
   it('clipboard calls copyToClipboard', () => {

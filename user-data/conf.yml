@@ -54,6 +54,8 @@ sections:
       cutToHeight: true
     widgets:
       - type: rss-feed
+        useProxy: true
         options:
           rssUrl: https://github.com/lissy93/dashy/releases.atom
+          parseLocally: true
           limit: 5

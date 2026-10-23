@@ -2,13 +2,14 @@
   <div class="work-space">
     <SideBar
       :sections="sections"
+      :activeUrl="activeUrl"
+      :openUrls="openUrls"
       @launch-app="launchApp"
-      @launch-widget="launchWidget"
-      :initUrl="getInitialUrl()"
+      @launch-widget="launchWidgets"
+      @close-app="closeApp"
     />
-    <WebContent :url="url" v-if="!isMultiTaskingEnabled" />
-    <MultiTaskingWebComtent :url="url" v-else />
-    <WidgetView :widgets="widgets" v-if="widgets" />
+    <WidgetView v-if="widgets" :widgets="widgets" />
+    <WebContent v-show="!widgets" :urls="frameUrls" :activeUrl="activeUrl" />
   </div>
 </template>
 
@@ -17,88 +18,99 @@ import HomeMixin from '@/mixins/HomeMixin';
 import SideBar from '@/components/Workspace/SideBar';
 import WebContent from '@/components/Workspace/WebContent';
 import WidgetView from '@/components/Workspace/WidgetView';
-import MultiTaskingWebComtent from '@/components/Workspace/MultiTaskingWebComtent';
-import Defaults from '@/utils/config/defaults';
-import ErrorHandler from '@/utils/logging/ErrorHandler';
 import { sanitizeUrl } from '@/utils/Sanitizer';
+import { sameUrl } from '@/utils/MiscHelpers';
 
 export default {
   name: 'Workspace',
   mixins: [HomeMixin],
-  data: () => ({
-    url: '',
-    widgets: null,
-  }),
-  computed: {
-    sections() {
-      return this.$store.getters.sections;
-    },
-    appConfig() {
-      return this.$store.getters.appConfig;
-    },
-    isMultiTaskingEnabled() {
-      return this.appConfig.enableMultiTasking || false;
-    },
-  },
   components: {
     SideBar,
     WebContent,
     WidgetView,
-    MultiTaskingWebComtent,
   },
-  methods: {
-    launchApp(options) {
-      if (options.target === 'newtab') {
-        window.open(options.url, '_blank');
-      } else if (options.target === 'newwindow') {
-        const { width, height } = window.screen;
-        window.open(options.url, '_blank', `width=${width},height=${height},noopener,noreferrer`);
-      } else if (options.target === 'clipboard') {
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(options.url);
-          this.$toast.success(this.$t('context-menus.item.copied-toast'));
-        } else {
-          ErrorHandler('Clipboard access requires HTTPS. See: https://bit.ly/3N5WuAA');
-          this.$toast.error('Unable to copy, see log');
-        }
-        return;
-      } else {
-        this.url = options.url;
-      }
+  data: () => ({
+    openUrls: [], // Apps opened this session, most recent last
+    widgets: null,
+  }),
+  computed: {
+    /* The visible app is kept in the URL, so it can be linked to or reloaded */
+    activeUrl() {
+      return sanitizeUrl(this.$route.query.url) || '';
+    },
+    /* Apps to render, or all open apps when multi-tasking, to keep them running */
+    frameUrls() {
+      if (this.appConfig.enableMultiTasking) return this.openUrls;
+      return this.activeUrl ? [this.activeUrl] : [];
+    },
+    /* The page's landing app, once its config has loaded */
+    landingUrl() {
+      const loadedPage = this.$store.state.currentConfigInfo?.confId || null;
+      if (loadedPage !== (this.determineConfigFile() || null)) return null;
+      return sanitizeUrl(this.appConfig.workspaceLandingUrl);
+    },
+  },
+  watch: {
+    activeUrl: {
+      immediate: true,
+      handler(url) {
+        if (!url) return;
+        this.widgets = null;
+        if (!this.openUrls.includes(url)) this.openUrls.push(url);
+      },
+    },
+    landingUrl: {
+      immediate: true,
+      handler(url) {
+        if (url && !this.$route.query.url) this.launchApp(url);
+      },
+    },
+    /* Widgets belong to the page they were opened on */
+    '$route.path'() {
       this.widgets = null;
     },
-    launchWidget(widgets) {
-      this.url = '';
+  },
+  methods: {
+    /* Opens an app, reusing its open copy if a variant of the URL is already open */
+    launchApp(url) {
+      const appUrl = this.openUrls.find((openUrl) => sameUrl(openUrl, url)) || url;
+      this.$router.replace({ query: appUrl ? { url: appUrl } : {} });
+    },
+    /* Shows a section's widgets in place of the current app */
+    launchWidgets(widgets) {
       this.widgets = widgets;
+      this.$router.replace({ query: {} });
     },
-    initiateFontAwesome() {
-      const fontAwesomeScript = document.createElement('script');
-      const faKey = this.appConfig.fontAwesomeKey || Defaults.fontAwesomeKey;
-      fontAwesomeScript.setAttribute('src', `https://kit.fontawesome.com/${faKey}.js`);
-      document.head.appendChild(fontAwesomeScript);
-    },
-    /* Returns a service URL, if set as a URL param, or if user has specified landing URL */
-    getInitialUrl() {
-      const route = this.$route;
-      if (route.query && route.query.url) {
-        return sanitizeUrl(decodeURI(route.query.url)) || undefined;
-      } else if (this.appConfig.workspaceLandingUrl) {
-        return this.appConfig.workspaceLandingUrl;
-      }
-      return undefined;
+    /* Closes an app, and switches to the last opened one if the visible app was closed */
+    closeApp(url) {
+      this.openUrls = this.openUrls.filter((openUrl) => openUrl !== url);
+      const { activeUrl, openUrls } = this;
+      if (activeUrl && !openUrls.includes(activeUrl)) this.launchApp(openUrls.at(-1));
     },
   },
   mounted() {
     this.initiateFontAwesome();
     this.initiateMaterialDesignIcons();
-    this.url = this.getInitialUrl();
   },
 };
-
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/media-queries.scss';
+
+:global(#dashy.view-workspace) {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .work-space {
-  min-height: fit-content;
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  @include phone {
+    flex-direction: column;
+  }
 }
 </style>
