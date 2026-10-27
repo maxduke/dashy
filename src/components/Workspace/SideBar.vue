@@ -137,7 +137,7 @@ export default {
     visibleSections() {
       if (!this.search) return this.workspaceSections;
       return this.workspaceSections
-        .map((section) => ({ ...section, items: searchTiles(section.items, this.search, section.name) }))
+        .map((section) => ({ ...section, items: this.matchingItems(section) }))
         .filter((section) => section.items.length);
     },
     /* Open apps, with title and icon from their item, if there is one */
@@ -166,6 +166,14 @@ export default {
     },
     sectionHasActive(section) {
       return !!section && section.items.some((item) => [item, ...(item.subItems || [])].some(this.isActive));
+    },
+    /* Items matching the search, with groups trimmed to their matching sub-items */
+    matchingItems(section) {
+      return searchTiles(section.items, this.search, section.name).map((item) => {
+        if (!item.subItems) return item;
+        const subItems = searchTiles(item.subItems, this.search, `${section.name} ${item.title || ''}`);
+        return { ...item, subItems: subItems.length ? subItems : item.subItems };
+      });
     },
     isOpen(section) {
       return !!this.search || this.visibleSections.length === 1 || this.openSection === section.name;

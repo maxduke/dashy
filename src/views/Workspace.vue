@@ -105,6 +105,11 @@ export default {
   flex-direction: column;
 }
 
+/* Collapse the header when it's empty, or only holds the floating nav */
+:global(#dashy.view-workspace > header:not(:has(> :not(.floating)))) {
+  padding: 0;
+}
+
 .work-space {
   flex: 1;
   display: flex;

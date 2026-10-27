@@ -40,6 +40,7 @@ const aliasTarget = require('./endpoints/alias-target'); // Resolves /<alias> to
 const { apiEnabledGate, apiErrorHandler, createApiRouter } = require('./endpoints/api'); // Opt-in REST API
 
 const { loadOidcSettings, createOidcMiddleware } = require('./utils/auth-oidc');
+const isTrustedProxy = require('./utils/trusted-proxy');
 
 /* Service endpoint URL paths (see also serviceEndpoints in src/utils/config/defaults.js) */
 const ENDPOINTS = {
@@ -167,7 +168,7 @@ function getAuthMiddleware(authConfig, oidcSettings) {
   } else if (authConfig.enableHeaderAuth && authConfig.headerAuth) {
     const { userHeader = 'Remote-User', proxyWhitelist = [] } = authConfig.headerAuth;
     return (req, res, next) => {
-      if (!proxyWhitelist.includes(req.socket.remoteAddress)) {
+      if (!isTrustedProxy(proxyWhitelist, req.socket.remoteAddress)) {
         return res.status(401).json({ success: false, message: 'Unauthorized - not from trusted proxy' });
       }
       const user = req.headers[userHeader.toLowerCase()];

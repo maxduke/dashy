@@ -145,6 +145,26 @@ describe('Workspace SideBar', () => {
     expect(titlesIn(wrapper, '.sub-side-bar')).toEqual(['Two']);
   });
 
+  it('shows only the matching sub-items of a group, unless the group itself matches', async () => {
+    const group = {
+      title: 'Downloads',
+      description: 'Media managers',
+      subItems: [
+        { title: 'Sonarr', url: 'https://sonarr.lab/' },
+        { title: 'Radarr', url: 'https://radarr.lab/' },
+      ],
+    };
+    const wrapper = mountSideBar({ sections: [{ name: 'Media', items: [group] }] });
+    await wrapper.find('.side-bar-toggle').trigger('click');
+    const searchFor = (term) => wrapper.find('.side-bar-search').setValue(term);
+    await searchFor('sonarr');
+    expect(titlesIn(wrapper, '.sub-side-bar')).toEqual(['Sonarr']);
+    await searchFor('downloads radarr');
+    expect(titlesIn(wrapper, '.sub-side-bar')).toEqual(['Radarr']);
+    await searchFor('managers');
+    expect(titlesIn(wrapper, '.sub-side-bar')).toEqual(['Sonarr', 'Radarr']);
+  });
+
   it('shows widgets when their section is opened, but not when closed', async () => {
     const wrapper = mountSideBar();
     const header = wrapper.find('.side-bar-item-container [aria-label="Widgets"]');
