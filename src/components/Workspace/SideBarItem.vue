@@ -7,7 +7,8 @@
     v-tooltip="{ content: item.title, disabled: !item.title, placement: 'right' }"
     @click.exact="launch"
   >
-    <Icon v-if="item.icon" :icon="item.icon" :url="item.url" size="small" />
+    <Icon v-if="item.icon" :icon="item.icon" :url="item.url" size="small"
+      :style="{ color: item.iconColor }" />
     <span v-else class="initials">{{ initials }}</span>
     <span class="title">{{ item.title }}</span>
   </component>

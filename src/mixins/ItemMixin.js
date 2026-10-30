@@ -33,10 +33,6 @@ export default {
         posX: undefined,
         posY: undefined,
       },
-      customStyles: {
-        color: this.item.color,
-        background: this.item.backgroundColor,
-      },
     };
   },
   computed: {
@@ -198,6 +194,12 @@ export default {
       return `--open-icon:${this.unicodeOpeningIcon};`
         + `color:${this.item.color};`
         + `background:${this.item.backgroundColor}`;
+    },
+    customStyles() {
+      return {
+        color: this.item.iconColor || this.item.color,
+        background: this.item.backgroundColor,
+      };
     },
   },
   methods: {

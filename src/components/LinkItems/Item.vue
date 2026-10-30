@@ -24,7 +24,7 @@
         <p class="description">{{ item.description }}</p>
       </div>
       <!-- Item Icon -->
-      <Icon :icon="itemIcon" :url="item.url" :size="size" :color="item.color"
+      <Icon :icon="itemIcon" :url="item.url" :size="size"
         v-bind:style="customStyles" class="bounce" />
       <!-- Small icon, showing opening method on hover -->
       <ItemOpenMethodIcon class="opening-method-icon"

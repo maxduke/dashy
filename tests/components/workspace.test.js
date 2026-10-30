@@ -17,7 +17,7 @@ const sections = [
   {
     name: 'Apps',
     items: [
-      { title: 'One', url: 'https://one.com/' },
+      { title: 'One', url: 'https://one.com/', icon: 'si-github', iconColor: 'blue' },
       { title: 'Hidden', url: 'https://hidden.com/', displayData: { hideFromWorkspace: true } },
     ],
   },
@@ -180,5 +180,10 @@ describe('Workspace SideBar', () => {
     expect(titlesIn(wrapper, '.open-apps')).toEqual(['Two', 'other.com']);
     await wrapper.findAll('.close-app')[1].trigger('click');
     expect(wrapper.emitted('close-app')).toEqual([['https://other.com/']]);
+  });
+
+  it('keeps the item icon color for open apps', () => {
+    const wrapper = mountSideBar({ openUrls: ['https://one.com/'] });
+    expect(wrapper.find('.open-apps').findComponent({ name: 'Icon' }).attributes('style')).toContain('color: blue');
   });
 });

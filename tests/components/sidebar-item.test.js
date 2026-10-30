@@ -76,4 +76,9 @@ describe('SideBarItem', () => {
     const wrapper = mountItem({ title: 'App', url: 'https://example.com' }, { active: true });
     expect(wrapper.classes()).toContain('active');
   });
+
+  it('applies iconColor to the icon', () => {
+    const wrapper = mountItem({ icon: 'si-github', url: 'https://example.com', iconColor: 'blue' });
+    expect(wrapper.findComponent({ name: 'Icon' }).attributes('style')).toContain('color: blue');
+  });
 });

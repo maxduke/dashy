@@ -145,8 +145,8 @@ export default {
       const items = this.workspaceSections.flatMap((section) => section.items)
         .flatMap((item) => item.subItems || [item]);
       return this.openUrls.map((url) => {
-        const { title, icon } = items.find((item) => sameUrl(item.url, url)) || { title: new URL(url).host };
-        return { title, icon, url };
+        const { title, icon, iconColor } = items.find((item) => sameUrl(item.url, url)) || { title: new URL(url).host };
+        return { title, icon, iconColor, url };
       });
     },
     searchEnabled() {
